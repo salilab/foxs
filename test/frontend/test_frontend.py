@@ -37,6 +37,19 @@ class Tests(saliweb.test.TestCase):
         rv = c.get('/about')
         self.assertIn('About Small Angle X-ray Scattering', rv.data)
 
+    def test_faq(self):
+        """Test FAQ page"""
+        c = foxs.app.test_client()
+        rv = c.get('/faq')
+        self.assertIn('structure includes non-protein atoms', rv.data)
+
+    def test_links(self):
+        """Test links page"""
+        c = foxs.app.test_client()
+        rv = c.get('/links')
+        self.assertIn('BILBOMD', rv.data)
+        self.assertIn('Chimera', rv.data)
+
 
 if __name__ == '__main__':
     unittest.main()

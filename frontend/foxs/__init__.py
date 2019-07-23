@@ -19,6 +19,16 @@ def about():
     return render_template('about.html')
 
 
+@app.route('/faq')
+def faq():
+    return render_template('faq.html')
+
+
+@app.route('/links')
+def links():
+    return render_template('links.html')
+
+
 @app.route('/help')
 def help():
     return render_template('help.html')
