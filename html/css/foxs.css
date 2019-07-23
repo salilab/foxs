@@ -1,0 +1,48 @@
+.announce {
+  text-align: center
+}
+
+#fullpart {
+  padding-bottom: 0px
+}
+
+#wrapper {
+  position: relative;
+  border: 1px solid #9C9898;
+  width: 405px;
+  height: 355px;
+  border: 1px solid #ccc;
+  border-radius: 1em;
+  -webkit-border-radius: 1em;
+  border-radius: 0.2em;
+  box-shadow: 1px 1px 5px #AAA;
+  -webkit-box-shadow: 5px 5px 3px #AAA;
+}
+
+#wrapper2 {
+  position: relative;
+  border: 1px solid #9C9898;
+  width: 300px;
+  height: 250px;
+  border: 1px solid #ccc;
+  border-radius: 1em;
+  -webkit-border-radius: 1em;
+  border-radius: 0.2em;
+  box-shadow: 1px 1px 5px #AAA;
+  -webkit-box-shadow: 5px 5px 3px #AAA;
+}
+
+#buttonWrapper {
+  position: absolute;
+  width: 50px;
+  top: 5px;
+  right: 2px;
+}
+
+input[type = "button"] {
+  background-image: url("/foxs-test/html/img/zoom_out_icon.png");
+  background-color: transparent;
+  background-repeat: no-repeat;
+  height: 50px;
+  width: 50px;
+}

@@ -1,5 +1,7 @@
 from flask import render_template, request
 import saliweb.frontend
+from . import submit_page
+
 
 parameters = []
 app = saliweb.frontend.make_application(__name__, parameters)
@@ -7,11 +9,6 @@ app = saliweb.frontend.make_application(__name__, parameters)
 @app.route('/')
 def index():
     return render_template('index.html')
-
-
-@app.route('/contact')
-def contact():
-    return render_template('contact.html')
 
 
 @app.route('/about')
@@ -39,4 +36,4 @@ def job():
     if request.method == 'GET':
         return saliweb.frontend.render_queue_page()
     else:
-        pass  # todo
+        return submit_page.handle_new_job()

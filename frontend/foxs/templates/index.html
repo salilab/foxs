@@ -23,7 +23,7 @@ function toggle_visibility_tbody(id, linkid) {
 
 <table>
   <tr>
-      <td><h4>Type PDB code of input molecule or upload files in PDB format (zip file with several PDBs can be uploaded):</h4></td>
+      <td><h3>Type PDB code of input molecule or upload files in PDB format (zip file with several PDBs can be uploaded):</h3></td>
   </tr>
 </table>
 
@@ -57,7 +57,7 @@ function toggle_visibility_tbody(id, linkid) {
 
 <table>
 <tr>
-<td><a onclick="toggle_visibility_tbody('optional', 'optionaltoggle'); return false;" id="optionaltoggle" href="#"><h4>Advanced Options</h4></a></td>
+<td><a onclick="toggle_visibility_tbody('optional', 'optionaltoggle'); return false;" id="optionaltoggle" href="#"><h3>Advanced Options</h3></a></td>
 </tr>
 <tbody id="optional" style="display:none">
 <tr>
@@ -138,9 +138,9 @@ function toggle_visibility_tbody(id, linkid) {
 </tbody>
 </table>
 
-<hr size="2" width="80%">
+<hr size="2" width="82%">
 
-<table align='center'>
-<tr><td><b><font color=red> NEW! </font> <a href="https://modbase.compbio.ucsf.edu/multifoxs/"><img src="//modbase.compbio.ucsf.edu/multifoxs/html/logo.png"\ height='17'>Now with conformational sampling and multi-state modeling, try here</a> </b></td> </tr>
-</table>
+<div class="announce">
+<b><font color=red> NEW! </font> <a href="https://modbase.compbio.ucsf.edu/multifoxs/"><img src="//modbase.compbio.ucsf.edu/multifoxs/html/logo.png"\ height='17'>Now with conformational sampling and multi-state modeling, try here</a> </b>
+</div>
 {% endblock %}

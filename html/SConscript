@@ -1,4 +1,8 @@
 Import('env')
 
 env.InstallHTML(['img/logo.png', 'img/logo2.gif', 'img/debye.png',
-                 'img/chi.gif'], 'img')
+                 'img/chi.gif', 'img/zoom_out_icon.png'], 'img')
+
+env.InstallHTML(['css/foxs.css'], 'css')
+
+env.InstallHTML(['examples/lyzexp.dat'], 'examples')

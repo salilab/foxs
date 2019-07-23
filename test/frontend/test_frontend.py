@@ -25,12 +25,6 @@ class Tests(saliweb.test.TestCase):
         self.assertIn('displays the profile fit along with the residuals',
                       rv.data)
 
-    def test_contact(self):
-        """Test contact page"""
-        c = foxs.app.test_client()
-        rv = c.get('/contact')
-        self.assertIn('Please address inquiries to:', rv.data)
-
     def test_about(self):
         """Test about page"""
         c = foxs.app.test_client()
