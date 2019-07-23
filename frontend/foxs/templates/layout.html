@@ -1,0 +1,19 @@
+{% extends "saliweb/layout.html" %}
+
+{% block navigation %}
+{{ get_navigation_links(
+       [(url_for("index"), "Home"),
+        (url_for("job"), "Queue"),
+        (url_for("help"), "Help"),
+        (url_for("contact"), "Contact")])
+}}
+{% endblock %}
+
+{% block sidebar %}
+<p>Sidebar</p>
+{% endblock %}
+
+{% block footer %}
+<p>Footer</p>
+{% endblock %}
+
