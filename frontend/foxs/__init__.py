@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, request
 import saliweb.frontend
 
 parameters = []
@@ -18,3 +18,10 @@ def contact():
 def help():
     return render_template('help.html')
 
+
+@app.route('/job', methods=['GET', 'POST'])
+def job():
+    if request.method == 'GET':
+        return saliweb.frontend.render_queue_page()
+    else:
+        pass  # todo
