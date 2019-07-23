@@ -50,6 +50,12 @@ class Tests(saliweb.test.TestCase):
         self.assertIn('BILBOMD', rv.data)
         self.assertIn('Chimera', rv.data)
 
+    def test_queue(self):
+        """Test queue page"""
+        c = foxs.app.test_client()
+        rv = c.get('/job')
+        self.assertIn('No pending or running jobs', rv.data)
+
 
 if __name__ == '__main__':
     unittest.main()
