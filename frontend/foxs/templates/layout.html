@@ -1,19 +1,45 @@
 {% extends "saliweb/layout.html" %}
 
+{% block header_page_title %}
+<table>
+  <tbody>
+    <tr>
+      <td halign="left">
+      <table><tr><td>
+      <img src="{{ url_for("static", filename="img/logo.png") }}" align = "left" height = "80" >
+      </td></tr>
+      <tr><td>
+      <h3>Fast SAXS Profile Computation with Debye Formula</h3>
+      </td></tr></table>
+      </td>
+      <td halign="right"><img src="{{ url_for("static", filename="img/logo2.gif") }}" height = "80" ></td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}
+
 {% block navigation %}
 {{ get_navigation_links(
-       [(url_for("index"), "Home"),
+       [(url_for("about"), "About FoXS"),
+        (url_for("index"), "Home"),
         (url_for("job"), "Queue"),
         (url_for("help"), "Help"),
         (url_for("contact"), "Contact")])
 }}
 {% endblock %}
 
-{% block sidebar %}
-<p>Sidebar</p>
-{% endblock %}
-
 {% block footer %}
-<p>Footer</p>
-{% endblock %}
+<hr size="2" width="80%">
+<table><tr><td>
+<b>If you use FoXS, please cite:
+</td></tr><tr><td>
+Schneidman-Duhovny D, Hammel M, Tainer JA, and Sali A. Accurate SAXS profile computation and its assessment by contrast variation experiments. Biophysical Journal 2013. 105 (4), 962-974 <br>
+</td> </tr> <tr><td>
+Schneidman-Duhovny D, Hammel M, Tainer JA, and Sali A. FoXS, FoXSDock and MultiFoXS: Single-state and multi-state structural modeling of proteins and their complexes based on SAXS profiles NAR 2016 [<a href="//doi.org/10.1093/nar/gkw389"> FREE Full Text </a>]<br>
+</td> </tr> <tr><td>
 
+Contact:
+<script>escramble("dina","salilab.org")</script><br>
+</td></tr>
+</table>
+{% endblock %}

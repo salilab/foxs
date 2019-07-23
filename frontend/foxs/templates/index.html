@@ -1,8 +1,146 @@
 {% extends "layout.html" %}
 
-{% block title %}FoXS{% endblock %}
+{% block title %}FoXS Server: Fast X-ray Scattering{% endblock %}
+
+{%- block js %}
+<script>
+function toggle_visibility_tbody(id, linkid) {
+  var e = document.getElementById(id);
+  var lnk = document.getElementById(linkid);
+  if(e.style.display == 'table-row-group') {
+    e.style.display = 'none';
+    lnk.innerHTML = lnk.innerHTML.replace('Hide', 'Show');
+  } else {
+    e.style.display = 'table-row-group';
+    lnk.innerHTML = lnk.innerHTML.replace('Show', 'Hide');
+  }
+}
+</script>
+{%- endblock %}
 
 {% block body %}
-<h1>Main Page</h1>
-{% endblock %}
+<form method="post" ENCTYPE="multipart/form-data">
 
+<table>
+  <tr>
+      <td><h4>Type PDB code of input molecule or upload files in PDB format (zip file with several PDBs can be uploaded):</h4></td>
+  </tr>
+</table>
+
+<table cellspacing="0" cellpadding="5" width="90%">
+<tr>
+<td><font color=blue><b>Input molecule:</b></td>
+<td><input type=text name=pdb size=10 MAXLENGTH=10 value=""></td>
+<td>(PDB:chainId e.g. 6lyz:A) <b>or</b> upload file:</td>
+<td><input type=file name=pdbfile size=10></td>
+</tr>
+
+<tr>
+<td>Experimental profile:</td>
+<td><input type=file name=profile size=10></td>
+<td COLSPAN=2>(optional) <a  href="lyzexp.dat">sample input</a></td>
+</tr>
+
+<tr>
+<td>e-mail address:</td>
+<td><input type=text name=email></td>
+<td colspan="2">(optional, the results are sent to this address)</td>
+</tr>
+
+<tr>
+<td COLSPAN=2>
+<INPUT TYPE="submit" NAME="Submit" VALUE="Submit Form">
+<input TYPE="reset" NAME="Clear" VALUE="Clear">
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td><a onclick="toggle_visibility_tbody('optional', 'optionaltoggle'); return false;" id="optionaltoggle" href="#"><h4>Advanced Options</h4></a></td>
+</tr>
+<tbody id="optional" style="display:none">
+<tr>
+<td>Maximal q value</td>
+<td><input type=text name=q size=10 MAXLENGTH=10 value="0.5"></td>
+<td COLSPAN=2>  </td>
+</tr>
+
+<tr>
+<td>Profile size</td>
+<td><input type=text name=psize size=10 MAXLENGTH=10 value="500"></td>
+<td COLSPAN=2> # of points in the computed profile </td>
+</tr>
+
+
+<tr>
+<td>Hydration layer</td>
+<td><input type=checkbox name=hlayer checked onclick="toggle_visibility_tbody('optional_hlayer', 'optionaltoggle_hlayer'); return false;"></td>
+<td COLSPAN=2> use hydration layer to improve fitting</td>
+</tr>
+<tr id="optional_hlayer" style="display:none">
+<td></td><td> fix hydration layer density </td> <td><input type=text name=c2 size=5 MAXLENGTH=5 value="0.00"></td><td> values between -1.0 and 4.0 are acceptable </td></tr>
+
+
+<tr>
+<td>Excluded volume adjustment</td>
+<td><input type=checkbox name=exvolume checked onclick="toggle_visibility_tbody('optional_exvolume', 'optionaltoggle_exvolume'); return false;"></td>
+<td COLSPAN=2> adjust the protein excluded volume to improve fitting</td>
+</tr>
+<tr id="optional_exvolume" style="display:none">
+<td></td><td> fix excluded volume </td> <td><input type=text name=c1 size=5 MAXLENGTH=5 value="1.00"></td><td> values between 0.95 and 1.05 are acceptable </td></tr>
+
+<tr>
+<td>Implicit hydrogens</td>
+<td><input type=checkbox name=ihydrogens checked></td>
+<td COLSPAN=2> implicitly consider hydrogen atoms</td>
+</tr>
+
+<tr>
+<td>Residue level computation</td>
+<td><input type=checkbox name=residue unchecked></td>
+<td COLSPAN=2> perform coarse grained profile computation for Ca atoms only</td>
+</tr>
+
+<tr>
+<td>Background adjustment</td>
+<td><input type=checkbox name=background></td>
+<td COLSPAN=2> adjust the background of the experimental profile</td>
+</tr>
+
+<tr>
+<td>Offset</td>
+<td><input type=checkbox name=offset unchecked></td>
+<td COLSPAN=2> use offset in profile fitting</td>
+</tr>
+
+<tr>
+<td>MODEL reading</td>
+<td><select name=modelread>
+<option value="First MODEL only">First MODEL only</option>
+<option value="MODELs into multiple structures">MODELs into multiple structures</option>
+<option value="All MODELs into a single structure" selected> All MODELs into a single structure</option>
+</SELECT> </td>
+<td COLSPAN=2> determine how to read PDB files with MODEL records</td>
+</tr>
+
+<tr>
+<td>Experimental profile units</td>
+<td><select name=units>
+<option value="unknown" selected>Unknown - determine automatically (default) </option>
+<option value="angstroms">q values are in 1/<span>&#8491;</span> </option>
+<option value="nanometers">q values are in nm</option>
+</SELECT> </td>
+<td COLSPAN=2> determine the units of q in the experimental profile</td>
+</tr>
+
+
+</tbody>
+</table>
+
+<hr size="2" width="80%">
+
+<table align='center'>
+<tr><td><b><font color=red> NEW! </font> <a href="https://modbase.compbio.ucsf.edu/multifoxs/"><img src="//modbase.compbio.ucsf.edu/multifoxs/html/logo.png"\ height='17'>Now with conformational sampling and multi-state modeling, try here</a> </b></td> </tr>
+</table>
+{% endblock %}
