@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/salilab/foxs.svg?branch=master)](https://travis-ci.org/salilab/foxs)
+[![codecov](https://codecov.io/gh/salilab/foxs/branch/master/graph/badge.svg)](https://codecov.io/gh/salilab/foxs)
+
 This is the source code for [FoXS](https://salilab.org/foxs/), a web
 service for fast SAXS profile computation with Debye formula. It uses
 the [Sali lab web framework](https://github.com/salilab/saliweb/).
