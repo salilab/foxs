@@ -19,7 +19,7 @@ function toggle_visibility_tbody(id, linkid) {
 {%- endblock %}
 
 {% block body %}
-<form method="post" ENCTYPE="multipart/form-data">
+<form method="post" action="{{ url_for("job") }}" ENCTYPE="multipart/form-data">
 
 <table>
   <tr>
