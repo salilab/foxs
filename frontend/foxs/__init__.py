@@ -1,5 +1,6 @@
 from flask import render_template, request
 import saliweb.frontend
+from saliweb.frontend import get_completed_job
 from . import submit_page
 
 
@@ -37,3 +38,9 @@ def job():
         return saliweb.frontend.render_queue_page()
     else:
         return submit_page.handle_new_job()
+
+
+@app.route('/job/<name>')
+def results(name):
+    job = get_completed_job(name, request.args.get('passwd'))
+    # todo

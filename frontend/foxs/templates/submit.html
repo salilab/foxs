@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}FoXS Job Submission{% endblock %}
+
+{% block body %}
+<h1>Job Submitted</h1>
+
+<p>Your job has been submitted with job ID {{ job.name }}.</p>
+
+<p>Results will be found at <a href="{{ job.results_url }}">this link</a>.</p>
+
+{%- if email %}
+<p>You will receive an e-mail with results link once the job has finished.</p>
+{%- endif %}
+{% endblock %}
