@@ -70,7 +70,7 @@ def handle_pdb(pdb_code, pdb_file, job):
         # todo: handle zip file
         return save_job_nonempty_file(pdb_file, job, "PDB or zip")
     elif pdb_code:
-        fname = salilab.frontend.get_pdb_chains(pdb_code, job.directory)
+        fname = saliweb.frontend.get_pdb_chains(pdb_code, job.directory)
         return os.path.basename(fname)
     else:
         raise InputValidationError("Error in protein input: please specify "
