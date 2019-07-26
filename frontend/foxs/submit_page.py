@@ -2,6 +2,7 @@ from flask import request
 import saliweb.frontend
 from saliweb.frontend import InputValidationError
 import os
+import zipfile
 from werkzeug.utils import secure_filename
 
 
@@ -45,17 +46,17 @@ def handle_new_job():
 
     job = saliweb.frontend.IncomingJob()
 
-    prot_file_name = handle_pdb(request.form.get("pdb"),
-                                request.files.get("pdbfile"), job)
+    prot_file_names = handle_pdb(request.form.get("pdb"),
+                                 request.files.get("pdbfile"), job)
     profile_file_name = save_job_nonempty_file(request.files.get("profile"),
                                                job, "profile") or "-"
 
     with open(job.get_path('inputFiles.txt'), 'w') as fh:
-        fh.write(prot_file_name + '\n')
+        fh.write("\n".join(prot_file_names))
 
     with open(job.get_path('data.txt'), 'w') as fh:
         fh.write("%s %s %s %.2f %d %d %d %d %d %d %d %.2f %.2f %d %d\n"
-                 % (prot_file_name, profile_file_name, email, q, psize,
+                 % (prot_file_names[0], profile_file_name, email, q, psize,
                     hlayer, exvolume, ihydrogens, residue, offset,
                     background, hlayer_value, exvolume_value, model_option,
                     unit_option))
@@ -68,14 +69,36 @@ def handle_new_job():
 def handle_pdb(pdb_code, pdb_file, job):
     """Handle input PDB code or file. Return file name."""
     if pdb_file:
-        # todo: handle zip file
-        return save_job_nonempty_file(pdb_file, job, "PDB or zip")
+        saved_fname = save_job_nonempty_file(pdb_file, job, "PDB or zip")
+        try:
+            return handle_zipfile(saved_fname, job)
+        except zipfile.BadZipfile:
+            return [saved_fname]
     elif pdb_code:
         fname = saliweb.frontend.get_pdb_chains(pdb_code, job.directory)
-        return os.path.basename(fname)
+        return [os.path.basename(fname)]
     else:
         raise InputValidationError("Error in protein input: please specify "
                                    "PDB code or upload file")
+
+
+def handle_zipfile(zfname, job):
+    """Extract PDB files from the given zip file"""
+    exclude = frozenset((zfname, 'inputFiles.txt'))
+    pdbs = []
+    fh = zipfile.ZipFile(job.get_path(zfname))
+    for zi in fh.infolist():
+        fname = secure_filename(os.path.basename(zi.filename))
+        if fname not in exclude:
+            with open(job.get_path(fname), 'w') as out_fh:
+                out_fh.write(fh.read(zi))
+            pdbs.append(fname)
+            if len(pdbs) > 100:
+                raise InputValidationError(
+                    "Only 100 PDB files can run on the server. Please use "
+                    "download version for more")
+    fh.close()
+    return pdbs
 
 
 def save_job_nonempty_file(fh, job, filetype):
