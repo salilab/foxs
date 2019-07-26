@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}FoXS Results{% endblock %}
+
+{% block body %}
+<table width="90%">
+  <tr class="resultheader">
+    <td>PDB files</td>
+    <td>Profile file</td>
+    <td>User e-mail</td>
+  </tr>
+  <tr>
+    <td><a href="{{ job.get_results_file_url(pdb) }}">{{ pdb }}</a></td>
+    <td><a href="{{ job.get_results_file_url(profile) }}">{{ profile }}</a></td>
+    <td>{{ email }}</td>
+  </tr>
+</table>
+
+<hr size="2" width="90%" />
+
+<p><span class="important">NEW!</span> 
+<a href="{{ url_for("results", name=job.name, passwd=job.passwd) }}">interactive interface</a></p>
+
+{%- for r in results %}
+<p><b>{{ r.pdb }} Fit to experimental profile</b></p>
+
+<img src={{ job.get_results_file_url(r.fit_png) }} height="350" alt="plot of fit" />
+
+<p><a href="{{ job.get_results_file_url(r.fit_dat) }}">Experimental profile fit file</a></p>
+
+<p>&chi; = {{ r.fit_chi }} c1 = {{ r.fit_c1 }} c2 = {{ r.fit_c2 }}</p>
+{%- endfor %}
+
+{% endblock %}

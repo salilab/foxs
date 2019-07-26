@@ -1,7 +1,7 @@
-from flask import render_template, request
+from flask import render_template, request, send_from_directory
 import saliweb.frontend
 from saliweb.frontend import get_completed_job
-from . import submit_page
+from . import submit_page, results_page
 
 
 parameters = []
@@ -43,4 +43,16 @@ def job():
 @app.route('/job/<name>')
 def results(name):
     job = get_completed_job(name, request.args.get('passwd'))
-    # todo
+    return results_page.show_results(job, interactive=True)
+
+
+@app.route('/job/<name>/old')
+def results_old(name):
+    job = get_completed_job(name, request.args.get('passwd'))
+    return results_page.show_results(job, interactive=False)
+
+
+@app.route('/job/<name>/<path:fp>')
+def results_file(name, fp):
+    job = get_completed_job(name, request.args.get('passwd'))
+    return send_from_directory(job.directory, fp)

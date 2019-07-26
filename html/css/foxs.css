@@ -54,3 +54,12 @@ a#optionaltoggle {
 ul#advancedinput li {
   margin: 6px;
 }
+
+tr.resultheader td {
+  color: blue;
+  font-weight: bold;
+}
+
+.important {
+  color: red;
+}
