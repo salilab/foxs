@@ -8,15 +8,15 @@
 <table>
   <tbody>
     <tr>
-      <td halign="left">
+      <td>
       <table><tr><td>
-      <img src="{{ url_for("static", filename="img/logo.png") }}" align = "left" height = "80" >
+      <img src="{{ url_for("static", filename="img/logo.png") }}" alt="FoXS" align = "left" height = "80" />
       </td></tr>
       <tr><td>
       <h3>Fast SAXS Profile Computation with Debye Formula</h3>
       </td></tr></table>
       </td>
-      <td halign="right"><img src="{{ url_for("static", filename="img/logo2.gif") }}" height = "80" ></td>
+      <td><img src="{{ url_for("static", filename="img/logo2.gif") }}" alt="SAXS profile plot" height = "80" /></td>
     </tr>
   </tbody>
 </table>
@@ -34,7 +34,7 @@
 {% endblock %}
 
 {% block footer %}
-<hr size="2" width="80%">
+<hr size="2" width="80%" />
 <div id="address">
 
 <p><b>If you use FoXS, please cite:</b></p>
@@ -42,6 +42,6 @@
 Schneidman-Duhovny D, Hammel M, Tainer JA, and Sali A. FoXS, FoXSDock and MultiFoXS: Single-state and multi-state structural modeling of proteins and their complexes based on SAXS profiles NAR 2016 [<a href="//doi.org/10.1093/nar/gkw389"> FREE Full Text </a>]</p>
 
 <p>Contact:
-<script>escramble("dina","salilab.org")</script></p>
+<script type="text/javascript">escramble("dina","salilab.org")</script></p>
 </div>
 {% endblock %}
