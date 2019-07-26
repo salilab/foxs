@@ -54,10 +54,11 @@ def handle_new_job():
         fh.write(prot_file_name + '\n')
 
     with open(job.get_path('data.txt'), 'w') as fh:
-        fh.write("%s %s %s %.2f %.2f %d %d %d %d %d %d %.2f %.2f %d\n"
+        fh.write("%s %s %s %.2f %d %d %d %d %d %d %d %.2f %.2f %d %d\n"
                  % (prot_file_name, profile_file_name, email, q, psize,
                     hlayer, exvolume, ihydrogens, residue, offset,
-                    background, hlayer_value, exvolume_value, model_option))
+                    background, hlayer_value, exvolume_value, model_option,
+                    unit_option))
 
     job.submit(email)
     return saliweb.frontend.render_submit_template(
