@@ -3,57 +3,45 @@
 {% block title %}FoXS FAQ{% endblock %}
 
 {% block body %}
-<table>
-  <tbody>
-    <tr><td>
+<p>
       This section will contain answers to the
-      most common questions received about FoXS. <br>For any
+      most common questions received about FoXS. <br />For any
       information, suggestion and question, please feel FREE to email
-<script>escramble("dina","salilab.org")</script>
+<script type="text/javascript">escramble("dina","salilab.org")</script>
+</p>
 
-      <br>
-      <br>
+<h3>Question 1</h3>
 
+<p><b>I get an error message about my input from the server. What is wrong with my input?</b></p>
 
-<table><tr><td align="left">
-<H3>Question 1</H3>
-</td></tr></table>
-
-<b>I get an error message about my input from the server. What is wrong with my input?</b><br>
-
-<p><b><font color="#000099">Answer:</font></b><p>
-Possible Input Errors: 
+<p><b><font color="#000099">Answer:</font></b></p>
+<p>Possible Input Errors:</p>
 <ul> 
 
 <li> PDB code: make sure you enter valid PDB code,
 i.e. the molecule with this code exists in <a href=
-"http://www.rcsb.org/pdb/">PDB</a>.  
+"http://www.rcsb.org/pdb/">PDB</a>.</li>
 
 
 <li> Chain ID: make sure that the chains
-you specified exist in the PDB file.  
+you specified exist in the PDB file.</li>
 
 
 <li> Uploaded file: should be in PDB format only!  
+
+<p><font color="red" size="+1">IMPORTANT! </font> please use standard PDB atom naming in the files you upload!</p>
+
 </li>
-
-<br>
-<FONT color=red size=+1>IMPORTANT! </FONT> please use standard PDB atom naming in the files you upload! <br><br>
-
-
 
 </ul>
 
-<table><tr><td align="left">
-<H3>Question 2</H3>
-</td></tr></table>
+<h3>Question 2</h3>
 
+<p><b> I compare crystal structure to the experimental SAXS profile, however the fit between the theoretical profile and the experimental one is not good. What can be wrong? </b></p>
 
-<b> I compare crystal structure to the experimental SAXS profile, however the fit between the theoretical profile and the experimental one is not good. What can be wrong? </b><br>
+<p><b><font color="#000099">Answer:</font></b></p>
 
-<p><b><font color="#000099">Answer:</font></b><p>
-
-There can be several reasons for a bad fit:
+<p>There can be several reasons for a bad fit:</p>
 <ul>
 
 <li> Missing residues/atoms in PDB file compared to the sample the
@@ -64,47 +52,37 @@ profile. It is recommended to add all the missing loops, linkers,
 N-/C-termini, His tags, metal ions. The content of the structure
 should be as close as possible to the content of the sample used to
 collect the SAXS data. It is preferrable to have inaccurate loop
-conformation, rather than a missing loop!
+conformation, rather than a missing loop!</li>
 
 <li> Molecules in solution can have a different conformation compared
 to crystal structure. Please note that X-ray and SAXS data collection
 are performed under different condition, which may result in different
-conformations. This can happen very often with multi domain proteins.
+conformations. This can happen very often with multi domain proteins.</li>
 
 <li> Molecules in solution can have multiple conformations. SAXS
 provides information about rotational as well as <b> conformational
 </b> average. Since many molecules in solution exist as an ensemble of
 various conformations, SAXS profile will be an ensemble averaged
-profile.
+profile.</li>
 
 </ul>
 
-<table><tr><td align="left">
-<H3>Question 3</H3>
-</td></tr></table>
+<h3>Question 3</h3>
 
+<p><b> My structure includes non-protein atoms, such as mercury, gold or selenium. Are they accounted for in FoXS? </b></p>
 
-<b> My structure includes non-protein atoms, such as mercury, gold or selenium. Are they accounted for in FoXS? </b><br>
+<p><b><font color="#000099">Answer:</font></b></p>
 
-<p><b><font color="#000099">Answer:</font></b><p>
-
-FoXS includes form factors for the following elements:<br>
+<p>FoXS includes form factors for the following elements:<br />
 H, He, Li, Be, B, C, N, O, F, Ne, 
 Na, Mg, Al, Si, P, S, Cl, Ar, 
 K, Ca, Cr, Mn, Fe, Co, Ni, Cu, Zn, Se, Br, 
 I, Ir, Pt, Au, Hg
-<br>
-If your element is not in this list, please let us know and we will add it.
+</p>
 
-<br>
-<FONT color=red size=+1>IMPORTANT! </FONT> please verify that the element name is specified in the element field of PDB format (columns 77-78) <br><br>
+<p>If your element is not in this list, please let us know and we will add it.
+</p>
 
+<p><font color="red" size="+1">IMPORTANT! </font> please verify that the element name is specified in the element field of PDB format (columns 77-78)</p>
 
-</td></tr>
-
-
-
-
-  </tbody>
-  </table>
 {% endblock %}
