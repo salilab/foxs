@@ -3,149 +3,131 @@
 {% block title %}FoXS Help{% endblock %}
 
 {% block body %}
-<table><tr><td align="left">
 <h2>Help Topics</h2>
-</td></tr></table>
-<p>
 
-<table>
-<tr><td align="left"><a href="#input">Input Fields</a></td></tr>
-<tr><td align="left"><a href="#advanced">Advanced Input Fields</a></td></tr>
-<tr><td align="left"><a href="#output">Output</a></td></tr>
-<tr><td align="left"><a href="#multifoxs">MultiFoXS</a></td></tr>
-</table>
+<p>
+<a href="#input">Input Fields</a><br />
+<a href="#advanced">Advanced Input Fields</a><br />
+<a href="#output">Output</a><br />
+<a href="#multifoxs">MultiFoXS</a>
 </p>
 
+<h3><a name="input"></a>Input Fields</h3>
 
-<p>
-<table><tr><td align="left">
-<a name="input"><h3>Input Fields</h3></a>
-</td></tr></table>
-
-
-<table>
-<tr><td align ="left">
-
-<br> FoXS requires only one mandatory input parameter, the input molecule: <br>
+<p>FoXS requires only one mandatory input parameter, the input molecule:</p>
 
 <ul>
-<li><font color=#B00000><b><a name = "molecule"> Input
+<li><p><font color="#B00000"><b><a name = "molecule"> Input
 Molecule:</a></b></font> A user has to specify PDB id and chain of the
 molecule (pdb:chain, e.g. 1ukr:A) <b> or </b> upload a file containing
 the structure of the molecule in <a
 href="http://www.rcsb.org/pdb/static.do?p=file_formats/pdb/index.html">PDB
-format</a>. <p> It is also possible to upload a <b>zip</b> file with
+format</a>.</p>
+
+<p>It is also possible to upload a <b>zip</b> file with
 several PDB structures. In this case each structure will be fitted to
 the profile separately. Only zip compression is currently supported.
-Note that profile calculation is performed for up to <font color=red>100</font> PDB files.
-If you need more extensive profile evaluations please use download version.
-<p> For NMR structures please select suitable MODEL reading option from advanced parameters. <br><br>
-Please use standard PDB atom naming in the files you upload! <br> <br>
-Hydrogen atoms for proteins and nucleic acids are considered implicitly by
+Note that profile calculation is performed for up to <font color="red">100</font> PDB files.
+If you need more extensive profile evaluations please use download version.</p>
+
+<p> For NMR structures please select suitable MODEL reading option from advanced parameters.</p>
+
+<p>Please use standard PDB atom naming in the files you upload!</p>
+
+<p>Hydrogen atoms for proteins and nucleic acids are considered implicitly by
 adding their form factors to those for their bound heavy atom. If your
 structure includes other groups, such as lipids, sugars etc., we recommend
 adding all the hydrogens and turning off "implicit hydrogens" option of FoXS
 to achieve higher accuracy. Hydrogen atoms can be added with
-<a href="http://kinemage.biochem.duke.edu/software/reduce.php"> Reduce</a>.<br><br>
+<a href="http://kinemage.biochem.duke.edu/software/reduce.php"> Reduce</a>.</p>
 
 
-<FONT color=red size=+1>IMPORTANT! </FONT> <br>
+<p><font color="red" size="+1">IMPORTANT! </font> <br  />
 Please make sure there are no missing residues/nucleic acids in the
-structure you upload! <br> Your structure should be as close as
+structure you upload! <br /> Your structure should be as close as
 possible to the sample you used to collect the experimental
-data! <br> It is highly recommended to model missing loops,
-disordered N- and C- termini and His tags. <br> <br>
+data! <br /> It is highly recommended to model missing loops,
+disordered N- and C- termini and His tags.</p>
+</li>
 
-
-<li><font color=#B00000><b><a name = "profile">Experimental profile:</a></b></font>
+<li><p><font color="#B00000"><b><a name = "profile">Experimental profile:</a></b></font>
 A user can upload a file with experimental profile (optional). In this case the theoretical profile will be fitted to the experimental one.
-The experimental file should have 3 columns: q, I(q) and error: <br><br>
+The experimental file should have 3 columns: q, I(q) and error: </p>
 
-#    q  intensity  error  <br>
-0.00000 3280247.73 1904.037 <br>
-0.00060 3280164.59 1417.031 <br>
-0.00120 3279915.19 1840.032 <br>
-0.00180 3279499.57 1566.084 <br>
+<p><tt>
+#    q  intensity  error  <br />
+0.00000 3280247.73 1904.037 <br />
+0.00060 3280164.59 1417.031 <br />
+0.00120 3279915.19 1840.032 <br />
+0.00180 3279499.57 1566.084
+</tt></p>
 
-<br>Header lines should be preceded by #. <br>
+<p>Header lines should be preceded by #. </p>
 
-<br> Please note that: q = (4π sin θ) / λ,
+<p> Please note that: q = (4π sin θ) / λ,
 
-<br>
-where 2θ is the scattering angle and λ is the wavelength of the incident X-ray beam.
+<br />
+where 2θ is the scattering angle and λ is the wavelength of the incident X-ray beam.</p>
 
-<br><br>
-Sample input file for lysozyme (PDB code 6lyz) can be found <a href="{{ url_for("static", filename="examples/lyzexp.dat") }} ">here</a>.<br>
+<p>
+Sample input file for lysozyme (PDB code 6lyz) can be found <a href="{{ url_for("static", filename="examples/lyzexp.dat") }} ">here</a>.<br />
 
-If your experimental profile does not contain an error column, the server will add 5% error with Poisson distribution.<br>
+If your experimental profile does not contain an error column, the server will add 5% error with Poisson distribution.</p>
+</li>
 
-
-<br>
-
-      <li><font color=#B00000><b><a name = "mail">e-mail address:</a></b></font>
+<li><font color="#B00000"><b><a name = "mail">e-mail address:</a></b></font>
        An e-mail address for receiving the link to the results page (optional).
-       The results page will be available for at least a week.
+       The results page will be available for at least a week.</li>
 
 </ul>
-</table>
 
-<table><tr><td align="left">
-<a name="advanced"><h3>Advanced Input Fields</h3></a>
-</td></tr></table>
+<h3><a name="advanced"></a>Advanced Input Fields</h3>
 
+<p> Setting these parameters is optional:</p>
 
-<table>
-<tr><td align ="left">
-
-       <br> Setting these parameters is optional:<br>
-
-       <ul>
-       <li><font color=#B00000><b><a name = "q"> Maximal q value </a></b></font>
-       The theoretical profile will be computed up till this q value (default = 0.5)  <br><br>
+       <ul id="advancedinput">
+       <li><font color="#B00000"><b><a name = "q"> Maximal q value </a></b></font>
+       The theoretical profile will be computed up till this q value (default = 0.5)  </li>
 
 
-       <li><font color=#B00000><b><a name = "s"> Profile size </a></b></font>
-       Number of discrete points that represent the profile (default = 500) <br><br>
+       <li><font color="#B00000"><b><a name = "s"> Profile size </a></b></font>
+       Number of discrete points that represent the profile (default = 500) </li>
 
-       <li><font color=#B00000><b><a name = "hlayer"> Hydration Layer </a></b></font>
-       Set hydration layer parameter c<sub>2</sub> <br> <br>
+       <li><font color="#B00000"><b><a name = "hlayer"> Hydration Layer </a></b></font>
+       Set hydration layer parameter c<sub>2</sub> </li>
 
-       <li><font color=#B00000><b><a name = "evolume"> Excluded volume </a></b></font>
-      Set excluded volume parameter c<sub>1</sub><br> <br>
+       <li><font color="#B00000"><b><a name = "evolume"> Excluded volume </a></b></font>
+      Set excluded volume parameter c<sub>1</sub></li>
 
-       <li><font color=#B00000><b><a name = "hydro"> Implicit hydrogens </a></b></font>
-      Consider hydrogens implicitly<br> <br>
+       <li><font color="#B00000"><b><a name = "hydro"> Implicit hydrogens </a></b></font>
+      Consider hydrogens implicitly</li>
 
-       <li><font color=#B00000><b><a name = "rlevel"> Residue level computation </a></b></font>
-      Perform coarse grained profile computation for Ca atoms only. This is not as accurate as full atom calculation, can be used only for large structures <br> <br>
+       <li><font color="#B00000"><b><a name = "rlevel"> Residue level computation </a></b></font>
+      Perform coarse grained profile computation for Ca atoms only. This is not as accurate as full atom calculation, can be used only for large structures </li>
 
-      <li><font color=#B00000><b><a name = "background"> Background Adjustment </a></b></font>
+      <li><font color="#B00000"><b><a name = "background"> Background Adjustment </a></b></font>
       This option applies background adjustment to the input experimental profile. As a result
-      the profile is corrected at higher q values, the intensity values are decreased (see Ciccariello et al. (1988) for details) <br><br>
+      the profile is corrected at higher q values, the intensity values are decreased (see Ciccariello et al. (1988) for details) </li>
 
-      <li><font color=#B00000><b><a name = "offset"> Offset </a></b></font>
-      Use constant offset in profile fitting <br> <br>
+      <li><font color="#B00000"><b><a name = "offset"> Offset </a></b></font>
+      Use constant offset in profile fitting </li>
 
-      <li><font color=#B00000><b><a name = "model"> MODEL reading </a></b></font>
-      FoXS supports all possible options of handling PDB files with MODEL record. By default MODEL records are ignored and all ATOM records are read into a single structure. Alternatively it is possible to read in first MODEL only or all the MODELs into separate structures <br> <br>
+      <li><font color="#B00000"><b><a name = "model"> MODEL reading </a></b></font>
+      FoXS supports all possible options of handling PDB files with MODEL record. By default MODEL records are ignored and all ATOM records are read into a single structure. Alternatively it is possible to read in first MODEL only or all the MODELs into separate structures </li>
 
-      <li><font color=#B00000><b><a name = "units"> Experimental profile units </a></b></font>
-      FoXS supports input profiles with q in 1/<span>&#8491;</span> and 1/nm. By default the units of the input profile are determined automatically. Alternatively, the user can set the units.
+      <li><font color="#B00000"><b><a name = "units"> Experimental profile units </a></b></font>
+      FoXS supports input profiles with q in 1/<span>&#8491;</span> and 1/nm. By default the units of the input profile are determined automatically. Alternatively, the user can set the units.</li>
 
 
 </ul>
 
-</td></tr></table>
+<h3><a name="output"></a>Output</h3>
 
-<table><tr><td align="left">
-<a name="output"><h3>Output</h3></a>
-</td></tr></table>
-
-<hr size=2 width=90% align=center>
-<script src="/foxs/gnuplot_js/canvastext.js"></script>
-<script src="/foxs/gnuplot_js/gnuplot_common.js"></script>
-<script src="/foxs/gnuplot_js/gnuplot_dashedlines.js"></script>
-<script src="/foxs/gnuplot_js/gnuplot_mouse.js"></script>
+<hr size="2" width="90%" align="center" />
+<script src="/foxs/gnuplot_js/canvastext.js" type="text/javascript"></script>
+<script src="/foxs/gnuplot_js/gnuplot_common.js" type="text/javascript"></script>
+<script src="/foxs/gnuplot_js/gnuplot_dashedlines.js" type="text/javascript"></script>
+<script src="/foxs/gnuplot_js/gnuplot_mouse.js" type="text/javascript"></script>
 <script type="text/javascript">
 var canvas, ctx;
 gnuplot.grid_lines = true;
@@ -156,7 +138,7 @@ gnuplot.dummyplot = function() {};
 function gnuplot_canvas( plot ) { gnuplot.active_plot(); };
 </script>
 
-<script src="/foxs/example/jsoutput.1.js"></script>
+<script src="/foxs/example/jsoutput.1.js" type="text/javascript"></script>
 <table align='center'><tr><td><div  id="wrapper">
 <canvas id="jsoutput_1" width=400 height=350 tabindex="0" oncontextmenu="return false;">
 <div class='box'><h2>Your browser does not support the HTML 5 canvas element</h2></div>
@@ -164,14 +146,14 @@ function gnuplot_canvas( plot ) { gnuplot.active_plot(); };
  <div id="buttonWrapper">
   <input type="button" id="minus"   onclick="gnuplot.unzoom();">
             </div></div>
-<script>
+<script type="text/javascript">
   if (window.attachEvent) {window.attachEvent('onload', jsoutput_1);}
 else if (window.addEventListener) {window.addEventListener('load', jsoutput_1, false);}
 else {document.addEventListener('load', jsoutput_1, false);}
 </script>
 </td>
-<script src="/foxs/jsmol/JSmol.min.js"></script>
-<script src="/foxs/jsmol/Jmol2.js"></script>
+<script src="/foxs/jsmol/JSmol.min.js" type="text/javascript"></script>
+<script src="/foxs/jsmol/Jmol2.js" type="text/javascript"></script>
 <script type="text/javascript">var Info = {}</script>
 
 <script> jmolInitialize("/foxs/jsmol/"); </script>
@@ -195,13 +177,10 @@ else {document.addEventListener('load', jsoutput_1, false);}
 
 </table>
 
-<hr size=2 width=90% align=center>
+<hr size="2" width="90%" align="center" />
 
 
-<a name="c1c2"><h3></h3></a>
-
-<table><tr><td align="left">
-
+<a name="c1c2"></a>
 
 <p>
 The server displays the profile fit along with the residuals ((experimental-computed)/error) on the 
@@ -212,57 +191,46 @@ The user can zoom on different parts of the fit plot, rotate the structure in th
 use show/hide button to display or hide the computed profile and the corresponding structure.
 The file with the theoretical profile fitted to the experimental one can be downloaded using the
 link under the plot. The format of the fit file is the same as the input profile files, 
-with additional column added that included the calculated profile.
+with additional column added that included the calculated profile.</p>
 
 <p> 
 The quality of the fit, &chi;<sup>2</sup> value, is printed below the plot. 
+</p>
 
 <p> 
-There are <b>2 free parameters</b> in profile fitting:<br><br>
-(i) c<sub>1</sub> - is the scaling of the atomic radius and it controls the exluded volume of the molecule <br>
+There are <b>2 free parameters</b> in profile fitting:</p>
+
+<p>(i) c<sub>1</sub> - is the scaling of the atomic radius and it controls the exluded volume of the molecule <br />
 The default value is c<sub>1</sub> = 1.0. During fitting, we allow up to 1% decrease in the radius and up to 5% increase (0.99 &le; c<sub>1</sub> &le; 1.05). 
-<br><br>
-(ii) c<sub>2</sub> - is used to adjust the difference between the densities of the hydration layer and the bulk water. 
-This parameter controls the density of the water layer around the molecule. <br> 
-The default value is c<sub>2</sub> = 0.0. During fitting, the value of c<sub>2</sub> 
+</p>
+
+<p>(ii) c<sub>2</sub> - is used to adjust the difference between the densities of the hydration layer and the bulk water. 
+This parameter controls the density of the water layer around the molecule. </p> 
+<p>The default value is c<sub>2</sub> = 0.0. During fitting, the value of c<sub>2</sub> 
 can vary from 0 to 4.0, reflecting an estimate of up to four water molecule neighbors for an exposed
 solute atom. This threshold is comparable to the average number of water
-molecules within 3<span>&#8491;</span> of each other in the TIP3P water box. The hydration
-shell density for c<sub>2</sub> = 4.0 is 0.388e/<span>&#8491;</span><sup>3</sup>. <br>
-The density of the hydration layer around the protein can, in principle, be lower than that of bulk water,
+molecules within 3&Aring; of each other in the TIP3P water box. The hydration
+shell density for c<sub>2</sub> = 4.0 is 0.388e/&Aring;<sup>3</sup>. </p>
+
+<p>The density of the hydration layer around the protein can, in principle, be lower than that of bulk water,
 depending on the amount of surface charge. Therefore, we also allow c<sub>2</sub>
 to be slightly negative (-2.0 &le; c<sub>2</sub> &le; 4.0).
-The hydration shell density for c<sub>2</sub> = -2.0 is 0.307e/<span>&#8491;</span><sup>3</sup>.
-<br>
-<br>
-Given experimental profile,
+The hydration shell density for c<sub>2</sub> = -2.0 is 0.307e/&Aring;<sup>3</sup>.</p>
+
+<p>Given experimental profile,
 FoXS finds a combination of c<sub>1</sub> and c<sub>2</sub> that achieves the best fit
 (lowest &chi;<sup>2</sup> value) to the experimental data.
-<br><br>
+</p>
 
-<FONT color=red size=+1>IMPORTANT! </FONT> <br>
+<p><font color="red" size="+1">IMPORTANT! </font> <br />
 Extreme values of c<sub>1</sub> and c<sub>2</sub> parameters often indicate data overfitting.
 For example, if you have missing residues in the structure, FoXS can compensate for the missing 
 electron density by increasing the hydration layer density by setting c<sub>2</sub> parameter to the maximal value of 4.0.
-These values are flagged by FoXS in the results table to alert the users of possible overfitting.  
+These values are flagged by FoXS in the results table to alert the users of possible overfitting.</p>
 
-<p>
+<h3><a name="multifoxs"></a>MultiFoXS</h3>
 
+<p>The unique capability of FoXS webserver is a possibility to account for multiple states contributing to a single observed SAXS profile. Multiple states can correspond to conformational heterogeneity (multiple conformations of the same protein or complex) and/or compositional heterogeneity (varying contents of protein and ligand molecules in the system).</p>
 
-
-
-</table>
-
-<p>
-<table><tr><td align="left">
-<a name="multifoxs"><h3>MultiFoXS</h3></a>
-</td></tr></table>
-
-<table>
-<tr><td align ="left">
-<br>
-The unique capability of FoXS webserver is a possibility to account for multiple states contributing to a single observed SAXS profile. Multiple states can correspond to conformational heterogeneity (multiple conformations of the same protein or complex) and/or compositional heterogeneity (varying contents of protein and ligand molecules in the system).
-
-<br> If multiple PDB files were uploaded by the user, in addition to profile calculation for each structure, the server will also run enumeration and fitting of multiple structures to the input profile. <a href = "help2.html" > Here is an example </a> </td></tr>
-</table>
+<p>If multiple PDB files were uploaded by the user, in addition to profile calculation for each structure, the server will also run enumeration and fitting of multiple structures to the input profile. <a href = "help2.html" > Here is an example </a></p>
 {% endblock %}

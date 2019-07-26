@@ -50,3 +50,7 @@ input[type = "button"] {
 a#optionaltoggle {
   color: inherit;
 }
+
+ul#advancedinput li {
+  margin: 6px;
+}
