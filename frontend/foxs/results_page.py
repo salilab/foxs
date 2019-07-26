@@ -3,8 +3,11 @@ import collections
 import os
 
 
-Result = collections.namedtuple('Result', ['pdb', 'fit_png', 'fit_dat',
-                                           'fit_chi', 'fit_c1', 'fit_c2'])
+Fit = collections.namedtuple('Fit', ['png', 'dat', 'chi', 'c1', 'c2'])
+
+Profile = collections.namedtuple('Profile', ['png', 'dat'])
+
+Result = collections.namedtuple('Result', ['pdb', 'fit', 'profile'])
 
 
 def show_results(job, interactive):
@@ -18,12 +21,17 @@ def get_results(job, profile):
     """Get a list of Result objects for the given job"""
     profile = os.path.splitext(profile)[0]
     log_results = parse_log(job)
-    for pdb in get_pdb_files(job):
-        chi, c1, c2 = log_results[pdb]
-        pdb = os.path.splitext(pdb)[0]
-        yield Result(pdb=pdb, fit_png="%s_%s.png" % (pdb, profile),
-                     fit_dat="%s_%s.dat" % (pdb, profile),
-                     fit_chi=chi, fit_c1=c1, fit_c2=c2)
+    for pdb_file in get_pdb_files(job):
+        pdb = os.path.splitext(pdb_file)[0]
+        if profile != '-':
+            chi, c1, c2 = log_results[pdb]
+            f = Fit(png="%s_%s.png" % (pdb, profile),
+                    dat="%s_%s.dat" % (pdb, profile),
+                    chi=chi, c1=c1, c2=c2)
+        else:
+            f = None
+        p = Profile(png="%s.png" % pdb, dat="%s.dat" % pdb_file)
+        yield Result(pdb=pdb, fit=f, profile=p)
 
 
 def parse_log(job):

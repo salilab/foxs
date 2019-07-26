@@ -11,24 +11,39 @@
   </tr>
   <tr>
     <td><a href="{{ job.get_results_file_url(pdb) }}">{{ pdb }}</a></td>
+    {%- if profile == "-" %}
+    <td>-</td>
+    {%- else %}
     <td><a href="{{ job.get_results_file_url(profile) }}">{{ profile }}</a></td>
+    {%- endif %}
     <td>{{ email }}</td>
   </tr>
 </table>
 
 <hr size="2" width="90%" />
 
-<p><span class="important">NEW!</span> 
-<a href="{{ url_for("results", name=job.name, passwd=job.passwd) }}">interactive interface</a></p>
+<p><b><span class="important">NEW!</span> 
+<a href="{{ url_for("results", name=job.name, passwd=job.passwd) }}">interactive interface</a></b></p>
 
 {%- for r in results %}
+
+{%- if r.fit %}
+
 <p><b>{{ r.pdb }} Fit to experimental profile</b></p>
 
-<img src={{ job.get_results_file_url(r.fit_png) }} height="350" alt="plot of fit" />
+<img src={{ job.get_results_file_url(r.fit.png) }} height="350" alt="plot of fit" />
 
-<p><a href="{{ job.get_results_file_url(r.fit_dat) }}">Experimental profile fit file</a></p>
+<p><a href="{{ job.get_results_file_url(r.fit.dat) }}">Experimental profile fit file</a></p>
 
-<p>&chi; = {{ r.fit_chi }} c1 = {{ r.fit_c1 }} c2 = {{ r.fit_c2 }}</p>
+<p>&chi; = {{ r.fit.chi }} c1 = {{ r.fit.c1 }} c2 = {{ r.fit.c2 }}</p>
+
+{%- else %}
+<img src={{ job.get_results_file_url(r.profile.png) }} height="350" alt="plot of profile" />
+
+<p><a href="{{ job.get_results_file_url(r.profile.dat) }}">Profile file</a></p>
+
+{%- endif %}
+
 {%- endfor %}
 
 {% endblock %}
