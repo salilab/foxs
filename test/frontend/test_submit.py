@@ -29,11 +29,6 @@ class Tests(saliweb.test.TestCase):
         with open(proff, 'w') as fh:
             fh.write("\n")
 
-        data = {'pdbfile': open(pdbf)}
-        rv = c.post('/job', data=data)
-        self.assertEqual(rv.status_code, 400)  # no profile
-        self.assertIn('Please upload a profile file', rv.data)
-
         # Bad q value
         rv = c.post('/job', data={'q': '4.0'})
         self.assertEqual(rv.status_code, 400)
@@ -46,8 +41,16 @@ class Tests(saliweb.test.TestCase):
         self.assertIn('Invalid profile size; it must be &gt; 20 and &lt; 2000',
                       rv.data)
 
-        # Successful submission (no email)
+        # Successful submission with profile (no email)
         data = {'pdbfile': open(pdbf), 'profile': open(proff)}
+        rv = c.post('/job', data=data)
+        self.assertEqual(rv.status_code, 200)
+        r = re.compile('Your job has been submitted.*Results will be found at',
+                       re.MULTILINE | re.DOTALL)
+        self.assertRegexpMatches(rv.data, r)
+
+        # Successful submission without profile (no email)
+        data = {'pdbfile': open(pdbf)}
         rv = c.post('/job', data=data)
         self.assertEqual(rv.status_code, 200)
         r = re.compile('Your job has been submitted.*Results will be found at',

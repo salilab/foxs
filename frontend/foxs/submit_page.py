@@ -48,7 +48,7 @@ def handle_new_job():
     prot_file_name = handle_pdb(request.form.get("pdb"),
                                 request.files.get("pdbfile"), job)
     profile_file_name = save_job_nonempty_file(request.files.get("profile"),
-                                               job, "profile")
+                                               job, "profile") or "-"
 
     with open(job.get_path('inputFiles.txt'), 'w') as fh:
         fh.write(prot_file_name + '\n')
@@ -79,12 +79,11 @@ def handle_pdb(pdb_code, pdb_file, job):
 
 
 def save_job_nonempty_file(fh, job, filetype):
-    """Save the given file (which must not be empty) into the job directory.
-       Return its name."""
+    """Save the given file, if present (which must not be empty) into the
+       job directory. Return its name (or None)."""
     if not fh:
-        raise InputValidationError(
-            "Please upload a %s file" % filetype)
-        
+        return
+
     fname = secure_filename(fh.filename)
     full_fname = job.get_path(fname)
     fh.save(full_fname)
