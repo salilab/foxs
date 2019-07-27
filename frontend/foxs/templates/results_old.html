@@ -25,20 +25,45 @@
 <p><b><span class="important">NEW!</span> 
 <a href="{{ url_for("results", name=job.name, passwd=job.passwd) }}">interactive interface</a></b></p>
 
+{%- if results|length > 1 and profile != '-' %}
+<table class="fitinfo">
+  <tr>
+    <th>PDB file</th> <th>&chi;</th> <th>c1</th> <th>c2</th> <th>Download fit file</th>
+    <th class="spacer"></th>
+    <th>PDB file</th> <th>&chi;</th> <th>c1</th> <th>c2</th> <th>Download fit file</th>
+  </tr>
+
+  {%- for row in results|batch(2) %}
+  <tr>
+    {%- for r in row %}
+      <td><a href="{{ job.get_results_file_url(r.pdb_file) }}">{{ r.pdb }}</a></td>
+      <td>{{ r.fit.chi }}</td>
+      <td>{{ r.fit.c1 }}</td>
+      <td>{{ r.fit.c2 }}</td>
+      <td><a href="{{ job.get_results_file_url(r.fit.dat) }}">fit.dat</a></td>
+      {%- if loop.first %}
+      <td class="spacer"></td>
+      {%- endif %}
+    {%- endfor %}
+  </tr>
+  {%- endfor %}
+</table>
+{%- endif %}
+
 {%- for r in results %}
 
 {%- if r.fit %}
 
 <p><b>{{ r.pdb }} Fit to experimental profile</b></p>
 
-<img src={{ job.get_results_file_url(r.fit.png) }} height="350" alt="plot of fit" />
+<img src="{{ job.get_results_file_url(r.fit.png) }}" height="350" alt="plot of fit" />
 
 <p><a href="{{ job.get_results_file_url(r.fit.dat) }}">Experimental profile fit file</a></p>
 
 <p>&chi; = {{ r.fit.chi }} c1 = {{ r.fit.c1 }} c2 = {{ r.fit.c2 }}</p>
 
 {%- else %}
-<img src={{ job.get_results_file_url(r.profile.png) }} height="350" alt="plot of profile" />
+<img src="{{ job.get_results_file_url(r.profile.png) }}" height="350" alt="plot of profile" />
 
 <p><a href="{{ job.get_results_file_url(r.profile.dat) }}">Profile file</a></p>
 
@@ -47,9 +72,28 @@
 {%- endfor %}
 
 {%- if allresult %}
-<p><b>All theoretical profiles</b></p>
-
-<img src={{ job.get_results_file_url(allresult.profile.png) }} height="350" alt="plot of profiles" />
+<table>
+  <tr>
+    <td>
+      <p><b>All theoretical profiles</b></p>
+    </td>
+    {%- if allresult.fit %}
+    <td>
+      <p><b>Fit to experimental profile</b></p>
+    </td>
+    {%- endif %}
+  </tr>
+  <tr>
+    <td>
+      <img src="{{ job.get_results_file_url(allresult.profile.png) }}" height="350" alt="plot of profiles" />
+    </td>
+    {%- if allresult.fit %}
+    <td>
+      <img src="{{ job.get_results_file_url(allresult.fit.png) }}" height="350" alt="plot of profile fit" />
+    </td>
+    {%- endif %}
+  </tr>
+</table>
 
 {%- endif %}
 

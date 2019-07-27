@@ -7,7 +7,7 @@ Fit = collections.namedtuple('Fit', ['png', 'dat', 'chi', 'c1', 'c2'])
 
 Profile = collections.namedtuple('Profile', ['png', 'dat'])
 
-Result = collections.namedtuple('Result', ['pdb', 'fit', 'profile'])
+Result = collections.namedtuple('Result', ['pdb', 'pdb_file', 'fit', 'profile'])
 
 
 def show_results(job, interactive):
@@ -15,7 +15,9 @@ def show_results(job, interactive):
     results = list(get_results(job, profile))
     allresult = None
     if len(results) > 1:
-        allresult = Result(pdb=None, fit=None,
+        fit = None if profile == '-' else Fit(png='fit.png', dat=None,
+                                              chi=None, c1=None, c2=None)
+        allresult = Result(pdb=None, pdb_file=None, fit=fit,
                            profile=Profile(png='profiles.png', dat=None))
     return saliweb.frontend.render_results_template("results_old.html", job=job,
         pdb=pdb, profile=profile, email=email, results=results,
@@ -29,14 +31,14 @@ def get_results(job, profile):
     for pdb_file in get_pdb_files(job):
         pdb = os.path.splitext(pdb_file)[0]
         if profile != '-':
-            chi, c1, c2 = log_results[pdb]
+            chi, c1, c2 = log_results[pdb_file]
             f = Fit(png="%s_%s.png" % (pdb, profile),
                     dat="%s_%s.dat" % (pdb, profile),
                     chi=chi, c1=c1, c2=c2)
         else:
             f = None
         p = Profile(png="%s.png" % pdb, dat="%s.dat" % pdb_file)
-        yield Result(pdb=pdb, fit=f, profile=p)
+        yield Result(pdb=pdb, pdb_file=pdb_file, fit=f, profile=p)
 
 
 def parse_log(job):

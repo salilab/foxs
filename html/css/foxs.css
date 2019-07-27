@@ -63,3 +63,21 @@ tr.resultheader td {
 .important {
   color: red;
 }
+
+.fitinfo th {
+  background-color: #efefef;
+}
+
+.fitinfo td {
+  background-color: #cccccc;
+}
+
+td.spacer {
+  background-color: white;
+  width: 5em;
+}
+
+th.spacer {
+  background-color: white;
+  width: 5em;
+}
