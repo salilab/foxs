@@ -46,4 +46,11 @@
 
 {%- endfor %}
 
+{%- if allresult %}
+<p><b>All theoretical profiles</b></p>
+
+<img src={{ job.get_results_file_url(allresult.profile.png) }} height="350" alt="plot of profiles" />
+
+{%- endif %}
+
 {% endblock %}

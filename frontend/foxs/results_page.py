@@ -13,8 +13,13 @@ Result = collections.namedtuple('Result', ['pdb', 'fit', 'profile'])
 def show_results(job, interactive):
     pdb, profile, email = get_input_data(job)
     results = list(get_results(job, profile))
+    allresult = None
+    if len(results) > 1:
+        allresult = Result(pdb=None, fit=None,
+                           profile=Profile(png='profiles.png', dat=None))
     return saliweb.frontend.render_results_template("results_old.html", job=job,
-        pdb=pdb, profile=profile, email=email, results=results)
+        pdb=pdb, profile=profile, email=email, results=results,
+        allresult=allresult)
 
 
 def get_results(job, profile):
