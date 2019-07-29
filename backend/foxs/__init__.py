@@ -31,20 +31,29 @@ class Job(saliweb.backend.Job):
         cmd = ("foxs -j -g -m %(model_option)d -u %(unit_option)d "
                "-q %(q)f -s %(psize)d " % locals()
                + " ".join(files))
+        mf_cmd = ("multi_foxs -u %(unit_option)d -q %(q)f "
+                  "%(profile_file_name)s " % locals()
+                  + " ".join(files))
         if profile_file_name != '-':
             cmd += " %s -p" % profile_file_name
         if not hlayer:
-            cmd += " --min_c2 %f --max_c2 %f" % (hlayer_value, hlayer_value)
+            c = " --min_c2 %f --max_c2 %f" % (hlayer_value, hlayer_value)
+            cmd += c
+            mf_cmd += c
         if not exvolume:
-            cmd += " --min_c1 %f --max_c1 %f" % (exvolume_value, exvolume_value)
+            c = " --min_c1 %f --max_c1 %f" % (exvolume_value, exvolume_value)
+            cmd += c
+            mf_cmd += c
         if not ihydrogens:
             cmd += " -h "
         if residue:
             cmd += " -r "
         if offset:
             cmd += " -o "
+            mf_cmd += " -o "
         if background:
             cmd += " -b 0.2"
+            mf_cmd += " -b 0.2"
 
         script = """#!/bin/sh
 echo STARTED > job-state
