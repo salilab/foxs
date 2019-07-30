@@ -43,14 +43,15 @@ class Tests(saliweb.test.TestCase):
                         "1abc.pdb - EMAIL 0.50 500 1 1 1 0 0 0 0.00 1.00 3 1\n")
             j.make_file('inputFiles.txt', "1abc.pdb\n")
             j.make_file('foxs.log', "\n")
-            j.make_file('jmoltable.html', "\n")
+            j.make_file('jmoltable.html', '<a href="dirname/foo.dat">foo</a>\n')
 
             c = foxs.app.test_client()
             rv = c.get('/job/testjob2?passwd=%s' % j.passwd)
             r = re.compile('PDB files.*Profile file.*User e-mail.*'
                            '1abc\.pdb.*\-.*EMAIL.*'
                            'see interactive display\? Use.*old interface.*'
-                           '<canvas id="jsoutput_1".*',
+                           '<canvas id="jsoutput_1".*'
+                           'testjob2\/foo\.dat',
                            re.DOTALL | re.MULTILINE)
             self.assertRegexpMatches(rv.data, r)
 
