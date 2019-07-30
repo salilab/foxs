@@ -19,11 +19,19 @@ class JMolTableReader(object):
     def __call__(self):
         with open(self.job.get_path('jmoltable.html')) as fh:
             contents = fh.read()
+        # Fix link to per-job PDB file
+        contents = contents.replace('load jmoltable.pdb',
+            'load "' + self.job.get_results_file_url('jmoltable.pdb') + '"')
+        # Fix URL for our copy of JSmol
+        contents = contents.replace('/foxs/jsmol/', '/saliweb/jsmol/')
+        # Fix bug with show all/hide all checkbox
+        contents = re.sub(r'jmolSetCheckboxGroup\(0,([^)]+)\)',
+                          r'Jmol.setCheckboxGroup(0,[\1])', contents)
+        # Add an ID to the info table so we can style it with CSS
+        contents = contents.replace('<table ', '<table id="plotcontrol" ')
+        # Fix links to job results files
         def get_upl(match):
             return self.job.get_results_file_url(match.group(1))
-        contents = contents.replace('load jmoltable.pdb',
-            'load ' + self.job.get_results_file_url('jmoltable.pdb'))
-        contents = contents.replace('<table ', '<table id="plotcontrol" ')
         return re.sub('dirname/([^"]+)', get_upl, contents)
 
 
