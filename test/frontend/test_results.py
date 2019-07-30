@@ -36,6 +36,24 @@ class Tests(saliweb.test.TestCase):
                            re.DOTALL | re.MULTILINE)
             self.assertRegexpMatches(rv.data, r)
 
+    def test_job_one_pdb_new(self):
+        """Test display of job with one PDB, no profile (new view)"""
+        with saliweb.test.make_frontend_job('testjob2') as j:
+            j.make_file('data.txt',
+                        "1abc.pdb - EMAIL 0.50 500 1 1 1 0 0 0 0.00 1.00 3 1\n")
+            j.make_file('inputFiles.txt', "1abc.pdb\n")
+            j.make_file('foxs.log', "\n")
+            j.make_file('jmoltable.html', "\n")
+
+            c = foxs.app.test_client()
+            rv = c.get('/job/testjob2?passwd=%s' % j.passwd)
+            r = re.compile('PDB files.*Profile file.*User e-mail.*'
+                           '1abc\.pdb.*\-.*EMAIL.*'
+                           'see interactive display\? Use.*old interface.*'
+                           '<canvas id="jsoutput_1".*',
+                           re.DOTALL | re.MULTILINE)
+            self.assertRegexpMatches(rv.data, r)
+
     def test_job_one_pdb_profile_old(self):
         """Test display of job with one PDB, fit to a profile (old view)"""
         with saliweb.test.make_frontend_job('testjob2') as j:

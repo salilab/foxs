@@ -1,0 +1,44 @@
+{% extends "results_base.html" %}
+
+{% block results_content %}
+<script src="/saliweb/gnuplot5/canvastext.js"></script>
+<script src="/saliweb/gnuplot5/gnuplot_common.js"></script>
+<script src="/saliweb/gnuplot5/gnuplot_dashedlines.js"></script>
+<script src="/saliweb/gnuplot5/gnuplot_mouse.js"></script>
+<script src="/saliweb/gnuplot5/gnuplot_foxs.js"></script>
+<script type="text/javascript">
+var canvas, ctx;
+gnuplot.grid_lines = true;
+gnuplot.zoomed = false;
+gnuplot.active_plot_name = "gnuplot_canvas";
+gnuplot.active_plot = gnuplot.dummyplot;
+gnuplot.dummyplot = function() {};
+function gnuplot_canvas( plot ) { gnuplot.active_plot(); };
+</script>
+
+<p><b>Can't see interactive display? Use
+<a href="{{ url_for("results_old", name=job.name, passwd=job.passwd) }}">old interface</a></b></p>
+
+
+<script src="{{ job.get_results_file_url("jsoutput.1.js") }}" type="text/javascript"></script>
+
+<table align='center'>
+  <tr>
+    <td>
+      <div id="wrapper">
+        <canvas id="jsoutput_1" width=400 height=350 tabindex="0" oncontextmenu="return false;">
+          <div class='box'><h2>Your browser does not support the HTML 5 canvas element</h2></div>
+        </canvas>
+        <div id="buttonWrapper">
+          <input type="button" id="minus"   onclick="gnuplot.unzoom();">
+        </div>
+      </div>
+      <script type="text/javascript">
+  if (window.attachEvent) {window.attachEvent('onload', jsoutput_1);}
+else if (window.addEventListener) {window.addEventListener('load', jsoutput_1, false);}
+else {document.addEventListener('load', jsoutput_1, false);}
+      </script>
+    </td>
+    {{ include_jmoltable()|safe }}
+
+{% endblock %}

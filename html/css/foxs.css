@@ -81,3 +81,7 @@ th.spacer {
   background-color: white;
   width: 5em;
 }
+
+table#plotcontrol {
+  width: auto;
+}

@@ -1,6 +1,7 @@
 import saliweb.frontend
 import collections
 import os
+import re
 
 
 Fit = collections.namedtuple('Fit', ['png', 'dat', 'chi', 'c1', 'c2'])
@@ -8,6 +9,22 @@ Fit = collections.namedtuple('Fit', ['png', 'dat', 'chi', 'c1', 'c2'])
 Profile = collections.namedtuple('Profile', ['png', 'dat'])
 
 Result = collections.namedtuple('Result', ['pdb', 'pdb_file', 'fit', 'profile'])
+
+
+class JMolTableReader(object):
+    """Functor to read jmol info"""
+    def __init__(self, job):
+        self.job = job
+
+    def __call__(self):
+        with open(self.job.get_path('jmoltable.html')) as fh:
+            contents = fh.read()
+        def get_upl(match):
+            return self.job.get_results_file_url(match.group(1))
+        contents = contents.replace('load jmoltable.pdb',
+            'load ' + self.job.get_results_file_url('jmoltable.pdb'))
+        contents = contents.replace('<table ', '<table id="plotcontrol" ')
+        return re.sub('dirname/([^"]+)', get_upl, contents)
 
 
 def show_results(job, interactive):
@@ -19,9 +36,10 @@ def show_results(job, interactive):
                                               chi=None, c1=None, c2=None)
         allresult = Result(pdb=None, pdb_file=None, fit=fit,
                            profile=Profile(png='profiles.png', dat=None))
-    return saliweb.frontend.render_results_template("results_old.html", job=job,
+    template = 'results.html' if interactive else 'results_old.html'
+    return saliweb.frontend.render_results_template(template, job=job,
         pdb=pdb, profile=profile, email=email, results=results,
-        allresult=allresult)
+        allresult=allresult, include_jmoltable=JMolTableReader(job))
 
 
 def get_results(job, profile):

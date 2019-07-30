@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}FoXS Results{% endblock %}
+
+{% block body %}
+<table width="90%">
+  <tr class="resultheader">
+    <td>PDB files</td>
+    <td>Profile file</td>
+    <td>User e-mail</td>
+  </tr>
+  <tr>
+    <td><a href="{{ job.get_results_file_url(pdb) }}">{{ pdb }}</a></td>
+    {%- if profile == "-" %}
+    <td>-</td>
+    {%- else %}
+    <td><a href="{{ job.get_results_file_url(profile) }}">{{ profile }}</a></td>
+    {%- endif %}
+    <td>{{ email }}</td>
+  </tr>
+</table>
+
+<hr size="2" width="90%" />
+
+{% block results_content %}
+{% endblock %}
+
+{% endblock %}
