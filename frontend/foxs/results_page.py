@@ -56,6 +56,12 @@ def show_results(job, interactive):
         allresult=allresult, include_jmoltable=JMolTableReader(job))
 
 
+def show_ensemble(job):
+    pdb, profile, email = get_input_data(job)
+    return saliweb.frontend.render_results_template('ensemble.html', job=job,
+        pdb=pdb, profile=profile, email=email)
+
+
 def get_results(job, profile):
     """Get a list of Result objects for the given job"""
     profile = os.path.splitext(profile)[0]

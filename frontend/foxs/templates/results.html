@@ -16,6 +16,12 @@ gnuplot.dummyplot = function() {};
 function gnuplot_canvas( plot ) { gnuplot.active_plot(); };
 </script>
 
+{%- if results|length > 1 and profile != '-' %}
+<a href="{{ url_for("ensemble", name=job.name, passwd=job.passwd) }}">Multi-state models by MultiFoXS</a></b></p>
+
+<hr width="90%" />
+{%- endif %}
+
 <p><b>Can't see interactive display? Use
 <a href="{{ url_for("results_old", name=job.name, passwd=job.passwd) }}">old interface</a></b></p>
 

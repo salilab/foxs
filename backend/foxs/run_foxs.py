@@ -117,6 +117,107 @@ def run_multifoxs(params, mf_opts):
                     '-s', str(max_subset_size)] + mf_opts)
     if not os.path.exists('ensembles_size_1.txt'):
         raise RuntimeError("No MultiFoXS ensembles produced")
+    make_multifoxs_plots(params.profile_file_name)
+
+
+def make_multifoxs_plots(profile_file_name):
+    max_states = 4
+    plot_states_histogram(max_states=max_states, max_models=10)
+    gnuplot = make_gnuplot_canvas_plot(max_states, profile_file_name)
+
+
+def make_gnuplot_canvas_plot(max_states, profile):
+    """Prepare gnuplot canvas plot for profiles"""
+    colors = ("#1a9850",  # green
+              "#e26261",  # red
+              "#3288bd",  # blue
+              "#00FFFF",
+              "#A6CEE3")
+    with open('canvas_ensemble.plt', 'w') as fh:
+        fh.write('set terminal canvas solid butt size 300,250 fsize 10 '
+                 'lw 1.5 fontscale 1 name "jsoutput_3" jsdir "."\n')
+        fh.write("set output 'jsoutput.3.js'; set multiplot; set origin 0,0;"
+                 "set size 1,0.3; set tmargin 0;set xlabel 'q';"
+                 "set ylabel ' ' offset 1;set format y '';set xtics nomirror;"
+                 "set ytics nomirror;unset key;set border 3;"
+                 "set style line 11 lc rgb '#808080' lt 1;"
+                 "set border 3 back ls 11;f(x)=1\n")
+        residuals = ["plot f(x) lc rgb '#333333'"]
+        plots = ["plot '%s' u 1:2 lc rgb '#333333' pt 6 ps 0.8" % profile]
+        gnuplot = ['<script> gnuplot.show_plot("jsoutput_3_plot_2"); </script>']
+        for state_num in range(max_states):
+            out_file = "multi_state_model_%d_1_1.fit" % (state_num + 1)
+            residuals.append("'%s' u 1:(($2-$4)/$3) w lines lw 2.5 lc rgb '%s'"
+                             % (out_file, colors[state_num]))
+            plots.append("'%s' u 1:4 w lines lw 2.5 lc rgb '%s'"
+                         % (out_file, colors[state_num]))
+            if state_num not in (0, 1):
+                plot_num = state_num + 2
+                gnuplot.append(
+                    '<script> gnuplot.hide_plot("jsoutput_3_plot_%d");'
+                    '</script>' % plot_num)
+        fh.write(", ".join(residuals) + '\n')
+        fh.write("set origin 0,0.3;set size 1,0.69; set bmargin 0;"
+                 "set xlabel ''; set format x ''; "
+                 "set ylabel 'intensity (log-scale)' offset 1; set log y\n")
+        fh.write(", ".join(plots) + '\n')
+        fh.write("unset multiplot\n")
+
+    run_subprocess(['gnuplot', 'canvas_ensemble.plt'])
+    return gnuplot
+
+
+def plot_states_histogram(max_states, max_models):
+    """Make a plot of chis against number of states"""
+    scores = []
+    for i in range(1, max_states + 1):
+        ensemble_file = "ensembles_size_%d.txt" % i
+        if os.path.exists(ensemble_file):
+            scores.append(get_min_max_score(ensemble_file, max_models))
+
+    # prepare chi-size plot
+    with open('chis', 'w') as fh:
+        for score in scores:
+            fh.write('%d %f %f\n' % score)
+    _, score, diff = scores[0]
+    yrange = score + diff + 0.5
+    if diff > score:
+        yrange = score * 2.
+    with open('plotbar3.plt', 'w') as fh:
+        fh.write("""
+set terminal png enhanced size 290,240
+
+set output "chis.png"
+set style line 11 lc rgb '#808080' lt 1; set border 3 back ls 11;set xtics nomirror;set ytics nomirror
+
+set style line 1 lc rgb 'gray30' lt 1 lw 2
+set style line 2 lc rgb '#596E98' lt 1 lw 2
+#set style fill solid 1.0 border rgb 'grey30'
+set style fill solid 1.0 border rgb '#596E98'
+bs = 0.2
+
+set yrange [0:%f];set ylabel 'x^2' offset 1;
+set xrange [0.5:4.5]; set xlabel '# of states'
+set xtics 1
+plot 'chis' u 1:2:3 notitle w yerrorb ls 1, '' u 1:2:(bs) notitle w boxes ls 2
+""" % yrange)
+    run_subprocess(['gnuplot', 'plotbar3.plt'])
+
+
+def get_min_max_score(ensemble_file, max_models):
+    first_score = last_score = 0.
+    with open(ensemble_file) as fh:
+        for line in fh:
+            if " x1 " in line:
+                spl = line.rstrip('\r\n').split('|')
+                if len(spl) > 0 and spl[0].strip().isdigit():
+                    model_num = int(spl[0])
+                    if model_num > max_models:
+                        break
+                    last_score = float(spl[1])
+                    if first_score == 0.:
+                        first_score = last_score
+    return model_num, first_score, last_score - first_score
 
 
 def dat_files_for_pdb(pdb):

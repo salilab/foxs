@@ -52,6 +52,12 @@ def results_old(name):
     return results_page.show_results(job, interactive=False)
 
 
+@app.route('/job/<name>/ensemble')
+def ensemble(name):
+    job = get_completed_job(name, request.args.get('passwd'))
+    return results_page.show_ensemble(job)
+
+
 @app.route('/job/<name>/<path:fp>')
 def results_file(name, fp):
     job = get_completed_job(name, request.args.get('passwd'))
