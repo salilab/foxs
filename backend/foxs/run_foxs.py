@@ -45,44 +45,97 @@ def setup_environment():
     module(['load', 'imp', 'gnuplot'])
 
 
-def run_job(p):
-    cmd = ['foxs', '-j', '-g', '-m', str(p.model_option),
-           '-u', str(p.unit_option), '-q' , str(p.q),
-           '-s', str(p.psize)] + p.pdb_file_names
-    mf_cmd = ['multi_foxs', '-u', str(p.unit_option), '-q', str(p.q),
-              p.profile_file_name] + p.pdb_file_names
+def get_command_options(p):
+    """Get command line options for FoXS and MultiFoXS"""
+    foxs_opts = ['-j', '-g', '-m', str(p.model_option),
+                 '-u', str(p.unit_option), '-q' , str(p.q),
+                 '-s', str(p.psize)] + p.pdb_file_names
+    mf_opts = ['-u', str(p.unit_option), '-q', str(p.q)]
 
     if p.profile_file_name:
-        cmd.extend((p.profile_file_name, '-p'))
+        foxs_opts.extend((p.profile_file_name, '-p'))
     if not p.hlayer:
         c = ['--min_c2', str(p.hlayer_value), '--max_c2', str(p.hlayer_value)]
-        cmd.extend(c)
-        mf_cmd.extend(c)
+        foxs_opts.extend(c)
+        mf_opts.extend(c)
     if not p.exvolume:
         c = ['--min_c1', str(p.exvolume_value),
              '--max_c1', str(p.exvolume_value)]
-        cmd.extend(c)
-        mf_cmd.extend(c)
+        foxs_opts.extend(c)
+        mf_opts.extend(c)
     if not p.ihydrogens:
-        cmd.append('-h')
+        foxs_opts.append('-h')
     if p.residue:
-        cmd.append('-r')
+        foxs_opts.append('-r')
     if p.offset:
-        cmd.append('-o')
-        mf_cmd.append('-o')
+        foxs_opts.append('-o')
+        mf_opts.append('-o')
     if p.background:
-        cmd.extend(('-b', '0.2'))
-        mf_cmd.extend(('-b', '0.2'))
+        foxs_opts.extend(('-b', '0.2'))
+        mf_opts.extend(('-b', '0.2'))
+    return foxs_opts, mf_opts
 
+
+def run_job(params):
+    print("Start profile computation analysis")
+
+    foxs_opts, multi_foxs_opts = get_command_options(params)
     # Run FoXS
-    run_subprocess(cmd)
+    run_subprocess(['foxs'] + foxs_opts)
     # Make plots
     run_subprocess(['gnuplot'] + glob.glob('*.plt'))
+
+    png_files = glob.glob("*.png")
+    if len(png_files) == 0:
+        raise RuntimeError("No plot pngs produced")
+
+    # Run MultiFoXS if necessary
+    dat_files = glob.glob("*.pdb.dat")
+    if ((len(params.pdb_file_names) > 1 or len(dat_files) > 1)
+        and params.profile_file_name):
+        run_multifoxs(params, multi_foxs_opts)
+
+
+def run_multifoxs(params, mf_opts):
+    # validate exp. profile, add error if needed
+    run_subprocess(['validate_profile', params.profile_file_name,
+                    '-q', str(params.q)])
+    validated_profile_name = (os.path.splitext(params.profile_file_name)[0]
+                              + '_v.dat')
+
+    file_counter = 0
+    with open('filenames2.txt', 'w') as fh:
+        for pdb in params.pdb_file_names:
+            for dat_file in dat_files_for_pdb(pdb):
+                fh.write(dat_file + '\n')
+                file_counter += 1
+    # determine maximal subset size
+    max_subset_size = min(5, file_counter)
+
+    print("Start Ensemble computation")
+    run_subprocess(['multi_foxs', validated_profile_name, 'filenames2.txt',
+                    '-s', str(max_subset_size)] + mf_opts)
+    if not os.path.exists('ensembles_size_1.txt'):
+        raise RuntimeError("No MultiFoXS ensembles produced")
+
+
+def dat_files_for_pdb(pdb):
+    """Get all dat files for a given PDB"""
+    dat_file = pdb + '.dat'
+    if os.path.exists(dat_file):
+        yield dat_file
+    else:  # multi model file
+        pdb_code = os.path.splitext(pdb)[0]
+        for i in range(1, 101):
+            dat_file = "%s_m%d.pdb.dat" % (pdb_code, i)
+            if os.path.exists(dat_file):
+                yield dat_file
 
 
 def run_subprocess(cmd):
     """Run and log a subprocess"""
-    print(" ".join(cmd))
+    # Ensure that output from subprocess shows up in the right place in the log
+    sys.stdout.flush()
     subprocess.check_call(cmd, stdout=sys.stdout, stderr=sys.stderr)
 
 
