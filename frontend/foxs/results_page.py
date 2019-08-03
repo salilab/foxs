@@ -57,9 +57,10 @@ def show_results(job, interactive):
 
 
 def show_ensemble(job):
+    max_states = 4  # should match that in backend/foxs/run_foxs.py
     pdb, profile, email = get_input_data(job)
     return saliweb.frontend.render_results_template('ensemble.html', job=job,
-        pdb=pdb, profile=profile, email=email)
+        pdb=pdb, profile=profile, email=email, max_states=max_states)
 
 
 def get_results(job, profile):

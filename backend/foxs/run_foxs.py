@@ -123,7 +123,7 @@ def run_multifoxs(params, mf_opts):
 def make_multifoxs_plots(profile_file_name):
     max_states = 4
     plot_states_histogram(max_states=max_states, max_models=10)
-    gnuplot = make_gnuplot_canvas_plot(max_states, profile_file_name)
+    make_gnuplot_canvas_plot(max_states, profile_file_name)
 
 
 def make_gnuplot_canvas_plot(max_states, profile):
@@ -144,7 +144,6 @@ def make_gnuplot_canvas_plot(max_states, profile):
                  "set border 3 back ls 11;f(x)=1\n")
         residuals = ["plot f(x) lc rgb '#333333'"]
         plots = ["plot '%s' u 1:2 lc rgb '#333333' pt 6 ps 0.8" % profile]
-        gnuplot = ['<script> gnuplot.show_plot("jsoutput_3_plot_2"); </script>']
         for state_num in range(max_states):
             out_file = "multi_state_model_%d_1_1.fit" % (state_num + 1)
             residuals.append("'%s' u 1:(($2-$4)/$3) w lines lw 2.5 lc rgb '%s'"
@@ -153,9 +152,6 @@ def make_gnuplot_canvas_plot(max_states, profile):
                          % (out_file, colors[state_num]))
             if state_num not in (0, 1):
                 plot_num = state_num + 2
-                gnuplot.append(
-                    '<script> gnuplot.hide_plot("jsoutput_3_plot_%d");'
-                    '</script>' % plot_num)
         fh.write(", ".join(residuals) + '\n')
         fh.write("set origin 0,0.3;set size 1,0.69; set bmargin 0;"
                  "set xlabel ''; set format x ''; "
@@ -164,7 +160,6 @@ def make_gnuplot_canvas_plot(max_states, profile):
         fh.write("unset multiplot\n")
 
     run_subprocess(['gnuplot', 'canvas_ensemble.plt'])
-    return gnuplot
 
 
 def plot_states_histogram(max_states, max_models):

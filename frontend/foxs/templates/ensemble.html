@@ -38,6 +38,11 @@ function gnuplot_canvas( plot ) { gnuplot.active_plot(); };
   if (window.attachEvent) {window.attachEvent('onload', jsoutput_3);}
 else if (window.addEventListener) {window.addEventListener('load', jsoutput_3, false);}
 else {document.addEventListener('load', jsoutput_3, false);}
+
+gnuplot.show_plot("jsoutput_3_plot_2");
+{%- for plot_num in range(4, max_states + 2) %}
+gnuplot.hide_plot("jsoutput_3_plot_{{ plot_num }}");
+{%- endfor %}
 </script>
     </td>
   </tr>
