@@ -157,6 +157,23 @@ class Tests(saliweb.test.TestCase):
                            re.DOTALL | re.MULTILINE)
             self.assertRegexpMatches(rv.data, r)
 
+    def test_job_two_pdbs_profile_ensemble(self):
+        """Test display of ensemble with two PDBs, fit to profile"""
+        with saliweb.test.make_frontend_job('testjob2') as j:
+            j.make_file('data.txt',
+                        "1abc.pdb test.profile EMAIL 0.50 500 "
+                        "1 1 1 0 0 0 0.00 1.00 3 1\n")
+            j.make_file('inputFiles.txt', "1abc.pdb\n1xyz.pdb")
+            c = foxs.app.test_client()
+            rv = c.get('/job/testjob2/ensemble?passwd=%s' % j.passwd)
+            r = re.compile('PDB files.*Profile file.*User e-mail.*'
+                           '1abc\.pdb.*test\.profile.*EMAIL.*'
+                           'models from MultiFoXS.*'
+                           'jsoutput\.3\.js.*'
+                           '<canvas',
+                           re.DOTALL | re.MULTILINE)
+            self.assertRegexpMatches(rv.data, r)
+
 
 if __name__ == '__main__':
     unittest.main()
