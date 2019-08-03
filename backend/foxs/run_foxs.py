@@ -200,6 +200,10 @@ plot 'chis' u 1:2:3 notitle w yerrorb ls 1, '' u 1:2:(bs) notitle w boxes ls 2
 
 
 def get_min_max_score(ensemble_file, max_models):
+    """Parse an ensembles_size_XX.txt file and return the number of states,
+       score of the best model, and difference between the best scoring
+       and worst scoring (capped at max_models)"""
+    model_num = number_of_states = 0
     first_score = last_score = 0.
     with open(ensemble_file) as fh:
         for line in fh:
@@ -212,7 +216,9 @@ def get_min_max_score(ensemble_file, max_models):
                     last_score = float(spl[1])
                     if first_score == 0.:
                         first_score = last_score
-    return model_num, first_score, last_score - first_score
+            elif model_num == 1:
+                number_of_states += 1
+    return number_of_states, first_score, last_score - first_score
 
 
 def dat_files_for_pdb(pdb):
