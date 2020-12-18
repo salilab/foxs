@@ -90,7 +90,7 @@ def handle_zipfile(zfname, job):
     for zi in fh.infolist():
         fname = secure_filename(os.path.basename(zi.filename))
         if fname not in exclude:
-            with open(job.get_path(fname), 'w') as out_fh:
+            with open(job.get_path(fname), 'wb') as out_fh:
                 out_fh.write(fh.read(zi))
             pdbs.append(fname)
             if len(pdbs) > 100:

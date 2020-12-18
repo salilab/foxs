@@ -12,43 +12,43 @@ class Tests(saliweb.test.TestCase):
         """Test index page"""
         c = foxs.app.test_client()
         rv = c.get('/')
-        self.assertIn('Fast SAXS Profile Computation', rv.data)
-        self.assertIn('Type PDB code of input molecule', rv.data)
-        self.assertIn('Experimental profile:', rv.data)
+        self.assertIn(b'Fast SAXS Profile Computation', rv.data)
+        self.assertIn(b'Type PDB code of input molecule', rv.data)
+        self.assertIn(b'Experimental profile:', rv.data)
 
     def test_help(self):
         """Test help page"""
         c = foxs.app.test_client()
         rv = c.get('/help')
-        self.assertIn('FoXS requires only one mandatory input parameter',
+        self.assertIn(b'FoXS requires only one mandatory input parameter',
                       rv.data)
-        self.assertIn('displays the profile fit along with the residuals',
+        self.assertIn(b'displays the profile fit along with the residuals',
                       rv.data)
 
     def test_about(self):
         """Test about page"""
         c = foxs.app.test_client()
         rv = c.get('/about')
-        self.assertIn('About Small Angle X-ray Scattering', rv.data)
+        self.assertIn(b'About Small Angle X-ray Scattering', rv.data)
 
     def test_faq(self):
         """Test FAQ page"""
         c = foxs.app.test_client()
         rv = c.get('/faq')
-        self.assertIn('structure includes non-protein atoms', rv.data)
+        self.assertIn(b'structure includes non-protein atoms', rv.data)
 
     def test_links(self):
         """Test links page"""
         c = foxs.app.test_client()
         rv = c.get('/links')
-        self.assertIn('BILBOMD', rv.data)
-        self.assertIn('Chimera', rv.data)
+        self.assertIn(b'BILBOMD', rv.data)
+        self.assertIn(b'Chimera', rv.data)
 
     def test_queue(self):
         """Test queue page"""
         c = foxs.app.test_client()
         rv = c.get('/job')
-        self.assertIn('No pending or running jobs', rv.data)
+        self.assertIn(b'No pending or running jobs', rv.data)
 
 
 if __name__ == '__main__':

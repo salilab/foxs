@@ -33,8 +33,8 @@ class JMolTableReader(object):
         # Fix hard-coded links to help page
         def help_url(match):
             return url_for("help", _anchor=match.group(1))
-        contents = re.sub('https:\/\/modbase\.compbio\.ucsf\.edu\/'
-                          'foxs\/help\.html#(\w+)', help_url, contents)
+        contents = re.sub(r'https:\/\/modbase\.compbio\.ucsf\.edu\/'
+                          r'foxs\/help\.html#(\w+)', help_url, contents)
         # Fix links to job results files
         def get_upl(match):
             return self.job.get_results_file_url(match.group(1))

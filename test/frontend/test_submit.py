@@ -13,7 +13,7 @@ foxs = saliweb.test.import_mocked_frontend("foxs", __file__,
 
 def make_test_pdb(tmpdir):
     os.mkdir(os.path.join(tmpdir, 'xy'))
-    fh = gzip.open(os.path.join(tmpdir, 'xy', 'pdb1xyz.ent.gz'), 'wb')
+    fh = gzip.open(os.path.join(tmpdir, 'xy', 'pdb1xyz.ent.gz'), 'wt')
     fh.write("REMARK  6  TEST REMARK\n")
     fh.write("ATOM      1  N   ALA C   1      27.932  14.488   4.257  "
              "1.00 23.91           N\n")
@@ -32,7 +32,7 @@ class Tests(saliweb.test.TestCase):
         c = foxs.app.test_client()
         rv = c.post('/job')
         self.assertEqual(rv.status_code, 400)  # no PDB file
-        self.assertIn('please specify PDB code or upload file', rv.data)
+        self.assertIn(b'please specify PDB code or upload file', rv.data)
 
         t = saliweb.test.TempDir()
         emptyf = os.path.join(t.tmpdir, 'empty.pdb')
@@ -47,52 +47,52 @@ class Tests(saliweb.test.TestCase):
             fh.write("\n")
 
         # Empty PDB file
-        data = {'pdbfile': open(emptyf)}
+        data = {'pdbfile': open(emptyf, 'rb')}
         rv = c.post('/job', data=data)
         self.assertEqual(rv.status_code, 400)
-        self.assertIn('You have uploaded an empty PDB or zip file', rv.data)
+        self.assertIn(b'You have uploaded an empty PDB or zip file', rv.data)
 
         # Bad hlayer value
         rv = c.post('/job', data={'c2': '5.0'})
         self.assertEqual(rv.status_code, 400)
-        self.assertIn('Invalid hydration layer density value', rv.data)
+        self.assertIn(b'Invalid hydration layer density value', rv.data)
 
         # Bad q value
         rv = c.post('/job', data={'q': '4.0'})
         self.assertEqual(rv.status_code, 400)
-        self.assertIn('Invalid q value; it must be &gt; 0 and &lt; 1.0',
+        self.assertIn(b'Invalid q value; it must be &gt; 0 and &lt; 1.0',
                       rv.data)
 
         # Bad profile size
         rv = c.post('/job', data={'psize': '5000'})
         self.assertEqual(rv.status_code, 400)
-        self.assertIn('Invalid profile size; it must be &gt; 20 and &lt; 2000',
+        self.assertIn(b'Invalid profile size; it must be &gt; 20 and &lt; 2000',
                       rv.data)
 
         # Successful submission with profile (no email)
-        data = {'pdbfile': open(pdbf), 'profile': open(proff)}
+        data = {'pdbfile': open(pdbf, 'rb'), 'profile': open(proff, 'rb')}
         rv = c.post('/job', data=data)
         self.assertEqual(rv.status_code, 200)
-        r = re.compile('Your job has been submitted.*Results will be found at',
+        r = re.compile(b'Your job has been submitted.*Results will be found at',
                        re.MULTILINE | re.DOTALL)
         self.assertRegexpMatches(rv.data, r)
 
         # Successful submission without profile (no email)
-        data = {'pdbfile': open(pdbf), 'hlayer': 'on'}
+        data = {'pdbfile': open(pdbf, 'rb'), 'hlayer': 'on'}
         rv = c.post('/job', data=data)
         self.assertEqual(rv.status_code, 200)
-        r = re.compile('Your job has been submitted.*Results will be found at',
+        r = re.compile(b'Your job has been submitted.*Results will be found at',
                        re.MULTILINE | re.DOTALL)
         self.assertRegexpMatches(rv.data, r)
 
         # Successful submission (with email)
-        data = {'pdbfile': open(pdbf), 'profile': open(proff),
+        data = {'pdbfile': open(pdbf, 'rb'), 'profile': open(proff, 'rb'),
                 'email': 'test@test.com'}
         rv = c.post('/job', data=data)
         self.assertEqual(rv.status_code, 200)
-        r = re.compile('Your job has been submitted.*'
-                       'Results will be found at.*'
-                       'You will receive an e-mail',
+        r = re.compile(b'Your job has been submitted.*'
+                       b'Results will be found at.*'
+                       b'You will receive an e-mail',
                        re.MULTILINE | re.DOTALL)
         self.assertRegexpMatches(rv.data, r)
 
@@ -108,7 +108,7 @@ class Tests(saliweb.test.TestCase):
         c = foxs.app.test_client()
         rv = c.post('/job', data={'pdb': '1xyz:C'})
         self.assertEqual(rv.status_code, 200)
-        self.assertIn('Your job has been submitted', rv.data)
+        self.assertIn(b'Your job has been submitted', rv.data)
 
     def test_submit_zip_file(self):
         """Test submit with zip file"""
@@ -124,9 +124,9 @@ class Tests(saliweb.test.TestCase):
         z.close()
 
         c = foxs.app.test_client()
-        rv = c.post('/job', data={'pdbfile': open(zip_name)})
+        rv = c.post('/job', data={'pdbfile': open(zip_name, 'rb')})
         self.assertEqual(rv.status_code, 200)
-        self.assertIn('Your job has been submitted', rv.data)
+        self.assertIn(b'Your job has been submitted', rv.data)
 
     def test_submit_zip_file_fail(self):
         """Test submit with zip file containing too many PDBs"""
@@ -141,9 +141,9 @@ class Tests(saliweb.test.TestCase):
         z.close()
 
         c = foxs.app.test_client()
-        rv = c.post('/job', data={'pdbfile': open(zip_name)})
+        rv = c.post('/job', data={'pdbfile': open(zip_name, 'rb')})
         self.assertEqual(rv.status_code, 400)
-        self.assertIn('Only 100 PDB files can run on the server', rv.data)
+        self.assertIn(b'Only 100 PDB files can run on the server', rv.data)
 
 
 if __name__ == '__main__':
