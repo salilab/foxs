@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/salilab/foxs.svg?branch=master)](https://travis-ci.org/salilab/foxs)
+[![Build Status](https://github.com/salilab/foxs/workflows/build/badge.svg?branch=master)](https://github.com/salilab/foxs/actions?query=workflow%3Abuild)
 [![codecov](https://codecov.io/gh/salilab/foxs/branch/master/graph/badge.svg)](https://codecov.io/gh/salilab/foxs)
 
 This is the source code for [FoXS](https://salilab.org/foxs/), a web
