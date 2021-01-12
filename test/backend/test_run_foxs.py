@@ -43,28 +43,28 @@ class Tests(saliweb.test.TestCase):
     def test_job_parameters_no_profile(self):
         """Test JobParameters class without profile"""
         j = self.make_test_job(foxs.Job, 'RUNNING')
-        d = saliweb.test.RunInDir(j.directory)
-        with open('data.txt', 'w') as fh:
-            fh.write("PDB - EMAIL 0.50 500 1 1 1 0 0 0 0.00 1.00 3 1\n")
-        with open('inputFiles.txt', 'w') as fh:
-            fh.write("file1\nfile2\n")
-        p = run_foxs.JobParameters()
-        self.assertIsNone(p.profile_file_name)
-        self.assertEqual(p.pdb_file_names, ['file1', 'file2'])
-        self.assertAlmostEqual(p.q, 0.5, delta=1e-4)
-        self.assertEqual(p.psize, 500)
-        self.assertTrue(p.hlayer)
+        with saliweb.test.working_directory(j.directory):
+            with open('data.txt', 'w') as fh:
+                fh.write("PDB - EMAIL 0.50 500 1 1 1 0 0 0 0.00 1.00 3 1\n")
+            with open('inputFiles.txt', 'w') as fh:
+                fh.write("file1\nfile2\n")
+            p = run_foxs.JobParameters()
+            self.assertIsNone(p.profile_file_name)
+            self.assertEqual(p.pdb_file_names, ['file1', 'file2'])
+            self.assertAlmostEqual(p.q, 0.5, delta=1e-4)
+            self.assertEqual(p.psize, 500)
+            self.assertTrue(p.hlayer)
 
     def test_job_parameters_with_profile(self):
         """Test JobParameters class with profile"""
         j = self.make_test_job(foxs.Job, 'RUNNING')
-        d = saliweb.test.RunInDir(j.directory)
-        with open('data.txt', 'w') as fh:
-            fh.write("PDB PROF EMAIL 0.50 500 1 1 1 0 0 0 0.00 1.00 3 1\n")
-        with open('inputFiles.txt', 'w') as fh:
-            fh.write("file1\nfile2\n")
-        p = run_foxs.JobParameters()
-        self.assertEqual(p.profile_file_name, 'PROF')
+        with saliweb.test.working_directory(j.directory):
+            with open('data.txt', 'w') as fh:
+                fh.write("PDB PROF EMAIL 0.50 500 1 1 1 0 0 0 0.00 1.00 3 1\n")
+            with open('inputFiles.txt', 'w') as fh:
+                fh.write("file1\nfile2\n")
+            p = run_foxs.JobParameters()
+            self.assertEqual(p.profile_file_name, 'PROF')
 
     def test_get_command_options(self):
         """Test get_command_options()"""
@@ -134,31 +134,31 @@ class Tests(saliweb.test.TestCase):
     def test_set_job_state(self):
         """Test set_job_state()"""
         j = self.make_test_job(foxs.Job, 'RUNNING')
-        d = saliweb.test.RunInDir(j.directory)
-        run_foxs.set_job_state('DONE')
-        with open('job-state') as fh:
-            contents = fh.read()
-        self.assertEqual(contents, 'DONE\n')
+        with saliweb.test.working_directory(j.directory):
+            run_foxs.set_job_state('DONE')
+            with open('job-state') as fh:
+                contents = fh.read()
+            self.assertEqual(contents, 'DONE\n')
 
     def test_make_gnuplot_canvas_plot(self):
         """Test make_gnuplot_canvas_plot()"""
-        d = saliweb.test.RunInTempDir()
-        with mocked_run_subprocess() as mock:
-            run_foxs.make_gnuplot_canvas_plot(max_states=5, profile='PROF')
-            self.assertEqual(mock.cmds, [['gnuplot', 'canvas_ensemble.plt']])
-        with open('canvas_ensemble.plt') as fh:
-            contents = fh.read()
-        self.assertIn("set output 'jsoutput.3.js'", contents)
-        self.assertIn('multi_state_model_1_1_1.fit', contents)
-        self.assertIn('multi_state_model_5_1_1.fit', contents)
-        self.assertIn("plot 'PROF'", contents)
+        with saliweb.test.temporary_working_directory():
+            with mocked_run_subprocess() as mock:
+                run_foxs.make_gnuplot_canvas_plot(max_states=5, profile='PROF')
+                self.assertEqual(mock.cmds, [['gnuplot', 'canvas_ensemble.plt']])
+            with open('canvas_ensemble.plt') as fh:
+                contents = fh.read()
+            self.assertIn("set output 'jsoutput.3.js'", contents)
+            self.assertIn('multi_state_model_1_1_1.fit', contents)
+            self.assertIn('multi_state_model_5_1_1.fit', contents)
+            self.assertIn("plot 'PROF'", contents)
 
     def test_get_min_max_score(self):
         """Test get_min_max_score()"""
-        d = saliweb.test.TempDir()
-        ensemble_file = os.path.join(d.tmpdir, 'ensembles_size_2.txt')
-        with open(ensemble_file, 'w') as fh:
-            fh.write("""
+        with saliweb.test.temporary_directory() as tmpdir:
+            ensemble_file = os.path.join(tmpdir, 'ensembles_size_2.txt')
+            with open(ensemble_file, 'w') as fh:
+                fh.write("""
 1 |  0.04 | x1 0.05 (1.02, 1.66)
     2   | 0.521 (0.698, 0.077) | nodes98_m49.pdb.dat (0.058)
     3   | 0.479 (0.612, 0.113) | nodes18_m33.pdb.dat (0.035)
@@ -173,82 +173,82 @@ garbage |  0.06 | x1 0.06 (1.03, 1.66)
     2   | 0.611 (0.698, 0.077) | nodes98_m49.pdb.dat (0.058)
    15   | 0.389 (0.498, 0.098) | nodes54_m72.pdb.dat (0.038)
 """)
-        (number_of_states, first_score,
-         diff) = run_foxs.get_min_max_score(ensemble_file, 3)
-        self.assertEqual(number_of_states, 2)
-        self.assertAlmostEqual(first_score, 0.04, delta=0.01)
-        self.assertAlmostEqual(diff, 0.16, delta=0.01)
+            (number_of_states, first_score,
+             diff) = run_foxs.get_min_max_score(ensemble_file, 3)
+            self.assertEqual(number_of_states, 2)
+            self.assertAlmostEqual(first_score, 0.04, delta=0.01)
+            self.assertAlmostEqual(diff, 0.16, delta=0.01)
 
     def test_plot_states_histogram_small_diff(self):
         """Test plot_states_histogram() with diff smaller than score"""
-        d = saliweb.test.RunInTempDir()
-        ensemble_file = 'ensembles_size_1.txt'
-        with open(ensemble_file, 'w') as fh:
-            fh.write("""
+        with saliweb.test.temporary_working_directory():
+            ensemble_file = 'ensembles_size_1.txt'
+            with open(ensemble_file, 'w') as fh:
+                fh.write("""
 1 |  0.04 | x1 0.05 (1.02, 1.66)
     2   | 0.521 (0.698, 0.077) | nodes98_m49.pdb.dat (0.058)
 """)
-        with mocked_run_subprocess() as mock:
-            run_foxs.plot_states_histogram(max_states=5, max_models=10)
-            self.assertEqual(mock.cmds, [['gnuplot', 'plotbar3.plt']])
-        with open('chis') as fh:
-            contents = fh.read()
-        num_states, first_score, diff = contents.rstrip('\r\n').split()
-        self.assertEqual(int(num_states), 1)
-        self.assertAlmostEqual(float(first_score), 0.04, delta=0.01)
-        self.assertAlmostEqual(float(diff), 0.0, delta=0.01)
-        with open('plotbar3.plt') as fh:
-            contents = fh.read()
-        self.assertIn('set output "chis.png"', contents)
-        self.assertIn("plot 'chis' u 1:2:3", contents)
+            with mocked_run_subprocess() as mock:
+                run_foxs.plot_states_histogram(max_states=5, max_models=10)
+                self.assertEqual(mock.cmds, [['gnuplot', 'plotbar3.plt']])
+            with open('chis') as fh:
+                contents = fh.read()
+            num_states, first_score, diff = contents.rstrip('\r\n').split()
+            self.assertEqual(int(num_states), 1)
+            self.assertAlmostEqual(float(first_score), 0.04, delta=0.01)
+            self.assertAlmostEqual(float(diff), 0.0, delta=0.01)
+            with open('plotbar3.plt') as fh:
+                contents = fh.read()
+            self.assertIn('set output "chis.png"', contents)
+            self.assertIn("plot 'chis' u 1:2:3", contents)
 
     def test_plot_states_histogram_big_diff(self):
         """Test plot_states_histogram() with diff larger than score"""
-        d = saliweb.test.RunInTempDir()
-        ensemble_file = 'ensembles_size_1.txt'
-        with open(ensemble_file, 'w') as fh:
-            fh.write("""
+        with saliweb.test.temporary_working_directory():
+            ensemble_file = 'ensembles_size_1.txt'
+            with open(ensemble_file, 'w') as fh:
+                fh.write("""
 1 |  0.04 | x1 0.05 (1.02, 1.66)
     2   | 0.521 (0.698, 0.077) | nodes98_m49.pdb.dat (0.058)
 2 |  0.14 | x1 0.05 (1.02, 1.66)
     2   | 0.521 (0.698, 0.077) | nodes98_m49.pdb.dat (0.058)
 """)
-        with mocked_run_subprocess() as mock:
-            run_foxs.plot_states_histogram(max_states=5, max_models=10)
-            self.assertEqual(mock.cmds, [['gnuplot', 'plotbar3.plt']])
+            with mocked_run_subprocess() as mock:
+                run_foxs.plot_states_histogram(max_states=5, max_models=10)
+                self.assertEqual(mock.cmds, [['gnuplot', 'plotbar3.plt']])
 
     def test_run_job_no_pngs(self):
         """Test run_job failure (no pngs produced)"""
         p = MockParameters()
-        d = saliweb.test.RunInTempDir()
-        with mocked_run_subprocess() as mock:
-            self.assertRaises(RuntimeError, run_foxs.run_job, p)
+        with saliweb.test.temporary_working_directory():
+            with mocked_run_subprocess() as mock:
+                self.assertRaises(RuntimeError, run_foxs.run_job, p)
 
     def test_run_job_ok_one_pdb(self):
         """Test run_job success with one PDB"""
         p = MockParameters()
-        d = saliweb.test.RunInTempDir()
-        # Simulate production of plot png
-        with open('pdb6lyt_lyzexp.png', 'w') as fh:
-            fh.write('\n')
-        with mocked_run_subprocess() as mock:
-            run_foxs.run_job(p)
+        with saliweb.test.temporary_working_directory():
+            # Simulate production of plot png
+            with open('pdb6lyt_lyzexp.png', 'w') as fh:
+                fh.write('\n')
+            with mocked_run_subprocess() as mock:
+                run_foxs.run_job(p)
 
     def test_run_job_no_ensemble(self):
         """Test run_job failure (no MultiFoXS ensemble produced)"""
         p = MockParameters()
         p.profile_file_name = 'PROF'
-        d = saliweb.test.RunInTempDir()
-        # Simulate production of plot png
-        with open('pdb6lyt_lyzexp.png', 'w') as fh:
-            fh.write('\n')
-        # Simulate dat files
-        with open('1.pdb.dat', 'w') as fh:
-            fh.write('\n')
-        with open('2.pdb.dat', 'w') as fh:
-            fh.write('\n')
-        with mocked_run_subprocess() as mock:
-            self.assertRaises(RuntimeError, run_foxs.run_job, p)
+        with saliweb.test.temporary_working_directory():
+            # Simulate production of plot png
+            with open('pdb6lyt_lyzexp.png', 'w') as fh:
+                fh.write('\n')
+            # Simulate dat files
+            with open('1.pdb.dat', 'w') as fh:
+                fh.write('\n')
+            with open('2.pdb.dat', 'w') as fh:
+                fh.write('\n')
+            with mocked_run_subprocess() as mock:
+                self.assertRaises(RuntimeError, run_foxs.run_job, p)
     
 
 if __name__ == '__main__':
