@@ -34,7 +34,7 @@ class Tests(saliweb.test.TestCase):
                            b'1abc\.png.*plot of profile.*'
                            b'1abc\.pdb\.dat.*Profile file',
                            re.DOTALL | re.MULTILINE)
-            self.assertRegexpMatches(rv.data, r)
+            self.assertRegex(rv.data, r)
 
     def test_job_one_pdb_new(self):
         """Test display of job with one PDB, no profile (new view)"""
@@ -56,7 +56,7 @@ class Tests(saliweb.test.TestCase):
                            b'<canvas id="jsoutput_1".*'
                            b'testjob3\/foo\.dat',
                            re.DOTALL | re.MULTILINE)
-            self.assertRegexpMatches(rv.data, r)
+            self.assertRegex(rv.data, r)
 
     def test_job_one_pdb_profile_old(self):
         """Test display of job with one PDB, fit to a profile (old view)"""
@@ -79,7 +79,7 @@ class Tests(saliweb.test.TestCase):
                            b'1abc_test\.dat.*Experimental profile fit file.*'
                            b'&chi; = 0\.202144 c1 = 1\.01131 c2 = 0\.5872',
                            re.DOTALL | re.MULTILINE)
-            self.assertRegexpMatches(rv.data, r)
+            self.assertRegex(rv.data, r)
 
     def test_job_one_pdb_profile_new(self):
         """Test display of job with one PDB, fit to a profile (new view)"""
@@ -100,7 +100,7 @@ class Tests(saliweb.test.TestCase):
                            b'see interactive display\? Use.*old interface.*'
                            b'<canvas id="jsoutput_1".*',
                            re.DOTALL | re.MULTILINE)
-            self.assertRegexpMatches(rv.data, r)
+            self.assertRegex(rv.data, r)
 
     def test_job_two_pdbs_old(self):
         """Test display of job with two PDBs, no profile (old view)"""
@@ -122,7 +122,7 @@ class Tests(saliweb.test.TestCase):
                            b'All theoretical profiles.*'
                            b'profiles\.png.*plot of profiles',
                            re.DOTALL | re.MULTILINE)
-            self.assertRegexpMatches(rv.data, r)
+            self.assertRegex(rv.data, r)
 
     def test_job_two_pdbs_profile_old(self):
         """Test display of job with two PDBs, fit to profile (old view)"""
@@ -155,7 +155,7 @@ class Tests(saliweb.test.TestCase):
                            b'profiles\.png.*plot of profiles.*'
                            b'fit\.png.*plot of profile fit',
                            re.DOTALL | re.MULTILINE)
-            self.assertRegexpMatches(rv.data, r)
+            self.assertRegex(rv.data, r)
 
     def test_job_two_pdbs_profile_ensemble(self):
         """Test display of ensemble with two PDBs, fit to profile"""
@@ -172,7 +172,7 @@ class Tests(saliweb.test.TestCase):
                            b'jsoutput\.3\.js.*'
                            b'<canvas',
                            re.DOTALL | re.MULTILINE)
-            self.assertRegexpMatches(rv.data, r)
+            self.assertRegex(rv.data, r)
 
 
 if __name__ == '__main__':

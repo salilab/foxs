@@ -75,7 +75,7 @@ class Tests(saliweb.test.TestCase):
         self.assertEqual(rv.status_code, 200)
         r = re.compile(b'Your job has been submitted.*Results will be found at',
                        re.MULTILINE | re.DOTALL)
-        self.assertRegexpMatches(rv.data, r)
+        self.assertRegex(rv.data, r)
 
         # Successful submission without profile (no email)
         data = {'pdbfile': open(pdbf, 'rb'), 'hlayer': 'on'}
@@ -83,7 +83,7 @@ class Tests(saliweb.test.TestCase):
         self.assertEqual(rv.status_code, 200)
         r = re.compile(b'Your job has been submitted.*Results will be found at',
                        re.MULTILINE | re.DOTALL)
-        self.assertRegexpMatches(rv.data, r)
+        self.assertRegex(rv.data, r)
 
         # Successful submission (with email)
         data = {'pdbfile': open(pdbf, 'rb'), 'profile': open(proff, 'rb'),
@@ -94,7 +94,7 @@ class Tests(saliweb.test.TestCase):
                        b'Results will be found at.*'
                        b'You will receive an e-mail',
                        re.MULTILINE | re.DOTALL)
-        self.assertRegexpMatches(rv.data, r)
+        self.assertRegex(rv.data, r)
 
     def test_submit_pdb_code(self):
         """Test submit with a PDB code"""
