@@ -2,7 +2,7 @@ import unittest
 import foxs
 import saliweb.test
 import saliweb.backend
-import os
+
 
 class JobTests(saliweb.test.TestCase):
 

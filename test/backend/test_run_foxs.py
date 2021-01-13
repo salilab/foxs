@@ -25,6 +25,7 @@ class MockParameters(object):
 class MockRunSubprocess(object):
     def __init__(self):
         self.cmds = []
+
     def __call__(self, cmd):
         self.cmds.append(cmd)
 
@@ -145,7 +146,8 @@ class Tests(saliweb.test.TestCase):
         with saliweb.test.temporary_working_directory():
             with mocked_run_subprocess() as mock:
                 run_foxs.make_gnuplot_canvas_plot(max_states=5, profile='PROF')
-                self.assertEqual(mock.cmds, [['gnuplot', 'canvas_ensemble.plt']])
+                self.assertEqual(
+                    mock.cmds, [['gnuplot', 'canvas_ensemble.plt']])
             with open('canvas_ensemble.plt') as fh:
                 contents = fh.read()
             self.assertIn("set output 'jsoutput.3.js'", contents)
@@ -221,7 +223,7 @@ garbage |  0.06 | x1 0.06 (1.03, 1.66)
         """Test run_job failure (no pngs produced)"""
         p = MockParameters()
         with saliweb.test.temporary_working_directory():
-            with mocked_run_subprocess() as mock:
+            with mocked_run_subprocess():
                 self.assertRaises(RuntimeError, run_foxs.run_job, p)
 
     def test_run_job_ok_one_pdb(self):
@@ -231,7 +233,7 @@ garbage |  0.06 | x1 0.06 (1.03, 1.66)
             # Simulate production of plot png
             with open('pdb6lyt_lyzexp.png', 'w') as fh:
                 fh.write('\n')
-            with mocked_run_subprocess() as mock:
+            with mocked_run_subprocess():
                 run_foxs.run_job(p)
 
     def test_run_job_no_ensemble(self):
@@ -247,9 +249,9 @@ garbage |  0.06 | x1 0.06 (1.03, 1.66)
                 fh.write('\n')
             with open('2.pdb.dat', 'w') as fh:
                 fh.write('\n')
-            with mocked_run_subprocess() as mock:
+            with mocked_run_subprocess():
                 self.assertRaises(RuntimeError, run_foxs.run_job, p)
-    
+
 
 if __name__ == '__main__':
     unittest.main()

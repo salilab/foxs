@@ -7,6 +7,7 @@ from . import submit_page, results_page
 parameters = []
 app = saliweb.frontend.make_application(__name__, parameters)
 
+
 @app.route('/')
 def index():
     return render_template('index.html')

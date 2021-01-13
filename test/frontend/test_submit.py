@@ -41,8 +41,9 @@ class Tests(saliweb.test.TestCase):
                 pass
             pdbf = os.path.join(tmpdir, 'test.pdb')
             with open(pdbf, 'w') as fh:
-                fh.write("REMARK\n"
-                         "ATOM      2  CA  ALA     1      26.711  14.576   5.091\n")
+                fh.write(
+                    "REMARK\n"
+                    "ATOM      2  CA  ALA     1      26.711  14.576   5.091\n")
             proff = os.path.join(tmpdir, 'test.profile')
             with open(proff, 'w') as fh:
                 fh.write("\n")
@@ -51,7 +52,8 @@ class Tests(saliweb.test.TestCase):
             data = {'pdbfile': open(emptyf, 'rb')}
             rv = c.post('/job', data=data)
             self.assertEqual(rv.status_code, 400)
-            self.assertIn(b'You have uploaded an empty PDB or zip file', rv.data)
+            self.assertIn(
+                b'You have uploaded an empty PDB or zip file', rv.data)
 
             # Bad hlayer value
             rv = c.post('/job', data={'c2': '5.0'})
@@ -67,23 +69,26 @@ class Tests(saliweb.test.TestCase):
             # Bad profile size
             rv = c.post('/job', data={'psize': '5000'})
             self.assertEqual(rv.status_code, 400)
-            self.assertIn(b'Invalid profile size; it must be &gt; 20 and &lt; 2000',
-                          rv.data)
+            self.assertIn(
+                b'Invalid profile size; it must be &gt; 20 and &lt; 2000',
+                rv.data)
 
             # Successful submission with profile (no email)
             data = {'pdbfile': open(pdbf, 'rb'), 'profile': open(proff, 'rb')}
             rv = c.post('/job', data=data)
             self.assertEqual(rv.status_code, 200)
-            r = re.compile(b'Your job has been submitted.*Results will be found at',
-                           re.MULTILINE | re.DOTALL)
+            r = re.compile(
+                b'Your job has been submitted.*Results will be found at',
+                re.MULTILINE | re.DOTALL)
             self.assertRegex(rv.data, r)
 
             # Successful submission without profile (no email)
             data = {'pdbfile': open(pdbf, 'rb'), 'hlayer': 'on'}
             rv = c.post('/job', data=data)
             self.assertEqual(rv.status_code, 200)
-            r = re.compile(b'Your job has been submitted.*Results will be found at',
-                           re.MULTILINE | re.DOTALL)
+            r = re.compile(
+                b'Your job has been submitted.*Results will be found at',
+                re.MULTILINE | re.DOTALL)
             self.assertRegex(rv.data, r)
 
             # Successful submission (with email)
@@ -144,7 +149,8 @@ class Tests(saliweb.test.TestCase):
                 c = foxs.app.test_client()
                 rv = c.post('/job', data={'pdbfile': open(zip_name, 'rb')})
                 self.assertEqual(rv.status_code, 400)
-                self.assertIn(b'Only 100 PDB files can run on the server', rv.data)
+                self.assertIn(b'Only 100 PDB files can run on the server',
+                              rv.data)
 
 
 if __name__ == '__main__':

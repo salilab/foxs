@@ -48,7 +48,7 @@ def setup_environment():
 def get_command_options(p):
     """Get command line options for FoXS and MultiFoXS"""
     foxs_opts = ['-j', '-g', '-m', str(p.model_option),
-                 '-u', str(p.unit_option), '-q' , str(p.q),
+                 '-u', str(p.unit_option), '-q', str(p.q),
                  '-s', str(p.psize)] + p.pdb_file_names
     mf_opts = ['-u', str(p.unit_option), '-q', str(p.q)]
 
@@ -92,7 +92,7 @@ def run_job(params):
     # Run MultiFoXS if necessary
     dat_files = glob.glob("*.pdb.dat")
     if ((len(params.pdb_file_names) > 1 or len(dat_files) > 1)
-        and params.profile_file_name):
+            and params.profile_file_name):
         run_multifoxs(params, multi_foxs_opts)
 
 
@@ -150,8 +150,6 @@ def make_gnuplot_canvas_plot(max_states, profile):
                              % (out_file, colors[state_num]))
             plots.append("'%s' u 1:4 w lines lw 2.5 lc rgb '%s'"
                          % (out_file, colors[state_num]))
-            if state_num not in (0, 1):
-                plot_num = state_num + 2
         fh.write(", ".join(residuals) + '\n')
         fh.write("set origin 0,0.3;set size 1,0.69; set bmargin 0;"
                  "set xlabel ''; set format x ''; "
@@ -183,7 +181,9 @@ def plot_states_histogram(max_states, max_models):
 set terminal png enhanced size 290,240
 
 set output "chis.png"
-set style line 11 lc rgb '#808080' lt 1; set border 3 back ls 11;set xtics nomirror;set ytics nomirror
+set style line 11 lc rgb '#808080' lt 1
+set border 3 back ls 11
+set xtics nomirror;set ytics nomirror
 
 set style line 1 lc rgb 'gray30' lt 1 lw 2
 set style line 2 lc rgb '#596E98' lt 1 lw 2

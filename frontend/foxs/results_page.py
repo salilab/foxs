@@ -7,9 +7,12 @@ import re
 
 Fit = collections.namedtuple('Fit', ['png', 'dat', 'chi', 'c1', 'c2'])
 
+
 Profile = collections.namedtuple('Profile', ['png', 'dat'])
 
-Result = collections.namedtuple('Result', ['pdb', 'pdb_file', 'fit', 'profile'])
+
+Result = collections.namedtuple(
+    'Result', ['pdb', 'pdb_file', 'fit', 'profile'])
 
 
 class JMolTableReader(object):
@@ -21,7 +24,8 @@ class JMolTableReader(object):
         with open(self.job.get_path('jmoltable.html')) as fh:
             contents = fh.read()
         # Fix link to per-job PDB file
-        contents = contents.replace('load jmoltable.pdb',
+        contents = contents.replace(
+            'load jmoltable.pdb',
             'load "' + self.job.get_results_file_url('jmoltable.pdb') + '"')
         # Fix URL for our copy of JSmol
         contents = contents.replace('/foxs/jsmol/', '/saliweb/jsmol/')
@@ -30,11 +34,13 @@ class JMolTableReader(object):
                           r'Jmol.setCheckboxGroup(0,[\1])', contents)
         # Add an ID to the info table so we can style it with CSS
         contents = contents.replace('<table ', '<table id="plotcontrol" ')
+
         # Fix hard-coded links to help page
         def help_url(match):
             return url_for("help", _anchor=match.group(1))
         contents = re.sub(r'https:\/\/modbase\.compbio\.ucsf\.edu\/'
                           r'foxs\/help\.html#(\w+)', help_url, contents)
+
         # Fix links to job results files
         def get_upl(match):
             return self.job.get_results_file_url(match.group(1))
@@ -51,7 +57,8 @@ def show_results(job, interactive):
         allresult = Result(pdb=None, pdb_file=None, fit=fit,
                            profile=Profile(png='profiles.png', dat=None))
     template = 'results.html' if interactive else 'results_old.html'
-    return saliweb.frontend.render_results_template(template, job=job,
+    return saliweb.frontend.render_results_template(
+        template, job=job,
         pdb=pdb, profile=profile, email=email, results=results,
         allresult=allresult, include_jmoltable=JMolTableReader(job))
 
@@ -59,7 +66,8 @@ def show_results(job, interactive):
 def show_ensemble(job):
     max_states = 4  # should match that in backend/foxs/run_foxs.py
     pdb, profile, email = get_input_data(job)
-    return saliweb.frontend.render_results_template('ensemble.html', job=job,
+    return saliweb.frontend.render_results_template(
+        'ensemble.html', job=job,
         pdb=pdb, profile=profile, email=email, max_states=max_states)
 
 
@@ -94,7 +102,7 @@ def parse_log(job):
 def get_pdb_files(job):
     """Get the PDB files used by a job"""
     with open(job.get_path('inputFiles.txt')) as fh:
-        return [l.rstrip('\r\n') for l in fh]
+        return [line.rstrip('\r\n') for line in fh]
 
 
 def get_input_data(job):
