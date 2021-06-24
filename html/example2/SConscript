@@ -1,0 +1,7 @@
+Import('env')
+
+env.InstallHTML(['chis.png', 'e2_1_0.pdb', 'e2_1_1.pdb', 'e3_1_0.pdb',
+                 'e3_1_1.pdb', 'e3_1_2.pdb', 'e4_1_0.pdb', 'e4_1_1.pdb',
+                 'e4_1_2.pdb', 'e4_1_3.pdb', 'ensemble_size2_1_1.dat',
+                 'ensemble_size3_1_1.dat', 'ensemble_size4_1_1.dat',
+                 'input.zip', 'iq.dat', 'jsoutput.3.js'], 'example2')

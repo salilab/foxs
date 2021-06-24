@@ -5,4 +5,5 @@ env.InstallHTML(['img/logo.png', 'img/logo2.gif', 'img/debye.png',
 
 env.InstallHTML(['css/foxs.css'], 'css')
 
-env.InstallHTML(['examples/lyzexp.dat'], 'examples')
+SConscript('examples/SConscript')
+SConscript('example2/SConscript')
