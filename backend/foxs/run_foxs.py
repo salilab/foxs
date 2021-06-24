@@ -42,7 +42,7 @@ def setup_environment():
     # Add IMP and gnuplot to the path, using modules
     sys.path.append(os.path.join(os.environ['MODULESHOME'], 'init'))
     from python import module
-    module(['load', 'imp', 'gnuplot'])
+    module('load', 'imp', 'gnuplot')
 
 
 def get_command_options(p):
