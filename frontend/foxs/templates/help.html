@@ -123,64 +123,13 @@ If your experimental profile does not contain an error column, the server will a
 
 <h3><a name="output"></a>Output</h3>
 
-<hr size="2" width="90%" align="center" />
-<script src="/foxs/gnuplot_js/canvastext.js" type="text/javascript"></script>
-<script src="/foxs/gnuplot_js/gnuplot_common.js" type="text/javascript"></script>
-<script src="/foxs/gnuplot_js/gnuplot_dashedlines.js" type="text/javascript"></script>
-<script src="/foxs/gnuplot_js/gnuplot_mouse.js" type="text/javascript"></script>
-<script type="text/javascript">
-var canvas, ctx;
-gnuplot.grid_lines = true;
-gnuplot.zoomed = false;
-gnuplot.active_plot_name = "gnuplot_canvas";
-gnuplot.active_plot = gnuplot.dummyplot;
-gnuplot.dummyplot = function() {};
-function gnuplot_canvas( plot ) { gnuplot.active_plot(); };
-</script>
+<ul>
+  <li><a href="{{ url_for("static", filename="examples/3KFOfill.B99990003.pdb") }}">Input PDB</a>
+  <li><a href="{{ url_for("static", filename="examples/saxs.dat") }}">Input profile</a>
+  <li><a href="{{ url_for("results", name="job20210624_188750", passwd="CzJ6ansAmb") }}">FoXS output</a>
+</ul>
 
-<script src="/foxs/example/jsoutput.1.js" type="text/javascript"></script>
-<table align='center'><tr><td><div  id="wrapper">
-<canvas id="jsoutput_1" width=400 height=350 tabindex="0" oncontextmenu="return false;">
-<div class='box'><h2>Your browser does not support the HTML 5 canvas element</h2></div>
-</canvas>
- <div id="buttonWrapper">
-  <input type="button" id="minus"   onclick="gnuplot.unzoom();">
-            </div></div>
-<script type="text/javascript">
-  if (window.attachEvent) {window.attachEvent('onload', jsoutput_1);}
-else if (window.addEventListener) {window.addEventListener('load', jsoutput_1, false);}
-else {document.addEventListener('load', jsoutput_1, false);}
-</script>
-</td>
-<script src="/foxs/jsmol/JSmol.min.js" type="text/javascript"></script>
-<script src="/foxs/jsmol/Jmol2.js" type="text/javascript"></script>
-<script type="text/javascript">var Info = {}</script>
-
-<script> jmolInitialize("/foxs/jsmol/"); </script>
-<td width=350 height=350><div id="wrapper" align="center">
-<script type="text/javascript"> jmolApplet(350, 'load /foxs/example/jmoltable.pdb; select all;frame 0#;restrict selection;select selection and (protein, nucleic); ribbons only;select selection and not (protein, nucleic); spacefill only;if (!{*}.ribbons) { select selection and (protein, nucleic);spacefill only; };define selection model =1; select model = 1; color [255 ,0 ,0];frame 0#;restrict selection;select selection and (protein, nucleic); ribbons only;select selection and not (protein, nucleic); spacefill only;if (!{*}.ribbons) { select selection and (protein, nucleic);spacefill only; };; background white; hide hydrogens;');
-</script> </div> </td> </tr>
- </table>
-<table align='center'><tr><th><center> PDB file </th> <th> show/hide</th><th><center> &chi;<sup>2</sup> </th>
-<th><center> c<sub>1</sub> </th><th><center> c<sub>2</sub> </th><th><center>R<sub>g</sub></th>
-<th><center> # atoms </th> <th><center> fit file </th> <th><center> png file </th> </tr>
-<tr><td><font color=#FF0000>3KFOfill.B99990003</font></td>
-<td><center>
-<script>
- jmolCheckbox('javascript gnuplot.show_plot("jsoutput_1_plot_2");define selection selection, model=1;frame 0#;restrict selection;select selection and (protein, nucleic); ribbons only;select selection and not (protein, nucleic); spacefill only;if (!{*}.ribbons) { select selection and (protein, nucleic);spacefill only; };','javascript gnuplot.hide_plot("jsoutput_1_plot_2");define selection selection and not model=1;frame 0#;restrict selection;select selection and (protein, nucleic); ribbons only;select selection and not (protein, nucleic); spacefill only;if (!{*}.ribbons) { select selection and (protein, nucleic);spacefill only; };',"","isChecked") </script>
-
-
-</center></td><td><center> 1.19</center></td><td><center> 1.03</center></td><td><center> 1.23</center></td>
-<td><center> 17.68</center></td><td><center> 1817</td><td>
-<a href = "/foxs/example/3KFOfill.B99990003_saxs.fit">3KFOfill.B99990003_saxs.fit</a></td>
-<td><a href = "/foxs/example/3KFOfill.B99990003_saxs.png">3KFOfill.B99990003_saxs.png</a></td></tr>
-
-</table>
-
-<hr size="2" width="90%" align="center" />
-
-
-<a name="c1c2"></a>
+<a href="{{ url_for("results", name="job20210624_188750", passwd="CzJ6ansAmb") }}"><img width="800px" src="{{ url_for("static", filename="examples/output.png") }}" /></a>
 
 <p>
 The server displays the profile fit along with the residuals ((experimental-computed)/error) on the 
@@ -222,7 +171,8 @@ FoXS finds a combination of c<sub>1</sub> and c<sub>2</sub> that achieves the be
 (lowest &chi;<sup>2</sup> value) to the experimental data.
 </p>
 
-<p><font color="red" size="+1">IMPORTANT! </font> <br />
+<p><a name="c1c2"></a>
+<font color="red" size="+1">IMPORTANT! </font> <br />
 Extreme values of c<sub>1</sub> and c<sub>2</sub> parameters often indicate data overfitting.
 For example, if you have missing residues in the structure, FoXS can compensate for the missing 
 electron density by increasing the hydration layer density by setting c<sub>2</sub> parameter to the maximal value of 4.0.

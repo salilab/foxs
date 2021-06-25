@@ -3,4 +3,4 @@ Import('env')
 env.InstallHTML(['3KFOfill.B99990003.pdb', '3KFOfill.B99990003_saxs.fit',
                  '3KFOfill.B99990003_saxs.png', 'jmoltable.html',
                  'jmoltable.pdb', 'jsoutput.1.js', 'lyzexp.dat',
-                 'saxs.dat'], 'examples')
+                 'saxs.dat', 'output.png'], 'examples')
