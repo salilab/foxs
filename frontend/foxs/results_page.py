@@ -38,7 +38,13 @@ class JMolTableReader(object):
 
         # Fix hard-coded links to help page
         def help_url(match):
-            return url_for("help", _anchor=match.group(1))
+            anchor = match.group(1)
+            url = url_for("help", _anchor=anchor)
+            if anchor == 'c1c2':
+                return ('%s" title="This value may indicate data overfitting'
+                        % url)
+            else:
+                return url
         contents = re.sub(r'https:\/\/modbase\.compbio\.ucsf\.edu\/'
                           r'foxs\/help\.html#(\w+)', help_url, contents)
 
