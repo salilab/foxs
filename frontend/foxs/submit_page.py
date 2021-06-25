@@ -46,8 +46,8 @@ def handle_new_job():
 
     job = saliweb.frontend.IncomingJob()
 
-    prot_file_names = handle_pdb(request.form.get("pdb"),
-                                 request.files.get("pdbfile"), job)
+    prot_file_names, archive = handle_pdb(
+        request.form.get("pdb"), request.files.get("pdbfile"), job)
     profile_file_name = save_job_nonempty_file(request.files.get("profile"),
                                                job, "profile") or "-"
 
@@ -56,7 +56,7 @@ def handle_new_job():
 
     with open(job.get_path('data.txt'), 'w') as fh:
         fh.write("%s %s %s %.2f %d %d %d %d %d %d %d %.2f %.2f %d %d\n"
-                 % (prot_file_names[0], profile_file_name, email, q, psize,
+                 % (archive, profile_file_name, email, q, psize,
                     hlayer, exvolume, ihydrogens, residue, offset,
                     background, hlayer_value, exvolume_value, model_option,
                     unit_option))
@@ -66,16 +66,17 @@ def handle_new_job():
 
 
 def handle_pdb(pdb_code, pdb_file, job):
-    """Handle input PDB code or file. Return file name."""
+    """Handle input PDB code or file. Return a list of file names plus
+       a single archive that contains all files."""
     if pdb_file:
         saved_fname = save_job_nonempty_file(pdb_file, job, "PDB or zip")
         try:
-            return handle_zipfile(saved_fname, job)
+            return handle_zipfile(saved_fname, job), saved_fname
         except zipfile.BadZipfile:
-            return [saved_fname]
+            return [saved_fname] * 2
     elif pdb_code:
         fname = saliweb.frontend.get_pdb_chains(pdb_code, job.directory)
-        return [os.path.basename(fname)]
+        return [os.path.basename(fname)] * 2
     else:
         raise InputValidationError("Error in protein input: please specify "
                                    "PDB code or upload file")
