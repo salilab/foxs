@@ -33,6 +33,11 @@ def help():
     return render_template('help.html')
 
 
+@app.route('/help_multi')
+def help_multi():
+    return render_template('help_multi.html')
+
+
 @app.route('/job', methods=['GET', 'POST'])
 def job():
     if request.method == 'GET':

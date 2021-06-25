@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}FoXS Help{% endblock %}
+
+{% block body %}
+<p>If multiple PDB files were uploaded by the user, in addition to profile
+calculation for each structure, the server will also run enumeration and
+fitting of multiple structures to the input profile. Here is an example:</p>
+
+<ul>
+  <li>Input PDB files of DNA ligase III in several conformations (data from Cotner-Gohara et al. Biochemistry. 2010) <a href="{{ url_for("static", filename="example2/input.zip") }}">input.zip</a></li>
+  <li>Input profile file <a href="{{ url_for("static", filename="example2/iq.dat") }}">iq.dat</a></li>
+  <li><a href="{{ url_for("ensemble", name="job20210624_234090", passwd="ARdUdKMygY") }}">FoXS output</a>
+</ul>
+
+<p>In this example the crystal structure does not fit to the SAXS profile well
+(&chi;<sup>2</sup> = 230.2, green profile). Several conformations are needed in order to
+explain the data. In solution the protein exists as a population of closed
+and open states. The fit to data improves as more open states are added
+(bar plot and fit plot) and for 4 states the &chi;<sup>2</sup> value is 1.68. In the fit
+plot, the experimental data is shown as black dots, the best scoring single
+structure fit is green, the 2-state fit is red, the 3-state fit is blue, and
+the 4-state fit is cyan. Click on show/hide buttons to display/hide the
+corresponding profiles. The best scoring 2-, 3-, and 4-state models are
+shown below in the corresponding colors.</p>
+
+<a href="{{ url_for("ensemble", name="job20210624_234090", passwd="ARdUdKMygY") }}"><img width="800px" src="{{ url_for("static", filename="example2/output.png") }}" /></a>
+
+{% endblock %}
