@@ -43,7 +43,8 @@ def job():
 
 @app.route('/job/<name>')
 def results(name):
-    job = get_completed_job(name, request.args.get('passwd'))
+    job = get_completed_job(name, request.args.get('passwd'),
+                            still_running_template='running.html')
     return results_page.show_results(job, interactive=True)
 
 

@@ -1,7 +1,7 @@
 Import('env')
 
 env.InstallFrontend(['layout.html', 'index.html', 'help.html',
-                     'about.html', 'faq.html', 'links.html', 'submit.html',
+                     'about.html', 'faq.html', 'links.html', 'running.html',
                      'results_old.html', 'results_base.html', 'results.html',
                      'ensemble.html'],
                     'templates')

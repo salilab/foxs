@@ -62,8 +62,7 @@ def handle_new_job():
                     unit_option))
 
     job.submit(email)
-    return saliweb.frontend.render_submit_template(
-        'submit.html', email=email, job=job)
+    return saliweb.frontend.redirect_to_results_page(job)
 
 
 def handle_pdb(pdb_code, pdb_file, job):
