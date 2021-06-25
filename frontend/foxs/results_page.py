@@ -28,7 +28,7 @@ class JMolTableReader(object):
             'load jmoltable.pdb',
             'load "' + self.job.get_results_file_url('jmoltable.pdb') + '"')
         # Fix URL for our copy of JSmol
-        contents = contents.replace('/foxs/jsmol/', '/saliweb/jsmol/')
+        contents = contents.replace('/foxs/jsmol', '/jsmol')
         # Fix bug with show all/hide all checkbox
         contents = re.sub(r'jmolSetCheckboxGroup\(0,([^)]+)\)',
                           r'Jmol.setCheckboxGroup(0,[\1])', contents)
