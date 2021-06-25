@@ -76,7 +76,41 @@ def get_command_options(p):
     return foxs_opts, mf_opts
 
 
+def setup_multimodel(params):
+    """If we're using multi-model PDBs, make PDBs for each submodel"""
+    if params.model_option != 2:
+        return
+    mmpdbs = []
+    for pdb in params.pdb_file_names:
+        mmpdbs.extend(make_multimodel_pdb(pdb))
+    with open('multi-model-files.txt', 'w') as fh:
+        fh.write("\n".join(mmpdbs))
+
+
+def make_multimodel_pdb(pdb):
+    """If the given file is a multimodel PDB, make PDB files for
+       each submodel and return them"""
+    nmodel = 0
+    fname, ext = os.path.splitext(pdb)
+    subpdbs = []
+    with open(pdb) as fh:
+        for line in fh:
+            if line.startswith('MODEL '):
+                nmodel += 1
+                modelfn = "%s_m%d.pdb" % (fname, nmodel)
+                subpdbs.append(modelfn)
+                with open(modelfn, 'w') as outfh:
+                    outfh.write(line)
+                    for subline in fh:
+                        if subline.startswith('ENDMDL'):
+                            break
+                        outfh.write(subline)
+    return subpdbs or [pdb]
+
+
 def run_job(params):
+    setup_multimodel(params)
+
     print("Start profile computation analysis")
 
     foxs_opts, multi_foxs_opts = get_command_options(params)
@@ -121,8 +155,8 @@ def run_multifoxs(params, mf_opts):
 
     print("Calculate Rg")
     with open('rg', 'w') as fh:
-        run_subprocess(['compute_rg'] + params.pdb_file_names,
-                       stdout=fh)
+        run_subprocess(['compute_rg', '-m', str(params.model_option)]
+                       + params.pdb_file_names, stdout=fh)
 
 
 def make_multifoxs_plots(profile_file_name):

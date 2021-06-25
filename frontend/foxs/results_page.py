@@ -109,7 +109,10 @@ def parse_log(job):
 
 def get_pdb_files(job):
     """Get the PDB files used by a job"""
-    with open(job.get_path('inputFiles.txt')) as fh:
+    fname = job.get_path('multi-model-files.txt')
+    if not os.path.exists(fname):
+        fname = job.get_path('inputFiles.txt')
+    with open(fname) as fh:
         return [line.rstrip('\r\n') for line in fh]
 
 
