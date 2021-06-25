@@ -3,6 +3,7 @@ import saliweb.frontend
 import collections
 import os
 import re
+from .ensemble import get_multi_state_models
 
 
 Fit = collections.namedtuple('Fit', ['png', 'dat', 'chi', 'c1', 'c2'])
@@ -68,7 +69,8 @@ def show_ensemble(job):
     pdb, profile, email = get_input_data(job)
     return saliweb.frontend.render_results_template(
         'ensemble.html', job=job,
-        pdb=pdb, profile=profile, email=email, max_states=max_states)
+        pdb=pdb, profile=profile, email=email, max_states=max_states,
+        multi_state_models=list(get_multi_state_models(job, max_states)))
 
 
 def get_results(job, profile):

@@ -1,11 +1,11 @@
 {% extends "results_base.html" %}
 
 {% block results_content %}
-<script src="/saliweb/gnuplot5/canvastext.js"></script>
-<script src="/saliweb/gnuplot5/gnuplot_common.js"></script>
-<script src="/saliweb/gnuplot5/gnuplot_dashedlines.js"></script>
-<script src="/saliweb/gnuplot5/gnuplot_mouse.js"></script>
-<script src="/saliweb/gnuplot5/gnuplot_foxs.js"></script>
+<script type="text/javascript" src="/saliweb/gnuplot5/canvastext.js"></script>
+<script type="text/javascript" src="/saliweb/gnuplot5/gnuplot_common.js"></script>
+<script type="text/javascript" src="/saliweb/gnuplot5/gnuplot_dashedlines.js"></script>
+<script type="text/javascript" src="/saliweb/gnuplot5/gnuplot_mouse.js"></script>
+<script type="text/javascript" src="/saliweb/gnuplot5/gnuplot_foxs.js"></script>
 <script type="text/javascript">
 var canvas, ctx;
 gnuplot.grid_lines = true;
@@ -38,14 +38,62 @@ function gnuplot_canvas( plot ) { gnuplot.active_plot(); };
   if (window.attachEvent) {window.attachEvent('onload', jsoutput_3);}
 else if (window.addEventListener) {window.addEventListener('load', jsoutput_3, false);}
 else {document.addEventListener('load', jsoutput_3, false);}
-
-gnuplot.show_plot("jsoutput_3_plot_2");
-{%- for plot_num in range(4, max_states + 2) %}
-gnuplot.hide_plot("jsoutput_3_plot_{{ plot_num }}");
-{%- endfor %}
 </script>
+
+<script type="text/javascript">
+gnuplot.show_plot("jsoutput_3_plot_2");
+</script>
+{%- for plot_num in range(4, max_states + 2) %}
+<script type="text/javascript">
+gnuplot.hide_plot("jsoutput_3_plot_{{ plot_num }}");
+</script>
+{%- endfor %}
     </td>
   </tr>
 </table>
+
+<script type="text/javascript" src="/jsmol/JSmol.min.js"></script>
+
+<script type="text/javascript">
+var myInfo1 = {
+        height: '98%',
+        width: '98%',
+        jarFile: "JmolApplet.jar",
+        jarPath: "/jsmol/",
+        j2sPath: "/jsmol/j2s/",
+        use: 'HTML5',
+        console: "myJmol1_infodiv",
+        debug: false
+};
+</script>
+
+{% for msmodel in multi_state_models %}
+<table><tr><th> <b> Best scoring {{ msmodel.state_num }}-state model
+&chi;<sup>2</sup> = {{ msmodel.score }}
+c<sub>1</sub> = {{ msmodel.c1 }} c<sub>2</sub> = {{ msmodel.c2 }}
+
+<input type='checkbox' id='chbx{{ msmodel.state_num + 1 }}' onchange='func{{ msmodel.state_num + 1 }}()' {{ "checked" if msmodel.state_num in (1,2) }}/>
+<script type="text/javascript">
+function func{{ msmodel.state_num + 1 }}() {
+   if(document.getElementById("chbx{{ msmodel.state_num + 1}}").checked==true){
+     gnuplot.show_plot("jsoutput_3_plot_{{ msmodel.state_num + 1 }}");
+   } else {
+     gnuplot.hide_plot("jsoutput_3_plot_{{ msmodel.state_num + 1 }}");
+   }
+}; </script>
+show/hide <a href="{{ job.get_results_file_url(msmodel.dat_file) }}"> weighted profile </a></b> </th></tr><tr><td>
+
+  <table align="center"> <tr>
+  {% for pdb in msmodel.pdbs %}
+  <td><table><tr><th><b>PDB{{ pdb.num+1 }}: {{ pdb.filename }} R<sub>g</sub> = {{ '%.02f' % pdb.rg }} w<sub>{{ pdb.num+1 }}</sub> = {{ pdb.weight }}</b></th></tr><tr><td>
+<div id="wrapper2">
+<script type="text/javascript">
+myJmol{{ msmodel.state_num }}_{{ pdb.num }} = Jmol.getApplet("myJmol{{ msmodel.state_num }}_{{ pdb.num }}", myInfo1);
+Jmol.script(myJmol{{ msmodel.state_num }}_{{ pdb.num }}, 'load "{{ job.get_results_file_url(pdb.filename) }}";backbone OFF; wireframe OFF; spacefill OFF; cartoons; color [{{ msmodel.color }}];' );
+</script></div></td></tr></table> </td>
+  {% endfor %}
+  </tr> </table> </td></tr>
+</table>
+{% endfor %}
 
 {% endblock %}

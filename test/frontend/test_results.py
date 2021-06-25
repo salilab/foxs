@@ -170,6 +170,8 @@ class Tests(saliweb.test.TestCase):
                         "1abc.pdb test.profile EMAIL 0.50 500 "
                         "1 1 1 0 0 0 0.00 1.00 3 1\n")
             j.make_file('inputFiles.txt', "1abc.pdb\n1xyz.pdb")
+            j.make_file('rg', '1abc.pdb Rg= 10.000\n'
+                              '1xyz.pdb Rg= 20.000\n')
             c = foxs.app.test_client()
             rv = c.get('/job/testjob8/ensemble?passwd=%s' % j.passwd)
             r = re.compile(b'PDB files.*Profile file.*User e-mail.*'

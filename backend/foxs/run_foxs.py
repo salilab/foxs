@@ -119,6 +119,11 @@ def run_multifoxs(params, mf_opts):
         raise RuntimeError("No MultiFoXS ensembles produced")
     make_multifoxs_plots(params.profile_file_name)
 
+    print("Calculate Rg")
+    with open('rg', 'w') as fh:
+        run_subprocess(['compute_rg'] + params.pdb_file_names,
+                       stdout=fh)
+
 
 def make_multifoxs_plots(profile_file_name):
     max_states = 4
@@ -234,11 +239,13 @@ def dat_files_for_pdb(pdb):
                 yield dat_file
 
 
-def run_subprocess(cmd):
+def run_subprocess(cmd, stdout=None):
     """Run and log a subprocess"""
+    if stdout is None:
+        stdout = sys.stdout
     # Ensure that output from subprocess shows up in the right place in the log
     sys.stdout.flush()
-    subprocess.check_call(cmd, stdout=sys.stdout, stderr=sys.stderr)
+    subprocess.check_call(cmd, stdout=stdout, stderr=sys.stderr)
 
 
 def main():
