@@ -13,8 +13,8 @@ class Job(saliweb.backend.Job):
 
     def run(self):
         # Simply run the run_foxs Python file in the job directory
-        foxs_path = os.path.abspath(os.path.dirname(run_foxs.__file__))
-        cmd = ['python3', os.path.join(foxs_path, run_foxs.__name__ + '.py')]
+        foxs_path = os.path.abspath(run_foxs.__file__)
+        cmd = ['/usr/bin/python3', foxs_path]
         return self.runnercls(cmd)
 
     def postprocess(self):
