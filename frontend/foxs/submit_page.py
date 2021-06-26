@@ -73,10 +73,10 @@ def handle_pdb(pdb_code, pdb_file, job):
         try:
             return handle_zipfile(saved_fname, job), saved_fname
         except zipfile.BadZipfile:
-            return [saved_fname] * 2
+            return [saved_fname], saved_fname
     elif pdb_code:
         fname = saliweb.frontend.get_pdb_chains(pdb_code, job.directory)
-        return [os.path.basename(fname)] * 2
+        return [os.path.basename(fname)], os.path.basename(fname)
     else:
         raise InputValidationError("Error in protein input: please specify "
                                    "PDB code or upload file")
