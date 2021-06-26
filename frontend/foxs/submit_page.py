@@ -56,7 +56,7 @@ def handle_new_job():
 
     with open(job.get_path('data.txt'), 'w') as fh:
         fh.write("%s %s %s %.2f %d %d %d %d %d %d %d %.2f %.2f %d %d\n"
-                 % (archive, profile_file_name, email, q, psize,
+                 % (archive, profile_file_name, email or '-', q, psize,
                     hlayer, exvolume, ihydrogens, residue, offset,
                     background, hlayer_value, exvolume_value, model_option,
                     unit_option))
