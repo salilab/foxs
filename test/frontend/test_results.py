@@ -195,6 +195,20 @@ class Tests(saliweb.test.TestCase):
                            re.DOTALL | re.MULTILINE)
             self.assertRegex(rv.data, r)
 
+    def test_job_two_pdbs_profile_ensemble_bad(self):
+        """Test display of ensemble with two PDBs, bad ensemble file"""
+        with saliweb.test.make_frontend_job('testjob9') as j:
+            j.make_file('data.txt',
+                        "1abc.pdb test.profile EMAIL 0.50 500 "
+                        "1 1 1 0 0 0 0.00 1.00 3 1\n")
+            j.make_file("ensembles_size_2.txt", "garbage\n")
+            j.make_file('rg', '1abc.pdb Rg= 10.000\n'
+                              '1xyz.pdb Rg= 20.000\n')
+            c = foxs.app.test_client()
+            self.assertRaises(
+                ValueError, c.get,
+                '/job/testjob9/ensemble?passwd=%s' % j.passwd)
+
 
 if __name__ == '__main__':
     unittest.main()
