@@ -48,7 +48,9 @@ class Tests(saliweb.test.TestCase):
             j.make_file('jmoltable.html',
                         '<a href="dirname/foo.dat">foo</a>\n'
                         '<a href="https://modbase.compbio.ucsf.edu/'
-                        'foxs/help.html#foo\n')
+                        'foxs/help.html#foo\n'
+                        '<a href="https://modbase.compbio.ucsf.edu/'
+                        'foxs/help.html#c1c2\n')
 
             c = foxs.app.test_client()
             rv = c.get('/job/testjob3?passwd=%s' % j.passwd)
@@ -56,7 +58,8 @@ class Tests(saliweb.test.TestCase):
                            rb'1abc\.pdb.*\-.*EMAIL.*'
                            rb'see interactive display\? Use.*old interface.*'
                            b'<canvas id="jsoutput_1".*'
-                           rb'testjob3\/foo\.dat',
+                           rb'testjob3\/foo\.dat.*'
+                           b'may indicate data overfitting',
                            re.DOTALL | re.MULTILINE)
             self.assertRegex(rv.data, r)
 
@@ -171,6 +174,11 @@ class Tests(saliweb.test.TestCase):
                         "1abc.pdb test.profile EMAIL 0.50 500 "
                         "1 1 1 0 0 0 0.00 1.00 3 1\n")
             j.make_file('inputFiles.txt', "1abc.pdb\n1xyz.pdb")
+            j.make_file(
+                "ensembles_size_2.txt",
+                "1 |  6.37 | x1 6.37 (1.04, 0.50)\n"
+                "    0   | 0.497 (0.477, 0.029) | 1abc.pdb.dat (0.417)\n"
+                "    3   | 0.503 (0.504, 0.188) | 1xyz.pdb.dat (0.417)\n")
             j.make_file('rg', '1abc.pdb Rg= 10.000\n'
                               '1xyz.pdb Rg= 20.000\n')
             c = foxs.app.test_client()

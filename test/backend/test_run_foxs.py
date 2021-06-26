@@ -236,6 +236,28 @@ garbage |  0.06 | x1 0.06 (1.03, 1.66)
             with mocked_run_subprocess():
                 run_foxs.run_job(p)
 
+    def test_run_job_ok_multimodel_pdb(self):
+        """Test run_job success with multimodel PDB"""
+        p = MockParameters()
+        p.model_option = 2
+        with saliweb.test.temporary_working_directory():
+            with open('1.pdb', 'w') as fh:
+                fh.write("HEADER\nMODEL  \nline1\nline2\nENDMDL\n"
+                         "MODEL  \nline3\nline4\nENDMDL\nEND\n")
+            with open('2.pdb', 'w') as fh:
+                fh.write("HEADER\nEND\n")
+            # Simulate production of plot png
+            with open('pdb6lyt_lyzexp.png', 'w') as fh:
+                fh.write('\n')
+            with mocked_run_subprocess():
+                run_foxs.run_job(p)
+            # Should have made multimodel list and files
+            os.unlink("1_m1.pdb")
+            os.unlink("1_m2.pdb")
+            self.assertFalse(os.path.exists("1_m3.pdb"))
+            self.assertFalse(os.path.exists("2_m1.pdb"))
+            os.unlink("multi-model-files.txt")
+
     def test_run_job_no_ensemble(self):
         """Test run_job failure (no MultiFoXS ensemble produced)"""
         p = MockParameters()
@@ -247,7 +269,9 @@ garbage |  0.06 | x1 0.06 (1.03, 1.66)
             # Simulate dat files
             with open('1.pdb.dat', 'w') as fh:
                 fh.write('\n')
-            with open('2.pdb.dat', 'w') as fh:
+            with open('2_m1.pdb.dat', 'w') as fh:
+                fh.write('\n')
+            with open('2_m2.pdb.dat', 'w') as fh:
                 fh.write('\n')
             with mocked_run_subprocess():
                 self.assertRaises(RuntimeError, run_foxs.run_job, p)

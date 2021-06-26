@@ -25,6 +25,12 @@ class Tests(saliweb.test.TestCase):
         self.assertIn(b'displays the profile fit along with the residuals',
                       rv.data)
 
+    def test_help_multi(self):
+        """Test help_multi page"""
+        c = foxs.app.test_client()
+        rv = c.get('/help_multi')
+        self.assertIn(b'If multiple PDB files were uploaded', rv.data)
+
     def test_about(self):
         """Test about page"""
         c = foxs.app.test_client()
