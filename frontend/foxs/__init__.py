@@ -23,6 +23,11 @@ def faq():
     return render_template('faq.html')
 
 
+@app.route('/download')
+def download():
+    return render_template('download.html')
+
+
 @app.route('/links')
 def links():
     return render_template('links.html')

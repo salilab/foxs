@@ -43,6 +43,12 @@ class Tests(saliweb.test.TestCase):
         rv = c.get('/faq')
         self.assertIn(b'structure includes non-protein atoms', rv.data)
 
+    def test_download(self):
+        """Test download page"""
+        c = foxs.app.test_client()
+        rv = c.get('/download')
+        self.assertIn(b'see the source code of this web service', rv.data)
+
     def test_links(self):
         """Test links page"""
         c = foxs.app.test_client()
