@@ -40,7 +40,7 @@
 }
 
 input[type = "button"] {
-  background-image: url("/foxs-test/html/img/zoom_out_icon.png");
+  background-image: url("/foxs/html/img/zoom_out_icon.png");
   background-color: transparent;
   background-repeat: no-repeat;
   height: 50px;
