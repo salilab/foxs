@@ -105,6 +105,10 @@ def make_multimodel_pdb(pdb):
                         if subline.startswith('ENDMDL'):
                             break
                         outfh.write(subline)
+    # If only one model, FoXS just uses the original file
+    if len(subpdbs) == 1:
+        del subpdbs[0]
+        os.unlink('%s_m1.pdb' % fname)
     return subpdbs or [pdb]
 
 
