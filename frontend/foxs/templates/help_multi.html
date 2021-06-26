@@ -10,7 +10,7 @@ fitting of multiple structures to the input profile. Here is an example:</p>
 <ul>
   <li>Input PDB files of DNA ligase III in several conformations (data from Cotner-Gohara et al. Biochemistry. 2010) <a href="{{ url_for("static", filename="example2/input.zip") }}">input.zip</a></li>
   <li>Input profile file <a href="{{ url_for("static", filename="example2/iq.dat") }}">iq.dat</a></li>
-  <li><a href="{{ url_for("ensemble", name="job20210624_234090", passwd="ARdUdKMygY") }}">FoXS output</a>
+  <li><a href="{{ url_for("ensemble", name="job20210624_234090", passwd="ARdUdKMygY") }}">FoXS output</a></li>
 </ul>
 
 <p>In this example the crystal structure does not fit to the SAXS profile well
@@ -24,6 +24,6 @@ the 4-state fit is cyan. Click on show/hide buttons to display/hide the
 corresponding profiles. The best scoring 2-, 3-, and 4-state models are
 shown below in the corresponding colors.</p>
 
-<a href="{{ url_for("ensemble", name="job20210624_234090", passwd="ARdUdKMygY") }}"><img width="800px" src="{{ url_for("static", filename="example2/output.png") }}" /></a>
+<a href="{{ url_for("ensemble", name="job20210624_234090", passwd="ARdUdKMygY") }}"><img width="800px" src="{{ url_for("static", filename="example2/output.png") }}" alt="Example FoXS output" title="This is a static screenshot of the FoXS output. Click on it to go to the live (and interactive) results page." /></a>
 
 {% endblock %}

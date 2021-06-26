@@ -23,7 +23,7 @@ function gnuplot_canvas( plot ) { gnuplot.active_plot(); };
 <table>
   <tr>
     <td align="center">
-      <div id="wrapper2"><img src="{{ job.get_results_file_url("chis.png") }}" height="250" width="300" /></div>
+      <div id="wrapper2"><img src="{{ job.get_results_file_url("chis.png") }}" height="250" width="300" alt="Plot of chi-squared vs. number of states" /></div>
     </td>
     <td>
       <div id="wrapper2">
@@ -31,10 +31,10 @@ function gnuplot_canvas( plot ) { gnuplot.active_plot(); };
           <div class='box'><h2>Your browser does not support the HTML 5 canvas element</h2></div>
         </canvas>
       <div id="buttonWrapper">
-        <input type="button" id="minus" onclick="gnuplot.unzoom();">
+        <input type="button" id="minus" onclick="gnuplot.unzoom();" />
       </div>
     </div>
-<script>
+<script type="text/javascript">
   if (window.attachEvent) {window.attachEvent('onload', jsoutput_3);}
 else if (window.addEventListener) {window.addEventListener('load', jsoutput_3, false);}
 else {document.addEventListener('load', jsoutput_3, false);}

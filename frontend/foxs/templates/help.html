@@ -124,12 +124,12 @@ If your experimental profile does not contain an error column, the server will a
 <h3><a name="output"></a>Output</h3>
 
 <ul>
-  <li><a href="{{ url_for("static", filename="examples/3KFOfill.B99990003.pdb") }}">Input PDB</a>
-  <li><a href="{{ url_for("static", filename="examples/saxs.dat") }}">Input profile</a>
-  <li><a href="{{ url_for("results", name="job20210624_188750", passwd="CzJ6ansAmb") }}">FoXS output</a>
+  <li><a href="{{ url_for("static", filename="examples/3KFOfill.B99990003.pdb") }}">Input PDB</a></li>
+  <li><a href="{{ url_for("static", filename="examples/saxs.dat") }}">Input profile</a></li>
+  <li><a href="{{ url_for("results", name="job20210624_188750", passwd="CzJ6ansAmb") }}">FoXS output</a></li>
 </ul>
 
-<a href="{{ url_for("results", name="job20210624_188750", passwd="CzJ6ansAmb") }}"><img width="800px" src="{{ url_for("static", filename="examples/output.png") }}" /></a>
+<a href="{{ url_for("results", name="job20210624_188750", passwd="CzJ6ansAmb") }}"><img width="800px" src="{{ url_for("static", filename="examples/output.png") }}" alt="Example FoXS output" title="This is a static screenshot of the FoXS output. Click on it to go to the live (and interactive) results page." /></a>
 
 <p>
 The server displays the profile fit along with the residuals ((experimental-computed)/error) on the 
