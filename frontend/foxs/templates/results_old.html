@@ -7,9 +7,9 @@
 {%- if results|length > 1 and profile != '-' %}
 <table class="fitinfo">
   <tr>
-    <th>PDB file</th> <th>&chi;</th> <th>c1</th> <th>c2</th> <th>Download fit file</th>
+    <th>PDB file</th> <th>&chi;<sup>2</sup></th> <th>c1</th> <th>c2</th> <th>Download fit file</th>
     <th class="spacer"></th>
-    <th>PDB file</th> <th>&chi;</th> <th>c1</th> <th>c2</th> <th>Download fit file</th>
+    <th>PDB file</th> <th>&chi;<sup>2</sup></th> <th>c1</th> <th>c2</th> <th>Download fit file</th>
   </tr>
 
   {%- for row in results|batch(2) %}
@@ -39,7 +39,7 @@
 
 <p><a href="{{ job.get_results_file_url(r.fit.dat) }}">Experimental profile fit file</a></p>
 
-<p>&chi; = {{ r.fit.chi }} c1 = {{ r.fit.c1 }} c2 = {{ r.fit.c2 }}</p>
+<p>&chi;<sup>2</sup> = {{ r.fit.chi }} c1 = {{ r.fit.c1 }} c2 = {{ r.fit.c2 }}</p>
 
 {%- else %}
 <img src="{{ job.get_results_file_url(r.profile.png) }}" height="350" alt="plot of profile" />
