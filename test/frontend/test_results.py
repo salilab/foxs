@@ -80,7 +80,8 @@ class Tests(saliweb.test.TestCase):
                            b'1abc Fit to experimental profile.*'
                            rb'1abc_test\.png.*plot of fit.*'
                            rb'1abc_test\.dat.*Experimental profile fit file.*'
-                           rb'&chi; = 0\.202144 c1 = 1\.01131 c2 = 0\.5872',
+                           rb'&chi;<sup>2</sup> = 0\.202144 c1 = 1\.01131 '
+                           rb'c2 = 0\.5872',
                            re.DOTALL | re.MULTILINE)
             self.assertRegex(rv.data, r)
 
