@@ -139,7 +139,7 @@ class Tests(saliweb.test.TestCase):
             j.make_file('data.txt',
                         "1abc.pdb test.profile EMAIL 0.50 500 "
                         "1 1 1 0 0 0 0.00 1.00 3 1\n")
-            j.make_file('inputFiles.txt', "1abc.pdb\n1xyz.pdb")
+            j.make_file('multi-model-files.txt', "1abc.pdb\n1xyz.pdb")
             j.make_file(
                 'foxs.log',
                 "1abc.pdb test.profile Chi^2 = 0.202144 c1 = 1.01131 "
@@ -173,9 +173,13 @@ class Tests(saliweb.test.TestCase):
             j.make_file('data.txt',
                         "1abc.pdb test.profile EMAIL 0.50 500 "
                         "1 1 1 0 0 0 0.00 1.00 3 1\n")
-            j.make_file('inputFiles.txt', "1abc.pdb\n1xyz.pdb")
             j.make_file(
                 "ensembles_size_2.txt",
+                "garbage\n"
+                "more| x1 | garbage\n"
+                "2 |  6.37 | x1 6.37 (1.04, 0.50)\n"
+                "    0   | 0.497 (0.477, 0.029) | 1abc.pdb.dat (0.417)\n"
+                "    3   | 0.503 (0.504, 0.188) | 1xyz.pdb.dat (0.417)\n"
                 "1 |  6.37 | x1 6.37 (1.04, 0.50)\n"
                 "    0   | 0.497 (0.477, 0.029) | 1abc.pdb.dat (0.417)\n"
                 "    3   | 0.503 (0.504, 0.188) | 1xyz.pdb.dat (0.417)\n")
