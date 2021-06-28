@@ -126,6 +126,7 @@ class Tests(saliweb.test.TestCase):
                 zip_name = os.path.join(zip_root, 'input.zip')
                 z = zipfile.ZipFile(zip_name, 'w')
                 z.writestr("inputFiles.txt", "foo")  # should be ignored
+                z.writestr("in/subdir/.hidden.pdb", "bar")  # should be ignored
                 z.writestr("in/subdir/1abc.pdb", "bar")
                 z.writestr("2xyz.pdb", "baz")
                 z.close()
