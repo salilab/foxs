@@ -3,7 +3,7 @@ import saliweb.frontend
 import collections
 import os
 import re
-from .ensemble import get_multi_state_models
+from .ensemble import get_multi_state_models, get_bokeh, get_chi_plot
 
 
 Fit = collections.namedtuple('Fit', ['png', 'dat', 'chi', 'c1', 'c2'])
@@ -75,6 +75,7 @@ def show_ensemble(job):
     pdb, profile, email = get_input_data(job)
     return saliweb.frontend.render_results_template(
         'ensemble.html', job=job,
+        bokeh=get_bokeh(), chiplot=get_chi_plot(job),
         pdb=pdb, profile=profile, email=email, max_states=max_states,
         multi_state_models=list(get_multi_state_models(job, max_states)))
 

@@ -185,6 +185,7 @@ class Tests(saliweb.test.TestCase):
                 "    3   | 0.503 (0.504, 0.188) | 1xyz.pdb.dat (0.417)\n")
             j.make_file('rg', '1abc.pdb Rg= 10.000\n'
                               '1xyz.pdb Rg= 20.000\n')
+            j.make_file("chis", "1 1.16 1.58\n2 1.08 0.14\ngarbage\n\n")
             c = foxs.app.test_client()
             rv = c.get('/job/testjob8/ensemble?passwd=%s' % j.passwd)
             r = re.compile(b'PDB files.*Profile file.*User e-mail.*'
@@ -204,6 +205,7 @@ class Tests(saliweb.test.TestCase):
             j.make_file("ensembles_size_2.txt", "garbage\n")
             j.make_file('rg', '1abc.pdb Rg= 10.000\n'
                               '1xyz.pdb Rg= 20.000\n')
+            j.make_file("chis", "1 1.16 1.58\n2 1.08 0.14\ngarbage\n\n")
             c = foxs.app.test_client()
             self.assertRaises(
                 ValueError, c.get,

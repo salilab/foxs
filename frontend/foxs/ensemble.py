@@ -1,6 +1,12 @@
 import os
 import re
 import collections
+import bokeh
+import bokeh.resources
+import bokeh.embed
+import bokeh.plotting
+from bokeh.models.tools import HoverTool
+from bokeh.models.ranges import Range1d
 
 
 PDB = collections.namedtuple('PDB', ['filename', 'rg', 'weight', 'num'])
@@ -63,3 +69,61 @@ def get_multi_state_models(job, max_state):
         fn = job.get_path("ensembles_size_%d.txt" % size)
         if os.path.exists(fn):
             yield MultiStateModel(job, size, 1, fn, colors[size-1], rg)
+
+
+def get_bokeh():
+    """Return info for getting BokehJS from its CDN"""
+    js = 'bokeh-%s.min.js' % bokeh.__version__
+    jshash = bokeh.resources.get_sri_hashes_for_version(bokeh.__version__)[js]
+    return {'js': js, 'hash': jshash}
+
+
+def get_chi_plot_source(job):
+    """Read the chis file and return a bokeh data source"""
+    nstate = []
+    val = []
+    valerr = []
+    desc = []
+    with open(job.get_path('chis')) as fh:
+        for line in fh:
+            s = line.split()
+            if len(s) != 3:
+                continue
+            nstate.append(int(s[0]))
+            val.append(float(s[1]))
+            err = float(s[2])
+            valerr.append(val[-1] + err)
+            desc.append("%.2f ± %.2f" % (val[-1], err))
+    return bokeh.plotting.ColumnDataSource(
+        data={'nstate': nstate, 'val': val, 'desc': desc, 'valerr': valerr})
+
+
+def get_chi_plot(job):
+    """Render the chi vs #state plot using Bokeh"""
+    source = get_chi_plot_source(job)
+    # If the error bars are huge, truncate them so we can see the best chi
+    # in the default view
+    ymax = min(max(source.data['val'])*2.,
+               max(source.data['valerr'])+0.01)
+    p = bokeh.plotting.figure(
+        x_axis_label='# of states', y_axis_label='χ²',
+        plot_width=300, plot_height=250,
+        y_range=Range1d(0, ymax, bounds=(0, None)))
+    p.xaxis.ticker = source.data['nstate']
+    p.yaxis.axis_label_text_font_style = 'normal'
+    p.yaxis.axis_label_text_font_size = '1.2em'
+    p.xaxis.axis_label_text_font_style = 'normal'
+    p.xaxis.axis_label_text_font_size = '1.2em'
+    p.xgrid.visible = p.ygrid.visible = False
+    p.toolbar.autohide = True
+    p.outline_line_color = None
+
+    p.add_tools(HoverTool(tooltips="@desc"))
+
+    p.segment(x0='nstate', x1='nstate', y0='val', y1='valerr', source=source)
+    p.rect('nstate', 'valerr', 0.1, 0.01, source=source)
+    p.vbar(x='nstate', top='val', width=0.2, source=source,
+           hover_line_color='black', line_color=None)
+
+    script, div = bokeh.embed.components(p)
+    return {'js': script, 'div': div}
