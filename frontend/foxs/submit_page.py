@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 def handle_new_job():
     email = request.form.get("email")
     saliweb.frontend.check_email(email, required=False)
+    jobname = request.form.get('jobname')
 
     q = request.form.get('q', 0.5, type=float)
     if q <= 0.0 or q >= 1.0:
@@ -44,7 +45,7 @@ def handle_new_job():
     opts = {"angstroms": 2, "nanometers": 3}
     unit_option = opts.get(request.form.get('units'), 1)
 
-    job = saliweb.frontend.IncomingJob()
+    job = saliweb.frontend.IncomingJob(jobname)
 
     prot_file_names, archive = handle_pdb(
         request.form.get("pdb"), request.files.get("pdbfile"), job)

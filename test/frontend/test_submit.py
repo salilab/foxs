@@ -123,7 +123,8 @@ class Tests(saliweb.test.TestCase):
                 make_test_pdb(pdb_root)
 
                 c = foxs.app.test_client()
-                rv = c.post('/job', data={'pdb': '1xyz:C'},
+                rv = c.post('/job', data={'pdb': '1xyz:C',
+                                          'jobname': 'myjob'},
                             follow_redirects=True)
                 self.assertEqual(rv.status_code, 503)
                 self.assertIn(b'Your job has been submitted', rv.data)
