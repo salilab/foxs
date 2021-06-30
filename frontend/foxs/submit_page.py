@@ -73,6 +73,9 @@ def handle_pdb(pdb_code, pdb_file, job):
         try:
             return handle_zipfile(saved_fname, job), saved_fname
         except zipfile.BadZipfile:
+            saliweb.frontend.check_pdb(
+                job.get_path(saved_fname),
+                show_filename=os.path.basename(pdb_file.filename))
             return [saved_fname], saved_fname
     elif pdb_code:
         fname = saliweb.frontend.get_pdb_chains(pdb_code, job.directory)
@@ -96,6 +99,8 @@ def handle_zipfile(zfname, job):
         if fname not in exclude:
             with open(job.get_path(fname), 'wb') as out_fh:
                 out_fh.write(fh.read(zi))
+            saliweb.frontend.check_pdb(job.get_path(fname),
+                                       show_filename=zi.filename)
             pdbs.append(fname)
             if len(pdbs) > 100:
                 raise InputValidationError(

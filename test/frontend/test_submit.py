@@ -39,6 +39,9 @@ class Tests(saliweb.test.TestCase):
             emptyf = os.path.join(tmpdir, 'empty.pdb')
             with open(emptyf, 'w') as fh:
                 pass
+            badf = os.path.join(tmpdir, 'bad.pdb')
+            with open(badf, 'w') as fh:
+                fh.write("not a PDB")
             pdbf = os.path.join(tmpdir, 'test.pdb')
             with open(pdbf, 'w') as fh:
                 fh.write(
@@ -54,6 +57,14 @@ class Tests(saliweb.test.TestCase):
             self.assertEqual(rv.status_code, 400)
             self.assertIn(
                 b'You have uploaded an empty PDB or zip file', rv.data)
+
+            # Something not a PDB file
+            data = {'pdbfile': open(badf, 'rb')}
+            rv = c.post('/job', data=data)
+            self.assertEqual(rv.status_code, 400)
+            self.assertIn(
+                b'PDB file bad.pdb contains no ATOM or HETATM records',
+                rv.data)
 
             # Bad hlayer value
             rv = c.post('/job', data={'c2': '5.0'})
@@ -127,8 +138,8 @@ class Tests(saliweb.test.TestCase):
                 z = zipfile.ZipFile(zip_name, 'w')
                 z.writestr("inputFiles.txt", "foo")  # should be ignored
                 z.writestr("in/subdir/.hidden.pdb", "bar")  # should be ignored
-                z.writestr("in/subdir/1abc.pdb", "bar")
-                z.writestr("2xyz.pdb", "baz")
+                z.writestr("in/subdir/1abc.pdb", "ATOM  bar")
+                z.writestr("2xyz.pdb", "ATOM  baz")
                 z.close()
 
                 c = foxs.app.test_client()
@@ -146,7 +157,7 @@ class Tests(saliweb.test.TestCase):
                 zip_name = os.path.join(zip_root, 'input.zip')
                 z = zipfile.ZipFile(zip_name, 'w')
                 for i in range(101):
-                    z.writestr("%d.pdb" % i, "baz")
+                    z.writestr("%d.pdb" % i, "ATOM  \n")
                 z.close()
 
                 c = foxs.app.test_client()
@@ -154,6 +165,23 @@ class Tests(saliweb.test.TestCase):
                 self.assertEqual(rv.status_code, 400)
                 self.assertIn(b'Only 100 PDB files can run on the server',
                               rv.data)
+
+    def test_submit_zip_file_not_pdb(self):
+        """Test submit with zip file containing something not a PDB"""
+        with saliweb.test.temporary_directory() as incoming:
+            with saliweb.test.temporary_directory() as zip_root:
+                foxs.app.config['DIRECTORIES_INCOMING'] = incoming
+
+                zip_name = os.path.join(zip_root, 'input.zip')
+                z = zipfile.ZipFile(zip_name, 'w')
+                z.writestr("input/test.pdb", "garbage")
+                z.close()
+
+                c = foxs.app.test_client()
+                rv = c.post('/job', data={'pdbfile': open(zip_name, 'rb')})
+                self.assertEqual(rv.status_code, 400)
+                self.assertIn(b'PDB file input/test.pdb contains no '
+                              b'ATOM or HETATM records', rv.data)
 
 
 if __name__ == '__main__':
