@@ -92,6 +92,8 @@ def handle_zipfile(zfname, job):
     pdbs = []
     fh = zipfile.ZipFile(job.get_path(zfname))
     for zi in fh.infolist():
+        if zi.is_dir():
+            continue
         fname = os.path.basename(zi.filename)
         # Exclude hidden files, e.g. __MACOSX/.something.pdb
         if fname.startswith('.'):

@@ -139,6 +139,7 @@ class Tests(saliweb.test.TestCase):
                 z = zipfile.ZipFile(zip_name, 'w')
                 z.writestr("inputFiles.txt", "foo")  # should be ignored
                 z.writestr("in/subdir/.hidden.pdb", "bar")  # should be ignored
+                z.writestr("in/subdir/", "")   # directory, should be ignored
                 z.writestr("in/subdir/1abc.pdb", "ATOM  bar")
                 z.writestr("2xyz.pdb", "ATOM  baz")
                 z.close()
