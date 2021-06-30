@@ -40,7 +40,7 @@ def set_job_state(state):
 def setup_environment():
     """Set up the environment for the job so we can find FoXS, etc."""
     # Add IMP and gnuplot to the path, using modules
-    sys.path.append(os.path.join(os.environ['MODULESHOME'], 'init'))
+    sys.path.append('/usr/share/Modules/init/')
     from python import module
     module('load', 'imp', 'gnuplot')
 
