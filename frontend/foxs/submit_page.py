@@ -75,7 +75,7 @@ def check_profile(fname):
             spl = line.split()
             if len(spl) >= 2:
                 try:
-                    q = float(spl[0])
+                    _ = float(spl[0])
                     sc = float(spl[1])
                     if sc > 1e-15:
                         return
