@@ -47,9 +47,16 @@ class Tests(saliweb.test.TestCase):
                 fh.write(
                     "REMARK\n"
                     "ATOM      2  CA  ALA     1      26.711  14.576   5.091\n")
+            badproff = os.path.join(tmpdir, 'bad.profile')
+            with open(badproff, 'w') as fh:
+                fh.write("\n")
             proff = os.path.join(tmpdir, 'test.profile')
             with open(proff, 'w') as fh:
-                fh.write("\n")
+                fh.write("# sample profile\n"
+                         "garbage\n"
+                         "more garbage, ignored\n"
+                         "0.1 -0.5\n"
+                         "0.2 0.5\n")
 
             # Empty PDB file
             data = {'pdbfile': open(emptyf, 'rb')}
@@ -83,6 +90,13 @@ class Tests(saliweb.test.TestCase):
             self.assertIn(
                 b'Invalid profile size; it must be &gt; 20 and &lt; 2000',
                 rv.data)
+
+            # Bad profile contents
+            data = {'pdbfile': open(pdbf, 'rb'),
+                    'profile': open(badproff, 'rb')}
+            rv = c.post('/job', data=data, follow_redirects=True)
+            self.assertEqual(rv.status_code, 400)
+            self.assertIn(b'Invalid profile uploaded', rv.data)
 
             # Successful submission with profile (no email)
             data = {'pdbfile': open(pdbf, 'rb'), 'profile': open(proff, 'rb')}

@@ -49,8 +49,8 @@ def handle_new_job():
 
     prot_file_names, archive = handle_pdb(
         request.form.get("pdb"), request.files.get("pdbfile"), job)
-    profile_file_name = save_job_nonempty_file(request.files.get("profile"),
-                                               job, "profile") or "-"
+    profile_file_name = save_job_nonempty_file(
+        request.files.get("profile"), job, "profile", check_profile) or "-"
 
     with open(job.get_path('inputFiles.txt'), 'w') as fh:
         fh.write("\n".join(prot_file_names))
@@ -64,6 +64,27 @@ def handle_new_job():
 
     job.submit(email)
     return saliweb.frontend.redirect_to_results_page(job)
+
+
+def check_profile(fname):
+    """Check that the profile contains at least one valid line"""
+    with open(fname, encoding='latin1') as fh:
+        for line in fh:
+            if line.startswith('#'):
+                continue
+            spl = line.split()
+            if len(spl) >= 2:
+                try:
+                    q = float(spl[0])
+                    sc = float(spl[1])
+                    if sc > 1e-15:
+                        return
+                except ValueError:
+                    pass
+    raise InputValidationError(
+        "Invalid profile uploaded. Profiles should be text files with each "
+        "line containing a q value and measured scattering, "
+        "which should be non-zero and positive")
 
 
 def handle_pdb(pdb_code, pdb_file, job):
@@ -113,7 +134,7 @@ def handle_zipfile(zfname, job):
     return pdbs
 
 
-def save_job_nonempty_file(fh, job, filetype):
+def save_job_nonempty_file(fh, job, filetype, check=None):
     """Save the given file, if present (which must not be empty) into the
        job directory. Return its name (or None)."""
     if not fh:
@@ -125,6 +146,8 @@ def save_job_nonempty_file(fh, job, filetype):
     if os.stat(full_fname).st_size == 0:
         raise InputValidationError(
             "You have uploaded an empty %s file: %s" % (filetype, fname))
+    if check:
+        check(full_fname)
     return fname
 
 
