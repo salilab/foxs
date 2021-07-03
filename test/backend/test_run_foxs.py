@@ -240,7 +240,7 @@ garbage |  0.06 | x1 0.06 (1.03, 1.66)
         """Test run_job success with multimodel PDB"""
         p = MockParameters()
         p.model_option = 2
-        p.pdb_file_names = ['1.pdb', '2.pdb', '3.pdb']
+        p.pdb_file_names = ['1.pdb', '2.pdb', '4.pdb']
         with saliweb.test.temporary_working_directory():
             with open('1.pdb', 'w') as fh:
                 fh.write("HEADER\nMODEL  \nline1\nline2\nENDMDL\n"
@@ -249,6 +249,9 @@ garbage |  0.06 | x1 0.06 (1.03, 1.66)
                 fh.write("HEADER\nEND\n")
             with open('3.pdb', 'w') as fh:
                 fh.write("HEADER\nMODEL  \nline1\nline2\nENDMDL\nEND\n")
+            with open('4.pdb', 'w') as fh:
+                fh.write("HEADER\nMODEL  \nline1\nline2\n"
+                         "MODEL  \nline3\nline4\nEND\n")
             # Simulate production of plot png
             with open('pdb6lyt_lyzexp.png', 'w') as fh:
                 fh.write('\n')
@@ -257,6 +260,8 @@ garbage |  0.06 | x1 0.06 (1.03, 1.66)
             # Should have made multimodel list and files
             os.unlink("1_m1.pdb")
             os.unlink("1_m2.pdb")
+            os.unlink("4_m1.pdb")
+            os.unlink("4_m2.pdb")
             self.assertFalse(os.path.exists("1_m3.pdb"))
             self.assertFalse(os.path.exists("2_m1.pdb"))
             self.assertFalse(os.path.exists("3_m1.pdb"))

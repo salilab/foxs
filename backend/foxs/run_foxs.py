@@ -93,18 +93,22 @@ def make_multimodel_pdb(pdb):
     nmodel = 0
     fname, ext = os.path.splitext(pdb)
     subpdbs = []
+    outfh = None
     with open(pdb) as fh:
         for line in fh:
             if line.startswith('MODEL '):
                 nmodel += 1
                 modelfn = "%s_m%d.pdb" % (fname, nmodel)
                 subpdbs.append(modelfn)
-                with open(modelfn, 'w') as outfh:
-                    outfh.write(line)
-                    for subline in fh:
-                        if subline.startswith('ENDMDL'):
-                            break
-                        outfh.write(subline)
+                if outfh is not None:
+                    outfh.close()
+                outfh = open(modelfn, 'w')
+            elif line.startswith('ENDMDL'):
+                continue
+            elif outfh is not None:
+                outfh.write(line)
+    if outfh is not None:
+        outfh.close()
     # If only one model, FoXS just uses the original file
     if len(subpdbs) == 1:
         del subpdbs[0]
