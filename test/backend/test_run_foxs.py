@@ -4,6 +4,7 @@ from foxs import run_foxs
 import saliweb.test
 import saliweb.backend
 import os
+import tempfile
 import contextlib
 
 
@@ -157,7 +158,7 @@ class Tests(saliweb.test.TestCase):
 
     def test_get_min_max_score(self):
         """Test get_min_max_score()"""
-        with saliweb.test.temporary_directory() as tmpdir:
+        with tempfile.TemporaryDirectory() as tmpdir:
             ensemble_file = os.path.join(tmpdir, 'ensembles_size_2.txt')
             with open(ensemble_file, 'w') as fh:
                 fh.write("""

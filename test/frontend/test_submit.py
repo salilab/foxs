@@ -1,5 +1,6 @@
 import unittest
 import saliweb.test
+import tempfile
 import os
 import re
 import gzip
@@ -27,7 +28,7 @@ class Tests(saliweb.test.TestCase):
 
     def test_submit_page(self):
         """Test submit page"""
-        with saliweb.test.temporary_directory() as tmpdir:
+        with tempfile.TemporaryDirectory() as tmpdir:
             incoming = os.path.join(tmpdir, 'incoming')
             os.mkdir(incoming)
             foxs.app.config['DIRECTORIES_INCOMING'] = incoming
@@ -129,8 +130,8 @@ class Tests(saliweb.test.TestCase):
 
     def test_submit_pdb_code(self):
         """Test submit with a PDB code"""
-        with saliweb.test.temporary_directory() as incoming:
-            with saliweb.test.temporary_directory() as pdb_root:
+        with tempfile.TemporaryDirectory() as incoming:
+            with tempfile.TemporaryDirectory() as pdb_root:
                 foxs.app.config['DIRECTORIES_INCOMING'] = incoming
                 foxs.app.config['PDB_ROOT'] = pdb_root
 
@@ -145,8 +146,8 @@ class Tests(saliweb.test.TestCase):
 
     def test_submit_zip_file(self):
         """Test submit with zip file"""
-        with saliweb.test.temporary_directory() as incoming:
-            with saliweb.test.temporary_directory() as zip_root:
+        with tempfile.TemporaryDirectory() as incoming:
+            with tempfile.TemporaryDirectory() as zip_root:
                 foxs.app.config['DIRECTORIES_INCOMING'] = incoming
 
                 zip_name = os.path.join(zip_root, 'input.zip')
@@ -166,8 +167,8 @@ class Tests(saliweb.test.TestCase):
 
     def test_submit_zip_file_fail(self):
         """Test submit with zip file containing too many PDBs"""
-        with saliweb.test.temporary_directory() as incoming:
-            with saliweb.test.temporary_directory() as zip_root:
+        with tempfile.TemporaryDirectory() as incoming:
+            with tempfile.TemporaryDirectory() as zip_root:
                 foxs.app.config['DIRECTORIES_INCOMING'] = incoming
 
                 zip_name = os.path.join(zip_root, 'input.zip')
@@ -184,8 +185,8 @@ class Tests(saliweb.test.TestCase):
 
     def test_submit_zip_file_not_pdb(self):
         """Test submit with zip file containing something not a PDB"""
-        with saliweb.test.temporary_directory() as incoming:
-            with saliweb.test.temporary_directory() as zip_root:
+        with tempfile.TemporaryDirectory() as incoming:
+            with tempfile.TemporaryDirectory() as zip_root:
                 foxs.app.config['DIRECTORIES_INCOMING'] = incoming
 
                 zip_name = os.path.join(zip_root, 'input.zip')
