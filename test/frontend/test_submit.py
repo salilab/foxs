@@ -50,7 +50,7 @@ class Tests(saliweb.test.TestCase):
                     "ATOM      2  CA  ALA     1      26.711  14.576   5.091\n")
             badproff = os.path.join(tmpdir, 'bad.profile')
             with open(badproff, 'w') as fh:
-                fh.write("\n")
+                fh.write("1 2 3 4 5 6\n")
             proff = os.path.join(tmpdir, 'test.profile')
             with open(proff, 'w') as fh:
                 fh.write("# sample profile\n"
