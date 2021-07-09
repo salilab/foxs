@@ -56,6 +56,7 @@ class Tests(saliweb.test.TestCase):
                 fh.write("# sample profile\n"
                          "garbage\n"
                          "more garbage, ignored\n"
+                         "0more garbage\n"
                          "0.1 -0.5\n"
                          "0.2 0.5\n")
 
