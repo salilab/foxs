@@ -1,10 +1,40 @@
 from flask import render_template, request, send_from_directory
 import saliweb.frontend
-from saliweb.frontend import get_completed_job
+from saliweb.frontend import get_completed_job, Parameter, FileParameter
 from . import submit_page, results_page
 
 
-parameters = []
+parameters = [Parameter("jobname", "Job name", optional=True),
+              Parameter("pdb", "PDB code and chain ID to fit", optional=True),
+              FileParameter("pdbfile", "PDB file to fit", optional=True),
+              FileParameter("profile", "Experimental SAXS profile"),
+              Parameter("q", "Maximal q value", optional=True),
+              Parameter("psize", "Profile size", optional=True),
+              Parameter("hlayer", "Use hydration layer to improve fitting",
+                        optional=True),
+              Parameter("c2", "Fix hydration layer density",
+                        optional=True),
+              Parameter(
+                  "exvolume",
+                  "Adjust the protein excluded volume to improve fitting",
+                  optional=True),
+              Parameter("c1", "Fix excluded volume", optional=True),
+              Parameter("ihydrogens", "Implicitly consider hydrogen atoms",
+                        optional=True),
+              Parameter(
+                  "residue",
+                  "Perform coarse grained profile computation for "
+                  "Ca atoms only", optional=True),
+              Parameter(
+                  "background",
+                  "Adjust the background of the experimental profile",
+                  optional=True),
+              Parameter("offset", "Use offset in profile fitting",
+                        optional=True),
+              Parameter("modelread",
+                        "Determine how to read PDB files with MODEL records",
+                        optional=True),
+              Parameter("units", "Experimental profile units", optional=True)]
 app = saliweb.frontend.make_application(__name__, parameters)
 
 
