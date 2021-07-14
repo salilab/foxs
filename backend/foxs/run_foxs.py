@@ -39,8 +39,17 @@ def set_job_state(state):
 
 def setup_environment():
     """Set up the environment for the job so we can find FoXS, etc."""
+    # Typically we don't run from a login shell so module paths aren't set.
+    # Get these by running a login shell (which sources /etc/profile)
+    # and asking it to print the needed environment variables.
+    modout = subprocess.check_output(
+        ['/bin/sh', '-l', '-c', 'echo $MODULESHOME; echo $MODULEPATH'],
+        universal_newlines=True)
+    moduleshome, modulepath, _ = modout.split('\n')
+    os.environ['MODULEPATH'] = modulepath
+    sys.path.insert(0, os.path.join(moduleshome, 'init'))
+
     # Add IMP and gnuplot to the path, using modules
-    sys.path.append('/usr/share/Modules/init/')
     from python import module
     module('load', 'imp', 'gnuplot')
 
