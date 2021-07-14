@@ -73,7 +73,7 @@ def check_profile(fname):
             if line.startswith('#'):
                 continue
             spl = line.split()
-            if 2 <= len(spl) <= 5 and line[0] in '0123456789':
+            if 2 <= len(spl) <= 5 and spl[0][0] in '0123456789':
                 try:
                     _ = float(spl[0])
                     sc = float(spl[1])

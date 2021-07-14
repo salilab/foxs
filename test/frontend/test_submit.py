@@ -57,8 +57,8 @@ class Tests(saliweb.test.TestCase):
                          "garbage\n"
                          "more garbage, ignored\n"
                          "0more garbage\n"
-                         "0.1 -0.5\n"
-                         "0.2 0.5\n")
+                         "  0.1 -0.5\n"
+                         "  0.2 0.5\n")
 
             # Empty PDB file
             data = {'pdbfile': open(emptyf, 'rb')}
