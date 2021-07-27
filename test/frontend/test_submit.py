@@ -5,11 +5,21 @@ import os
 import re
 import gzip
 import zipfile
+from flask import request, request_started
+import contextlib
 
 
 # Import the foxs frontend with mocks
 foxs = saliweb.test.import_mocked_frontend("foxs", __file__,
                                            '../../frontend')
+
+
+@contextlib.contextmanager
+def mock_ip(app, ip):
+    def handler(sender, **kwargs):
+        request.remote_addr = ip
+    with request_started.connected_to(handler, app):
+        yield
 
 
 def make_test_pdb(tmpdir):
@@ -178,11 +188,24 @@ class Tests(saliweb.test.TestCase):
                     z.writestr("%d.pdb" % i, "ATOM  \n")
                 z.close()
 
-                c = foxs.app.test_client()
-                rv = c.post('/job', data={'pdbfile': open(zip_name, 'rb')})
-                self.assertEqual(rv.status_code, 400)
-                self.assertIn(b'Only 100 PDB files can run on the server',
-                              rv.data)
+                # File limit should be enforced for non-local IPs
+                with mock_ip(foxs.app, '1.2.3.4'):
+                    c = foxs.app.test_client()
+                    rv = c.post('/job', data={'pdbfile': open(zip_name, 'rb')})
+                    self.assertEqual(rv.status_code, 400)
+                    self.assertIn(b'Only 100 PDB files can run on the server',
+                                  rv.data)
+
+                # All fine if coming from localhost
+                with mock_ip(foxs.app, '127.0.0.1'):
+                    c = foxs.app.test_client()
+                    rv = c.post('/job', data={'pdbfile': open(zip_name, 'rb')},
+                                follow_redirects=True)
+                    self.assertEqual(rv.status_code, 503)
+                    r = re.compile(
+                        b'Your job has been submitted.*results will be found',
+                        re.MULTILINE | re.DOTALL)
+                    self.assertRegex(rv.data, r)
 
     def test_submit_zip_file_not_pdb(self):
         """Test submit with zip file containing something not a PDB"""

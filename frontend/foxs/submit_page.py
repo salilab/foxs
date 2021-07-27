@@ -2,6 +2,7 @@ from flask import request
 import saliweb.frontend
 from saliweb.frontend import InputValidationError
 import os
+import socket
 import zipfile
 from werkzeug.utils import secure_filename
 
@@ -126,12 +127,21 @@ def handle_zipfile(zfname, job):
             saliweb.frontend.check_pdb(job.get_path(fname),
                                        show_filename=zi.filename)
             pdbs.append(fname)
-            if len(pdbs) > 100:
+            if len(pdbs) > 100 and not local_connection():
                 raise InputValidationError(
                     "Only 100 PDB files can run on the server. Please use "
                     "download version for more")
     fh.close()
     return pdbs
+
+
+LOCAL_IPS = frozenset(('127.0.0.1',
+                       socket.gethostbyname(socket.gethostname())))
+
+
+def local_connection():
+    """Return True iff we are connecting to this web service locally"""
+    return request.remote_addr in LOCAL_IPS
 
 
 def save_job_nonempty_file(fh, job, filetype, check=None):
