@@ -134,14 +134,14 @@ def run_job(params):
     # Run FoXS
     run_subprocess(['foxs'] + foxs_opts)
     # Make plots
-    run_subprocess(['gnuplot'] + glob.glob('*.plt'))
+    run_subprocess(['gnuplot'] + glob.glob('**/*.plt', recursive=True))
 
-    png_files = glob.glob("*.png")
+    png_files = glob.glob("**/*.png", recursive=True)
     if len(png_files) == 0:
         raise RuntimeError("No plot pngs produced")
 
     # Run MultiFoXS if necessary
-    dat_files = glob.glob("*.pdb.dat")
+    dat_files = glob.glob("**/*.pdb.dat", recursive=True)
     if ((len(params.pdb_file_names) > 1 or len(dat_files) > 1)
             and params.profile_file_name):
         run_multifoxs(params, multi_foxs_opts)
