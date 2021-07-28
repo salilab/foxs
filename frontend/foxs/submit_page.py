@@ -116,17 +116,23 @@ def handle_zipfile(zfname, job):
     for zi in fh.infolist():
         if zi.is_dir():
             continue
-        fname = os.path.basename(zi.filename)
+        subdir, fname = os.path.split(zi.filename)
         # Exclude hidden files, e.g. __MACOSX/.something.pdb
         if fname.startswith('.'):
             continue
         fname = secure_filename(fname)
-        if fname not in exclude:
-            with open(job.get_path(fname), 'wb') as out_fh:
+        subdir = secure_filename(subdir)
+        full_fname = os.path.join(subdir, fname)
+        if full_fname not in exclude:
+            if subdir not in ('', '.'):
+                full_subdir = job.get_path(subdir)
+                if not os.path.exists(full_subdir):
+                    os.mkdir(full_subdir)
+            with open(job.get_path(full_fname), 'wb') as out_fh:
                 out_fh.write(fh.read(zi))
-            saliweb.frontend.check_pdb(job.get_path(fname),
+            saliweb.frontend.check_pdb(job.get_path(full_fname),
                                        show_filename=zi.filename)
-            pdbs.append(fname)
+            pdbs.append(full_fname)
             if len(pdbs) > 100 and not local_connection():
                 raise InputValidationError(
                     "Only 100 PDB files can run on the server. Please use "

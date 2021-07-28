@@ -167,6 +167,7 @@ class Tests(saliweb.test.TestCase):
                 z.writestr("in/subdir/.hidden.pdb", "bar")  # should be ignored
                 z.writestr("in/subdir/", "")   # directory, should be ignored
                 z.writestr("in/subdir/1abc.pdb", "ATOM  bar")
+                z.writestr("in/subdir/1def.pdb", "ATOM  bar")
                 z.writestr("2xyz.pdb", "ATOM  baz")
                 z.close()
 
