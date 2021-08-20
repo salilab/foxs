@@ -68,7 +68,20 @@ def handle_new_job():
 
 
 def check_profile(fname):
-    """Check that the profile contains at least one valid line"""
+    """Check that the profile contains at least one valid line.
+       Also, FoXS doesn't like some weird line endings (e.g. old Mac style)
+       so take this opportunity to use Python's universal line ending
+       support to get rid of them"""
+    check_valid_profile(fname)
+    tmp = fname + '.tmp'
+    with open(fname, encoding='latin1') as fhin:
+        with open(tmp, 'w', encoding='latin1') as fhout:
+            for line in fhin:
+                fhout.write(line)
+    os.rename(tmp, fname)
+
+
+def check_valid_profile(fname):
     with open(fname, encoding='latin1') as fh:
         for line in fh:
             if line.startswith('#'):
