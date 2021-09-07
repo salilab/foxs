@@ -136,7 +136,7 @@ def run_job(params):
     # Make plots
     try:
         run_subprocess(['gnuplot'] + glob.glob('**/*.plt', recursive=True))
-    except OSError:
+    except subprocess.CalledProcessError:
         # Failure to make plots is generally a user error, so return
         # log file for further inspection
         return
