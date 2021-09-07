@@ -134,7 +134,12 @@ def run_job(params):
     # Run FoXS
     run_subprocess(['foxs'] + foxs_opts)
     # Make plots
-    run_subprocess(['gnuplot'] + glob.glob('**/*.plt', recursive=True))
+    try:
+        run_subprocess(['gnuplot'] + glob.glob('**/*.plt', recursive=True))
+    except OSError:
+        # Failure to make plots is generally a user error, so return
+        # log file for further inspection
+        return
 
     png_files = glob.glob("**/*.png", recursive=True)
     if len(png_files) == 0:

@@ -33,6 +33,14 @@ class JobTests(saliweb.test.TestCase):
                 fh.write('Traceback (most recent call last):\n')
             self.assertRaises(foxs.LogError, j.postprocess)
 
+    def test_postprocess_user_error(self):
+        """Test postprocess with job failed due to user error"""
+        j = self.make_test_job(foxs.Job, 'RUNNING')
+        with saliweb.test.working_directory(j.directory):
+            with open('foxs.log', 'w') as fh:
+                fh.write('all points y value undefined\n\n')
+            j.postprocess()
+
 
 if __name__ == '__main__':
     unittest.main()

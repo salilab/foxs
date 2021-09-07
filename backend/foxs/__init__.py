@@ -21,6 +21,9 @@ class Job(saliweb.backend.Job):
         # Check for errors in foxs.log
         with open('foxs.log') as fh:
             for line in fh:
+                if 'all points y value undefined' in line:
+                    # Return user errors to the user for inspection
+                    return
                 if 'Traceback' in line:
                     raise LogError("Error in foxs.log: " + line)
 

@@ -57,6 +57,11 @@ class JMolTableReader(object):
 def show_results(job, interactive):
     pdb, profile, email = get_input_data(job)
     results = list(get_results(job, profile))
+    if not os.path.exists(job.get_path(results[0].profile.png)):
+        return saliweb.frontend.render_results_template(
+            'results_failed.html', job=job,
+            pdb=pdb, profile=profile, email=email)
+
     allresult = None
     if len(results) > 1:
         fit = None if profile == '-' else Fit(png='fit.png', dat=None,

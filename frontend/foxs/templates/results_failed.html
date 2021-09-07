@@ -1,0 +1,11 @@
+{% extends "results_base.html" %}
+
+{% block results_content %}
+<p>Unfortunately, your job failed to produce any plots.</p>
+
+<p>This is usually due to incorrect inputs, such as SAXS profiles containing
+only negative intensities.</p>
+
+<p>For more information, please inspect the
+<a href="{{ job.get_results_file_url("foxs.log") }}">FoXS log file</a>.</p>
+{% endblock %}

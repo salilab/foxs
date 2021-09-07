@@ -25,6 +25,7 @@ class Tests(saliweb.test.TestCase):
                 'data.txt',
                 "1abc.pdb - EMAIL 0.50 500 1 1 1 0 0 0 0.00 1.00 3 1\n")
             j.make_file('inputFiles.txt', "1abc.pdb\n")
+            j.make_file('1abc.png')
             j.make_file('foxs.log', "\n")
 
             c = foxs.app.test_client()
@@ -37,6 +38,25 @@ class Tests(saliweb.test.TestCase):
                            re.DOTALL | re.MULTILINE)
             self.assertRegex(rv.data, r)
 
+    def test_job_failed(self):
+        """Test display of job that failed to plot"""
+        with saliweb.test.make_frontend_job('testjob10') as j:
+            j.make_file(
+                'data.txt',
+                "1abc.pdb - EMAIL 0.50 500 1 1 1 0 0 0 0.00 1.00 3 1\n")
+            j.make_file('inputFiles.txt', "1abc.pdb\n")
+            j.make_file('foxs.log', "\n")
+
+            c = foxs.app.test_client()
+            rv = c.get('/job/testjob10/old?passwd=%s' % j.passwd)
+            r = re.compile(b'PDB files.*Profile file.*User e-mail.*'
+                           rb'1abc\.pdb.*\-.*EMAIL.*'
+                           b'failed to produce any plots.*'
+                           b'usually due to incorrect inputs.*'
+                           rb'/job/testjob10/foxs\.log',
+                           re.DOTALL | re.MULTILINE)
+            self.assertRegex(rv.data, r)
+
     def test_job_one_pdb_new(self):
         """Test display of job with one PDB, no profile (new view)"""
         with saliweb.test.make_frontend_job('testjob3') as j:
@@ -44,6 +64,7 @@ class Tests(saliweb.test.TestCase):
                 'data.txt',
                 "1abc.pdb - EMAIL 0.50 500 1 1 1 0 0 0 0.00 1.00 3 1\n")
             j.make_file('inputFiles.txt', "1abc.pdb\n")
+            j.make_file('1abc.png')
             j.make_file('foxs.log', "\n")
             j.make_file('jmoltable.html',
                         '<a href="dirname/foo.dat">foo</a>\n'
@@ -69,6 +90,7 @@ class Tests(saliweb.test.TestCase):
             j.make_file('data.txt',
                         "1abc.pdb test.profile EMAIL 0.50 "
                         "500 1 1 1 0 0 0 0.00 1.00 3 1\n")
+            j.make_file('1abc.png')
             j.make_file('inputFiles.txt', "1abc.pdb\n")
             j.make_file(
                 'foxs.log',
@@ -95,6 +117,7 @@ class Tests(saliweb.test.TestCase):
                         "1abc.pdb test.profile EMAIL 0.50 "
                         "500 1 1 1 0 0 0 0.00 1.00 3 1\n")
             j.make_file('inputFiles.txt', "1abc.pdb\n")
+            j.make_file('1abc.png')
             j.make_file(
                 'foxs.log',
                 "1abc.pdb test.profile Chi^2 = 0.202144 c1 = 1.01131 "
@@ -117,6 +140,7 @@ class Tests(saliweb.test.TestCase):
                 'data.txt',
                 "1abc.pdb - EMAIL 0.50 500 1 1 1 0 0 0 0.00 1.00 3 1\n")
             j.make_file('inputFiles.txt', "1abc.pdb\n1xyz.pdb")
+            j.make_file('1abc.png')
             j.make_file('foxs.log', "\n")
 
             c = foxs.app.test_client()
@@ -140,6 +164,7 @@ class Tests(saliweb.test.TestCase):
                         "1abc.pdb test.profile EMAIL 0.50 500 "
                         "1 1 1 0 0 0 0.00 1.00 3 1\n")
             j.make_file('multi-model-files.txt', "1abc.pdb\n1xyz.pdb")
+            j.make_file('1abc.png')
             j.make_file(
                 'foxs.log',
                 "1abc.pdb test.profile Chi^2 = 0.202144 c1 = 1.01131 "
