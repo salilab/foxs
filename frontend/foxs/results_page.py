@@ -109,7 +109,7 @@ def get_results(job, profile):
 def parse_log(job):
     """Get a dict of (chi, c1, c2) values for PDB-file keys"""
     results = {}
-    with open(job.get_path('foxs.log')) as fh:
+    with open(job.get_path('foxs.log'), encoding='latin1') as fh:
         for line in fh:
             if 'Chi^2' in line:
                 s = line.split()
