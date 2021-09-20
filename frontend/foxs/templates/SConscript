@@ -4,5 +4,5 @@ env.InstallFrontend(['layout.html', 'index.html', 'help.html',
                      'about.html', 'faq.html', 'links.html', 'running.html',
                      'results_old.html', 'results_base.html', 'results.html',
                      'ensemble.html', 'help_multi.html', 'download.html',
-                     'results_failed.html'],
+                     'results_failed.html', 'ensemble_failed.html'],
                     'templates')

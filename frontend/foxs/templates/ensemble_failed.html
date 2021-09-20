@@ -1,15 +1,12 @@
 {% extends "results_base.html" %}
 
 {% block results_content %}
-<p>Unfortunately, your job failed to produce any plots.</p>
+<p>Unfortunately, MultiFoXS analysis of your job failed.</p>
 
-<p>This is usually due to incorrect inputs, such as:</p>
-
-<ul>
-   <li>SAXS profiles containing only negative intensities</li>
-   <li>All points in profile being above the maximal q value</li>
-   <li>Wrong profile units (1/nm vs 1/&Aring;)</li>
-</ul>
+<p>This is usually due to incorrect inputs, such as the
+"Background adjustment" advanced option being turned on for too-similar
+models (resulting in a "At least 3 points are required for
+ParabolicFit2D" error).</p>
 
 <p>For more information, please inspect the
 <a href="{{ job.get_results_file_url("foxs.log") }}">FoXS log file</a>.</p>

@@ -88,11 +88,16 @@ def show_results(job, interactive):
 def show_ensemble(job):
     max_states = 4  # should match that in backend/foxs/run_foxs.py
     pdb, profile, email = get_input_data(job)
-    return saliweb.frontend.render_results_template(
-        'ensemble.html', job=job,
-        bokeh=get_bokeh(), chiplot=get_chi_plot(job),
-        pdb=pdb, profile=profile, email=email, max_states=max_states,
-        multi_state_models=list(get_multi_state_models(job, max_states)))
+    if not os.path.exists(job.get_path("chis")):
+        return saliweb.frontend.render_results_template(
+            'ensemble_failed.html', job=job,
+            pdb=pdb, profile=profile, email=email)
+    else:
+        return saliweb.frontend.render_results_template(
+            'ensemble.html', job=job,
+            bokeh=get_bokeh(), chiplot=get_chi_plot(job),
+            pdb=pdb, profile=profile, email=email, max_states=max_states,
+            multi_state_models=list(get_multi_state_models(job, max_states)))
 
 
 def get_results(job, profile):

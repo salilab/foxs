@@ -257,6 +257,20 @@ class Tests(saliweb.test.TestCase):
                 ValueError, c.get,
                 '/job/testjob9/ensemble?passwd=%s' % j.passwd)
 
+    def test_job_two_pdbs_profile_ensemble_no_chis(self):
+        """Test display of ensemble with two PDBs, no chis file made"""
+        with saliweb.test.make_frontend_job('testjob12') as j:
+            j.make_file('data.txt',
+                        "1abc.pdb test.profile EMAIL 0.50 500 "
+                        "1 1 1 0 0 0 0.00 1.00 3 1\n")
+            c = foxs.app.test_client()
+            rv = c.get('/job/testjob12/ensemble?passwd=%s' % j.passwd)
+            r = re.compile(b'PDB files.*Profile file.*User e-mail.*'
+                           rb'1abc\.pdb.*test\.profile.*EMAIL.*'
+                           b'MultiFoXS analysis of your job failed.*',
+                           re.DOTALL | re.MULTILINE)
+            self.assertRegex(rv.data, r)
+
 
 if __name__ == '__main__':
     unittest.main()
