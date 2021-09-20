@@ -21,7 +21,9 @@ class Job(saliweb.backend.Job):
         # Check for errors in foxs.log
         with open('foxs.log') as fh:
             for line in fh:
-                if 'all points y value undefined' in line:
+                if ('all points y value undefined' in line
+                        or "can't parse input file" in line
+                        or '3 points are required for ParabolicFit2D' in line):
                     # Return user errors to the user for inspection
                     return
                 if 'Traceback' in line:
