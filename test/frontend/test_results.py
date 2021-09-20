@@ -38,8 +38,8 @@ class Tests(saliweb.test.TestCase):
                            re.DOTALL | re.MULTILINE)
             self.assertRegex(rv.data, r)
 
-    def test_job_failed(self):
-        """Test display of job that failed to plot"""
+    def test_job_failed_no_pngs(self):
+        """Test display of job that failed to produce any .png files"""
         with saliweb.test.make_frontend_job('testjob10') as j:
             j.make_file(
                 'data.txt',
@@ -54,6 +54,27 @@ class Tests(saliweb.test.TestCase):
                            b'failed to produce any plots.*'
                            b'usually due to incorrect inputs.*'
                            rb'/job/testjob10/foxs\.log',
+                           re.DOTALL | re.MULTILINE)
+            self.assertRegex(rv.data, r)
+
+    def test_job_failed(self):
+        """Test display of job that failed to plot"""
+        with saliweb.test.make_frontend_job('testjob11') as j:
+            j.make_file(
+                'data.txt',
+                "1abc.pdb - EMAIL 0.50 500 1 1 1 0 0 0 0.00 1.00 3 1\n")
+            j.make_file('inputFiles.txt', "1abc.pdb\n")
+            j.make_file('foxs.log', "\n")
+            # We made some .pngs, just not the ones we need for this PDB
+            j.make_file('some-other.png', "\n")
+
+            c = foxs.app.test_client()
+            rv = c.get('/job/testjob11/old?passwd=%s' % j.passwd)
+            r = re.compile(b'PDB files.*Profile file.*User e-mail.*'
+                           rb'1abc\.pdb.*\-.*EMAIL.*'
+                           b'failed to produce any plots.*'
+                           b'usually due to incorrect inputs.*'
+                           rb'/job/testjob11/foxs\.log',
                            re.DOTALL | re.MULTILINE)
             self.assertRegex(rv.data, r)
 

@@ -3,6 +3,7 @@ import saliweb.frontend
 import collections
 import os
 import re
+import glob
 from .ensemble import get_multi_state_models, get_bokeh, get_chi_plot
 
 
@@ -56,6 +57,11 @@ class JMolTableReader(object):
 
 def show_results(job, interactive):
     pdb, profile, email = get_input_data(job)
+    # If no plots were produced, there must be a problem with user inputs
+    if len(glob.glob(job.get_path("*.png"))) == 0:
+        return saliweb.frontend.render_results_template(
+            'results_failed.html', job=job,
+            pdb=pdb, profile=profile, email=email)
     results = list(get_results(job, profile))
     if results[0].fit:
         png = results[0].fit.png
