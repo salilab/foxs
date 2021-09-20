@@ -132,7 +132,11 @@ def run_job(params):
 
     foxs_opts, multi_foxs_opts = get_command_options(params)
     # Run FoXS
-    run_subprocess(['foxs'] + foxs_opts)
+    try:
+        run_subprocess(['foxs'] + foxs_opts)
+    except subprocess.CalledProcessError:
+        # Stop short but don't fail the job; the error may be a user error
+        return
     # Make plots
     try:
         run_subprocess(['gnuplot'] + glob.glob('**/*.plt', recursive=True))
