@@ -3,6 +3,7 @@ import sys
 import os
 import subprocess
 import glob
+import traceback
 
 
 class JobParameters(object):
@@ -132,18 +133,9 @@ def run_job(params):
 
     foxs_opts, multi_foxs_opts = get_command_options(params)
     # Run FoXS
-    try:
-        run_subprocess(['foxs'] + foxs_opts)
-    except subprocess.CalledProcessError:
-        # Stop short but don't fail the job; the error may be a user error
-        return
+    run_subprocess(['foxs'] + foxs_opts)
     # Make plots
-    try:
-        run_subprocess(['gnuplot'] + glob.glob('**/*.plt', recursive=True))
-    except subprocess.CalledProcessError:
-        # Failure to make plots is generally a user error, so return
-        # log file for further inspection
-        return
+    run_subprocess(['gnuplot'] + glob.glob('**/*.plt', recursive=True))
 
     png_files = glob.glob("**/*.png", recursive=True)
     if len(png_files) == 0:
@@ -316,6 +308,13 @@ def main():
         setup_environment()
         params = JobParameters()
         run_job(params)
+    except Exception:
+        # Don't exit non-zero on exception, as this will automatically fail
+        # the job (and some exceptions are caused by user inputs, which they
+        # should correct). But print the exception information so that
+        # postprocess can determine whether or not to return the error to
+        # the user.
+        traceback.print_exc()
     finally:
         set_job_state('DONE')
 
