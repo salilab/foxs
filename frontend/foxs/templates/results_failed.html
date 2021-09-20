@@ -3,9 +3,24 @@
 {% block results_content %}
 <p>Unfortunately, your job failed to produce any plots.</p>
 
-<p>This is usually due to incorrect inputs, such as SAXS profiles containing
-only negative intensities.</p>
+<p>This is usually due to incorrect inputs, such as:</p>
+
+<ul>
+   <li>SAXS profiles containing only negative intensities</li>
+   <li>All points in profile being above the maximal q value</li>
+   <li>Wrong profile units (1/nm vs 1/&Aring;)</li>
+   <li>"Background adjustment" advanced option turned on for too-similar
+       models (resulting in a "At least 3 points are required for
+       ParabolicFit2D" error)</li>
+</ul>
 
 <p>For more information, please inspect the
 <a href="{{ job.get_results_file_url("foxs.log") }}">FoXS log file</a>.</p>
+
+<p>If this is not sufficient information to resolve your issue, please
+contact us at
+<script type="text/javascript">escramble("foxs","salilab.org")</script>
+and reference your job ID (the URL of this webpage).
+</p>
+
 {% endblock %}
