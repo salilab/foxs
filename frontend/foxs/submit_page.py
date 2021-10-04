@@ -151,6 +151,8 @@ def handle_zipfile(zfname, job):
                     "Only 100 PDB files can run on the server. Please use "
                     "download version for more")
     fh.close()
+    if len(pdbs) == 0:
+        raise InputValidationError("The uploaded zip file contains no PDBs")
     return pdbs
 
 

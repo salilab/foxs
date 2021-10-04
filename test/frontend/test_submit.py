@@ -225,6 +225,23 @@ class Tests(saliweb.test.TestCase):
                 self.assertIn(b'PDB file input/test.pdb contains no '
                               b'ATOM or HETATM records', rv.data)
 
+    def test_submit_zip_file_empty(self):
+        """Test submit with zip file containing no PDBs"""
+        with tempfile.TemporaryDirectory() as incoming:
+            with tempfile.TemporaryDirectory() as zip_root:
+                foxs.app.config['DIRECTORIES_INCOMING'] = incoming
+
+                zip_name = os.path.join(zip_root, 'input.zip')
+                z = zipfile.ZipFile(zip_name, 'w')
+                # empty zipfile
+                z.close()
+
+                c = foxs.app.test_client()
+                rv = c.post('/job', data={'pdbfile': open(zip_name, 'rb')})
+                self.assertEqual(rv.status_code, 400)
+                self.assertIn(b'The uploaded zip file contains no PDBs',
+                              rv.data)
+
 
 if __name__ == '__main__':
     unittest.main()
