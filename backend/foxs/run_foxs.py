@@ -59,11 +59,11 @@ def get_command_options(p):
     """Get command line options for FoXS and MultiFoXS"""
     foxs_opts = ['-j', '-g', '-m', str(p.model_option),
                  '-u', str(p.unit_option), '-q', str(p.q),
-                 '-s', str(p.psize)] + p.pdb_file_names
+                 '-s', str(p.psize)]
     mf_opts = ['-u', str(p.unit_option), '-q', str(p.q)]
 
     if p.profile_file_name:
-        foxs_opts.extend((p.profile_file_name, '-p'))
+        foxs_opts.append('-p')
     if not p.hlayer:
         c = ['--min_c2', str(p.hlayer_value), '--max_c2', str(p.hlayer_value)]
         foxs_opts.extend(c)
@@ -82,7 +82,11 @@ def get_command_options(p):
         mf_opts.append('-o')
     if p.background:
         foxs_opts.extend(('-b', '0.2'))
-        mf_opts.extend(('-b', '0.2'))
+    # Don't get confused if files names start with "-"
+    foxs_opts.append('--')
+    foxs_opts.extend(p.pdb_file_names)
+    if p.profile_file_name:
+        foxs_opts.append(p.profile_file_name)
     return foxs_opts, mf_opts
 
 

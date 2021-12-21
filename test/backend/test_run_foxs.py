@@ -73,15 +73,16 @@ class Tests(saliweb.test.TestCase):
         p = MockParameters()
         opts, mf_opts = run_foxs.get_command_options(p)
         self.assertEqual(opts, ['-j', '-g', '-m', '3', '-u', '1',
-                                '-q', '1.0', '-s', '10', '1.pdb', '2.pdb'])
+                                '-q', '1.0', '-s', '10', '--',
+                                '1.pdb', '2.pdb'])
 
         # Check run with profile
         p = MockParameters()
         p.profile_file_name = 'PROF'
         opts, mf_opts = run_foxs.get_command_options(p)
         self.assertEqual(opts, ['-j', '-g', '-m', '3', '-u', '1',
-                                '-q', '1.0', '-s', '10', '1.pdb', '2.pdb',
-                                'PROF', '-p'])
+                                '-q', '1.0', '-s', '10', '-p', '--',
+                                '1.pdb', '2.pdb', 'PROF'])
 
         # Check run with hlayer value
         p = MockParameters()
@@ -89,8 +90,9 @@ class Tests(saliweb.test.TestCase):
         p.hlayer_value = 2.0
         opts, mf_opts = run_foxs.get_command_options(p)
         self.assertEqual(opts, ['-j', '-g', '-m', '3', '-u', '1',
-                                '-q', '1.0', '-s', '10', '1.pdb', '2.pdb',
-                                '--min_c2', '2.0', '--max_c2', '2.0'])
+                                '-q', '1.0', '-s', '10',
+                                '--min_c2', '2.0', '--max_c2', '2.0', '--',
+                                '1.pdb', '2.pdb'])
 
         # Check run with exvolume value
         p = MockParameters()
@@ -98,40 +100,41 @@ class Tests(saliweb.test.TestCase):
         p.exvolume_value = 2.0
         opts, mf_opts = run_foxs.get_command_options(p)
         self.assertEqual(opts, ['-j', '-g', '-m', '3', '-u', '1',
-                                '-q', '1.0', '-s', '10', '1.pdb', '2.pdb',
-                                '--min_c1', '2.0', '--max_c1', '2.0'])
+                                '-q', '1.0', '-s', '10',
+                                '--min_c1', '2.0', '--max_c1', '2.0', '--',
+                                '1.pdb', '2.pdb'])
 
         # Check run without ihydrogens
         p = MockParameters()
         p.ihydrogens = False
         opts, mf_opts = run_foxs.get_command_options(p)
         self.assertEqual(opts, ['-j', '-g', '-m', '3', '-u', '1',
-                                '-q', '1.0', '-s', '10', '1.pdb', '2.pdb',
-                                '-h'])
+                                '-q', '1.0', '-s', '10', '-h', '--',
+                                '1.pdb', '2.pdb'])
 
         # Check run with residue
         p = MockParameters()
         p.residue = True
         opts, mf_opts = run_foxs.get_command_options(p)
         self.assertEqual(opts, ['-j', '-g', '-m', '3', '-u', '1',
-                                '-q', '1.0', '-s', '10', '1.pdb', '2.pdb',
-                                '-r'])
+                                '-q', '1.0', '-s', '10', '-r', '--',
+                                '1.pdb', '2.pdb'])
 
         # Check run with offset
         p = MockParameters()
         p.offset = True
         opts, mf_opts = run_foxs.get_command_options(p)
         self.assertEqual(opts, ['-j', '-g', '-m', '3', '-u', '1',
-                                '-q', '1.0', '-s', '10', '1.pdb', '2.pdb',
-                                '-o'])
+                                '-q', '1.0', '-s', '10', '-o', '--',
+                                '1.pdb', '2.pdb'])
 
         # Check run with background
         p = MockParameters()
         p.background = True
         opts, mf_opts = run_foxs.get_command_options(p)
         self.assertEqual(opts, ['-j', '-g', '-m', '3', '-u', '1',
-                                '-q', '1.0', '-s', '10', '1.pdb', '2.pdb',
-                                '-b', '0.2'])
+                                '-q', '1.0', '-s', '10', '-b', '0.2', '--',
+                                '1.pdb', '2.pdb'])
 
     def test_set_job_state(self):
         """Test set_job_state()"""
