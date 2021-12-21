@@ -172,6 +172,10 @@ def save_job_nonempty_file(fh, job, filetype, check=None):
         return
 
     fname = secure_filename(fh.filename)
+    # Don't make files starting with "-"; many tools (e.g. gnuplot) will
+    # get confused and think they're command line options
+    if fname.startswith('-'):
+        fname = "m" + fname
     full_fname = job.get_path(fname)
     fh.save(full_fname)
     if os.stat(full_fname).st_size == 0:

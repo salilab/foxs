@@ -7,6 +7,7 @@ import gzip
 import zipfile
 from flask import request, request_started
 import contextlib
+from werkzeug.datastructures import FileStorage
 
 
 # Import the foxs frontend with mocks
@@ -84,6 +85,16 @@ class Tests(saliweb.test.TestCase):
             self.assertIn(
                 b'PDB file bad.pdb contains no ATOM or HETATM records',
                 rv.data)
+
+            # Filename starting with a dash
+            with open(badf, 'rb') as fh:
+                fs = FileStorage(stream=fh, filename="-startdash.pdb")
+                data = {'pdbfile': fs}
+                rv = c.post('/job', data=data)
+                self.assertEqual(rv.status_code, 400)
+                self.assertIn(
+                    b'PDB file -startdash.pdb contains no ATOM or '
+                    b'HETATM records', rv.data)
 
             # Bad hlayer value
             rv = c.post('/job', data={'c2': '5.0'})
