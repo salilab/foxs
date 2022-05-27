@@ -56,12 +56,12 @@ class JMolTableReader(object):
 
 
 def show_results(job, interactive):
-    pdb, profile, email = get_input_data(job)
+    pdb, profile = get_input_data(job)
     # If no plots were produced, there must be a problem with user inputs
     if len(glob.glob(job.get_path("*.png"))) == 0:
         return saliweb.frontend.render_results_template(
             'results_failed.html', job=job,
-            pdb=pdb, profile=profile, email=email)
+            pdb=pdb, profile=profile)
     results = list(get_results(job, profile))
     if results[0].fit:
         png = results[0].fit.png
@@ -70,7 +70,7 @@ def show_results(job, interactive):
     if not os.path.exists(job.get_path(png)):
         return saliweb.frontend.render_results_template(
             'results_failed.html', job=job,
-            pdb=pdb, profile=profile, email=email)
+            pdb=pdb, profile=profile)
 
     allresult = None
     if len(results) > 1:
@@ -81,22 +81,22 @@ def show_results(job, interactive):
     template = 'results.html' if interactive else 'results_old.html'
     return saliweb.frontend.render_results_template(
         template, job=job,
-        pdb=pdb, profile=profile, email=email, results=results,
+        pdb=pdb, profile=profile, results=results,
         allresult=allresult, include_jmoltable=JMolTableReader(job))
 
 
 def show_ensemble(job):
     max_states = 4  # should match that in backend/foxs/run_foxs.py
-    pdb, profile, email = get_input_data(job)
+    pdb, profile = get_input_data(job)
     if not os.path.exists(job.get_path("chis")):
         return saliweb.frontend.render_results_template(
             'ensemble_failed.html', job=job,
-            pdb=pdb, profile=profile, email=email)
+            pdb=pdb, profile=profile)
     else:
         return saliweb.frontend.render_results_template(
             'ensemble.html', job=job,
             bokeh=get_bokeh(), chiplot=get_chi_plot(job),
-            pdb=pdb, profile=profile, email=email, max_states=max_states,
+            pdb=pdb, profile=profile, max_states=max_states,
             multi_state_models=list(get_multi_state_models(job, max_states)))
 
 
@@ -138,6 +138,6 @@ def get_pdb_files(job):
 
 
 def get_input_data(job):
-    """Get the pdb file, profile, email used by a job"""
+    """Get the pdb file and profile used by a job"""
     with open(job.get_path('data.txt')) as fh:
-        return fh.readline().split()[:3]
+        return fh.readline().split()[:2]

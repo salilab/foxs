@@ -31,7 +31,7 @@ class Tests(saliweb.test.TestCase):
             c = foxs.app.test_client()
             rv = c.get('/job/testjob2/old?passwd=%s' % j.passwd)
             r = re.compile(b'PDB files.*Profile file.*User e-mail.*'
-                           rb'1abc\.pdb.*\-.*EMAIL.*'
+                           rb'1abc\.pdb.*\-.*test@test\.com.*'
                            b'NEW!.*interactive interface.*'
                            rb'1abc\.png.*plot of profile.*'
                            rb'1abc\.pdb\.dat.*Profile file',
@@ -50,7 +50,7 @@ class Tests(saliweb.test.TestCase):
             c = foxs.app.test_client()
             rv = c.get('/job/testjob10/old?passwd=%s' % j.passwd)
             r = re.compile(b'PDB files.*Profile file.*User e-mail.*'
-                           rb'1abc\.pdb.*\-.*EMAIL.*'
+                           rb'1abc\.pdb.*\-.*test@test\.com.*'
                            b'failed to produce any plots.*'
                            b'usually due to incorrect inputs.*'
                            rb'/job/testjob10/foxs\.log',
@@ -71,7 +71,7 @@ class Tests(saliweb.test.TestCase):
             c = foxs.app.test_client()
             rv = c.get('/job/testjob11/old?passwd=%s' % j.passwd)
             r = re.compile(b'PDB files.*Profile file.*User e-mail.*'
-                           rb'1abc\.pdb.*\-.*EMAIL.*'
+                           rb'1abc\.pdb.*\-.*test@test\.com.*'
                            b'failed to produce any plots.*'
                            b'usually due to incorrect inputs.*'
                            rb'/job/testjob11/foxs\.log',
@@ -97,7 +97,7 @@ class Tests(saliweb.test.TestCase):
             c = foxs.app.test_client()
             rv = c.get('/job/testjob3?passwd=%s' % j.passwd)
             r = re.compile(b'PDB files.*Profile file.*User e-mail.*'
-                           rb'1abc\.pdb.*\-.*EMAIL.*'
+                           rb'1abc\.pdb.*\-.*test@test\.com.*'
                            rb'see interactive display\? Use.*old interface.*'
                            b'<canvas id="jsoutput_1".*'
                            rb'testjob3\/foo\.dat.*'
@@ -121,7 +121,7 @@ class Tests(saliweb.test.TestCase):
             c = foxs.app.test_client()
             rv = c.get('/job/testjob4/old?passwd=%s' % j.passwd)
             r = re.compile(b'PDB files.*Profile file.*User e-mail.*'
-                           rb'1abc\.pdb.*test\.profile.*EMAIL.*'
+                           rb'1abc\.pdb.*test\.profile.*test@test\.com.*'
                            b'NEW!.*interactive interface.*'
                            b'1abc Fit to experimental profile.*'
                            rb'1abc_test\.png.*plot of fit.*'
@@ -148,7 +148,7 @@ class Tests(saliweb.test.TestCase):
             c = foxs.app.test_client()
             rv = c.get('/job/testjob5?passwd=%s' % j.passwd)
             r = re.compile(b'PDB files.*Profile file.*User e-mail.*'
-                           rb'1abc\.pdb.*test\.profile.*EMAIL.*'
+                           rb'1abc\.pdb.*test\.profile.*test@test\.com.*'
                            rb'see interactive display\? Use.*old interface.*'
                            b'<canvas id="jsoutput_1".*',
                            re.DOTALL | re.MULTILINE)
@@ -167,7 +167,7 @@ class Tests(saliweb.test.TestCase):
             c = foxs.app.test_client()
             rv = c.get('/job/testjob6/old?passwd=%s' % j.passwd)
             r = re.compile(b'PDB files.*Profile file.*User e-mail.*'
-                           rb'1abc\.pdb.*\-.*EMAIL.*'
+                           rb'1abc\.pdb.*\-.*test@test\.com.*'
                            b'NEW!.*interactive interface.*'
                            rb'1abc\.png.*plot of profile.*'
                            rb'1abc\.pdb\.dat.*Profile file.*'
@@ -196,7 +196,7 @@ class Tests(saliweb.test.TestCase):
             c = foxs.app.test_client()
             rv = c.get('/job/testjob7/old?passwd=%s' % j.passwd)
             r = re.compile(b'PDB files.*Profile file.*User e-mail.*'
-                           rb'1abc\.pdb.*test\.profile.*EMAIL.*'
+                           rb'1abc\.pdb.*test\.profile.*test@test\.com.*'
                            b'NEW!.*interactive interface.*'
                            b'PDB file.*&chi;.*c1.*c2.*Download fit file.*'
                            rb'1abc\.pdb.*0\.202144.*1.01131.*0\.5872.*'
@@ -235,7 +235,7 @@ class Tests(saliweb.test.TestCase):
             c = foxs.app.test_client()
             rv = c.get('/job/testjob8/ensemble?passwd=%s' % j.passwd)
             r = re.compile(b'PDB files.*Profile file.*User e-mail.*'
-                           rb'1abc\.pdb.*test\.profile.*EMAIL.*'
+                           rb'1abc\.pdb.*test\.profile.*test@test\.com.*'
                            b'models from MultiFoXS.*'
                            rb'jsoutput\.3\.js.*'
                            b'<canvas',
@@ -266,7 +266,7 @@ class Tests(saliweb.test.TestCase):
             c = foxs.app.test_client()
             rv = c.get('/job/testjob12/ensemble?passwd=%s' % j.passwd)
             r = re.compile(b'PDB files.*Profile file.*User e-mail.*'
-                           rb'1abc\.pdb.*test\.profile.*EMAIL.*'
+                           rb'1abc\.pdb.*test\.profile.*test@test\.com.*'
                            b'MultiFoXS analysis of your job failed.*',
                            re.DOTALL | re.MULTILINE)
             self.assertRegex(rv.data, r)
