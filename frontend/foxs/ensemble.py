@@ -107,7 +107,7 @@ def get_chi_plot(job):
                max(source.data['valerr'])+0.01)
     p = bokeh.plotting.figure(
         x_axis_label='# of states', y_axis_label='χ²',
-        plot_width=300, plot_height=250,
+        width=300, height=250,
         y_range=Range1d(0, ymax, bounds=(0, None)))
     p.xaxis.ticker = source.data['nstate']
     p.yaxis.axis_label_text_font_style = 'normal'
