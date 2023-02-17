@@ -29,4 +29,5 @@ jobs:
       run: |
         scons coverage=true python=$(which python) test
         flake8 .
+        python -m coverage xml
     - uses: codecov/codecov-action@v3
