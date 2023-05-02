@@ -103,26 +103,38 @@ def setup_multimodel(params):
 
 def make_multimodel_pdb(pdb):
     """If the given file is a multimodel PDB, make PDB files for
-       each submodel and return them"""
+       each submodel and return them. Mimic FoXS itself; i.e. number the
+       models sequentially (ignore the number on the MODEL line) and skip
+       any model that contains no atoms."""
     nmodel = 0
+    natom = 0
     fname, ext = os.path.splitext(pdb)
     subpdbs = []
     outfh = None
     with open(pdb) as fh:
         for line in fh:
             if line.startswith('MODEL '):
+                if outfh is not None:
+                    outfh.close()
+                    if natom == 0:
+                        del subpdbs[-1]
+                        nmodel -= 1
+                natom = 0
                 nmodel += 1
                 modelfn = "%s_m%d.pdb" % (fname, nmodel)
                 subpdbs.append(modelfn)
-                if outfh is not None:
-                    outfh.close()
                 outfh = open(modelfn, 'w')
             elif line.startswith('ENDMDL'):
                 continue
             elif outfh is not None:
+                if line.startswith('ATOM') or line.startswith('HETATM'):
+                    natom += 1
                 outfh.write(line)
     if outfh is not None:
         outfh.close()
+        if natom == 0:
+            os.unlink(subpdbs[-1])
+            del subpdbs[-1]
     # If only one model, FoXS just uses the original file
     if len(subpdbs) == 1:
         del subpdbs[0]

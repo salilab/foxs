@@ -247,15 +247,20 @@ garbage |  0.06 | x1 0.06 (1.03, 1.66)
         p.pdb_file_names = ['1.pdb', '2.pdb', '4.pdb']
         with saliweb.test.temporary_working_directory():
             with open('1.pdb', 'w') as fh:
-                fh.write("HEADER\nMODEL  \nline1\nline2\nENDMDL\n"
-                         "MODEL  \nline3\nline4\nENDMDL\nEND\n")
+                fh.write("HEADER\nMODEL  \nATOM line1\nline2\nENDMDL\n"
+                         # empty model in middle of file
+                         "MODEL  \nENDMDL\n"
+                         "MODEL  \nATOM line3\nline4\nENDMDL\n"
+                         # empty model at end of file
+                         "MODEL  \nnot-atom-line\nENDMDL\n"
+                         "END\n")
             with open('2.pdb', 'w') as fh:
                 fh.write("HEADER\nEND\n")
             with open('3.pdb', 'w') as fh:
-                fh.write("HEADER\nMODEL  \nline1\nline2\nENDMDL\nEND\n")
+                fh.write("HEADER\nMODEL  \nATOM line1\nline2\nENDMDL\nEND\n")
             with open('4.pdb', 'w') as fh:
-                fh.write("HEADER\nMODEL  \nline1\nline2\n"
-                         "MODEL  \nline3\nline4\nEND\n")
+                fh.write("HEADER\nMODEL  \nATOM line1\nline2\n"
+                         "MODEL  \nHETATM line3\nline4\nEND\n")
             # Simulate production of plot png
             with open('pdb6lyt_lyzexp.png', 'w') as fh:
                 fh.write('\n')
