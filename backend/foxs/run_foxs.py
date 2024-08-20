@@ -1,9 +1,11 @@
 from __future__ import print_function
 import sys
 import os
+import contextlib
 import subprocess
 import glob
 import traceback
+import ihm.format
 
 
 class JobParameters(object):
@@ -96,16 +98,85 @@ def setup_multimodel(params):
         return
     mmpdbs = []
     for pdb in params.pdb_file_names:
-        mmpdbs.extend(make_multimodel_pdb(pdb))
+        mmpdbs.extend(make_multimodel_pdb_or_cif(pdb))
     with open('multi-model-files.txt', 'w') as fh:
         fh.write("\n".join(mmpdbs))
 
 
-def make_multimodel_pdb(pdb):
-    """If the given file is a multimodel PDB, make PDB files for
+def make_multimodel_pdb_or_cif(fname):
+    """If the given file is a multimodel PDB or mmCIF, make PDB/mmCIF files for
        each submodel and return them. Mimic FoXS itself; i.e. number the
        models sequentially (ignore the number on the MODEL line) and skip
        any model that contains no atoms."""
+    if fname.endswith('.cif'):
+        submodels = _make_multimodel_cif(fname)
+    else:
+        submodels = _make_multimodel_pdb(fname)
+    # If only one model, FoXS just uses the original file
+    if len(submodels) == 1:
+        os.unlink(submodels[0])
+        del submodels[0]
+    return submodels or [fname]
+
+
+class _AtomSiteSplitHandler:
+    """Read the _atom_site table from an mmCIF file, and split it between
+       multiple output files, one for each unique pdbx_pdb_model_num"""
+
+    not_in_file = omitted = None
+    unknown = ihm.unknown
+
+    def __init__(self, stack, out_fname_stem):
+        self._model_map = {}
+        self._stack = stack
+        self._out_fname_stem = out_fname_stem
+        self.submodels = []
+
+    # We read and write only the data items that IMP's mmCIF reader uses
+    def __call__(self, label_atom_id, label_comp_id, label_asym_id,
+                 auth_asym_id, type_symbol, label_seq_id, group_pdb, id,
+                 occupancy, b_iso_or_equiv, pdbx_pdb_ins_code, cartn_x,
+                 cartn_y, cartn_z, pdbx_pdb_model_num, auth_seq_id,
+                 label_alt_id):
+        if pdbx_pdb_model_num not in self._model_map:
+            fname = "%s_m%d.cif" % (self._out_fname_stem,
+                                    len(self._model_map) + 1)
+            fh = self._stack.enter_context(
+                open(fname, 'w', encoding='latin1'))
+            writer = ihm.format.CifWriter(fh)
+            lw = self._stack.enter_context(
+                writer.loop("_atom_site",
+                            ["group_PDB", "id", "type_symbol", "label_atom_id",
+                             "label_alt_id", "label_comp_id", "label_seq_id",
+                             "auth_seq_id", "pdbx_PDB_ins_code",
+                             "label_asym_id", "Cartn_x", "Cartn_y", "Cartn_z",
+                             "occupancy", "auth_asym_id",
+                             "B_iso_or_equiv", "pdbx_PDB_model_num"]))
+            self._model_map[pdbx_pdb_model_num] = lw
+            self.submodels.append(fname)
+        else:
+            lw = self._model_map[pdbx_pdb_model_num]
+        lw.write(group_PDB=group_pdb, id=id, type_symbol=type_symbol,
+                 label_atom_id=label_atom_id, label_alt_id=label_alt_id,
+                 label_comp_id=label_comp_id, label_seq_id=label_seq_id,
+                 auth_seq_id=auth_seq_id, pdbx_PDB_ins_code=pdbx_pdb_ins_code,
+                 label_asym_id=label_asym_id, Cartn_x=cartn_x, Cartn_y=cartn_y,
+                 Cartn_z=cartn_z, occupancy=occupancy,
+                 auth_asym_id=auth_asym_id, B_iso_or_equiv=b_iso_or_equiv,
+                 pdbx_PDB_model_num=pdbx_pdb_model_num)
+
+
+def _make_multimodel_cif(fname):
+    out_fname_stem = os.path.splitext(fname)[0]
+    with contextlib.ExitStack() as stack:
+        ash = _AtomSiteSplitHandler(stack, out_fname_stem)
+        with open(fname, encoding='latin1') as fh:
+            c = ihm.format.CifReader(fh, category_handler={'_atom_site': ash})
+            c.read_file()  # read first block
+        return ash.submodels
+
+
+def _make_multimodel_pdb(pdb):
     nmodel = 0
     natom = 0
     fname, ext = os.path.splitext(pdb)
@@ -135,11 +206,7 @@ def make_multimodel_pdb(pdb):
         if natom == 0:
             os.unlink(subpdbs[-1])
             del subpdbs[-1]
-    # If only one model, FoXS just uses the original file
-    if len(subpdbs) == 1:
-        del subpdbs[0]
-        os.unlink('%s_m1.pdb' % fname)
-    return subpdbs or [pdb]
+    return subpdbs
 
 
 def run_job(params):

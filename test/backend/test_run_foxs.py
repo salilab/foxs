@@ -8,6 +8,14 @@ import tempfile
 import contextlib
 
 
+_ATOM_SITE = "loop_\n" + "\n".join("_atom_site.%s" % x for x in [
+    'group_PDB', 'type_symbol', 'label_atom_id', 'label_alt_id',
+    'label_comp_id', 'label_asym_id', 'auth_asym_id', 'label_seq_id',
+    'auth_seq_id', 'pdbx_PDB_ins_code', 'Cartn_x', 'Cartn_y', 'Cartn_z',
+    'occupancy', 'B_iso_or_equiv', 'label_entity_id', 'id',
+    'pdbx_PDB_model_num'])
+
+
 class MockParameters(object):
     model_option = 3
     unit_option = 1
@@ -274,6 +282,46 @@ garbage |  0.06 | x1 0.06 (1.03, 1.66)
             self.assertFalse(os.path.exists("1_m3.pdb"))
             self.assertFalse(os.path.exists("2_m1.pdb"))
             self.assertFalse(os.path.exists("3_m1.pdb"))
+            os.unlink("multi-model-files.txt")
+
+    def test_run_job_ok_multimodel_cif(self):
+        """Test run_job success with multimodel mmCIF"""
+        p = MockParameters()
+        p.model_option = 2
+        p.pdb_file_names = ['1.cif', '2.cif', '3.cif']
+        with saliweb.test.temporary_working_directory():
+            with open('1.cif', 'w') as fh:
+                fh.write(
+                    _ATOM_SITE + """
+ATOM O OXT . LEU A A 129 129 ? -17.840 19.891 8.551 1.000 4.690 1 1001 1
+ATOM C CA . VAL A A 2 2 ? 2.396 13.826 7.425 1.000 9.160 1 1003 9
+ATOM C CA . LYS A A 1 1 ? 2.445 10.457 9.182 1.000 8.160 1 1005 8
+""")
+            with open('2.cif', 'w') as fh:
+                fh.write(
+                    _ATOM_SITE + """
+ATOM O OXT . LEU A A 129 129 ? -17.840 19.891 8.551 1.000 4.690 1 1001 1
+""")
+            with open('3.cif', 'w') as fh:
+                fh.write(
+                    _ATOM_SITE + """
+ATOM O OXT . LEU A A 129 129 ? -17.840 19.891 8.551 1.000 4.690 1 1001 1
+ATOM C CA . VAL A A 2 2 ? 2.396 13.826 7.425 1.000 9.160 1 1003 9
+""")
+            # Simulate production of plot png
+            with open('pdb6lyt_lyzexp.png', 'w') as fh:
+                fh.write('\n')
+            with mocked_run_subprocess():
+                run_foxs.run_job(p)
+            # Should have made multimodel list and files
+            os.unlink("1_m1.cif")
+            os.unlink("1_m2.cif")
+            os.unlink("1_m3.cif")
+            os.unlink("3_m1.cif")
+            os.unlink("3_m2.cif")
+            self.assertFalse(os.path.exists("1_m4.cif"))
+            self.assertFalse(os.path.exists("2_m1.cif"))
+            self.assertFalse(os.path.exists("3_m3.cif"))
             os.unlink("multi-model-files.txt")
 
     def test_run_job_no_ensemble(self):
