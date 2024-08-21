@@ -117,7 +117,7 @@ If your experimental profile does not contain an error column, the server will a
       Use constant offset in profile fitting </li>
 
       <li><font color="#B00000"><b><a name = "model"> MODEL reading </a></b></font>
-      FoXS supports all possible options of handling PDB files with MODEL record. By default MODEL records are ignored and all ATOM records are read into a single structure. Alternatively it is possible to read in first MODEL only or all the MODELs into separate structures </li>
+      FoXS supports all possible options of handling PDB files with MODEL records. By default MODEL records are ignored and all ATOM records are read into a single structure. Alternatively it is possible to read in the first MODEL only or all the MODELs into separate structures. Multi-model mmCIF files (where models are distinguished by <tt>atom_site.pdbx_PDB_model_num</tt>) are handled similarly; by default the model number is ignored, but the user can choose to read only atoms from <tt>atom_site</tt> with the first model number, or to read a separate structure for each unique model number.</li>
 
       <li><font color="#B00000"><b><a name = "units"> Experimental profile units </a></b></font>
       FoXS supports input profiles with q in 1/<span>&#8491;</span> and 1/nm. By default the units of the input profile are determined automatically. Alternatively, the user can set the units.</li>
