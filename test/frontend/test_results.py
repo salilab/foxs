@@ -154,6 +154,30 @@ class Tests(saliweb.test.TestCase):
                            re.DOTALL | re.MULTILINE)
             self.assertRegex(rv.data, r)
 
+    def test_job_one_cif_profile_new(self):
+        """Test display of job with one mmCIF, fit to a profile (new view)"""
+        with saliweb.test.make_frontend_job('testjob5cif') as j:
+            j.make_file('data.txt',
+                        "1abc.cif test.profile EMAIL 0.50 "
+                        "500 1 1 1 0 0 0 0.00 1.00 3 1\n")
+            j.make_file('inputFiles.txt', "1abc.cif\n")
+            j.make_file('1abc_test.png')
+            # Old FoXS reports the fit for 1abc.pdb even though we have mmCIF
+            j.make_file(
+                'foxs.log',
+                "1abc.pdb test.profile Chi^2 = 0.202144 c1 = 1.01131 "
+                "c2 = 0.5872 default chi^2 = 0.289123\nsecond line\n")
+            j.make_file('jmoltable.html', "\n")
+
+            c = foxs.app.test_client()
+            rv = c.get('/job/testjob5cif?passwd=%s' % j.passwd)
+            r = re.compile(b'PDB files.*Profile file.*User e-mail.*'
+                           rb'1abc\.cif.*test\.profile.*test@test\.com.*'
+                           rb'see interactive display\? Use.*old interface.*'
+                           b'<canvas id="jsoutput_1".*',
+                           re.DOTALL | re.MULTILINE)
+            self.assertRegex(rv.data, r)
+
     def test_job_two_pdbs_old(self):
         """Test display of job with two PDBs, no profile (old view)"""
         with saliweb.test.make_frontend_job('testjob6') as j:
