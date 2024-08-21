@@ -125,12 +125,6 @@ def parse_log(job):
             if 'Chi^2' in line:
                 s = line.split()
                 results[s[0]] = (s[4], s[7], s[10])
-                # Older FoXS reports fits for "foo.pdb" when given "foo.cif"
-                # when using multi-model files; duplicate the data so we
-                # can find it when using mmCIF
-                if s[0].endswith('.pdb'):
-                    cif = s[0][:-4] + ".cif"
-                    results[cif] = results[s[0]]
     return results
 
 

@@ -54,7 +54,7 @@ def setup_environment():
 
     # Add IMP and gnuplot to the path, using modules
     from python import module
-    module('load', 'imp', 'gnuplot')
+    module('load', 'imp/last_ok_build', 'gnuplot')
 
 
 def get_command_options(p):
@@ -225,7 +225,8 @@ def run_job(params):
         raise RuntimeError("No plot pngs produced")
 
     # Run MultiFoXS if necessary
-    dat_files = glob.glob("**/*.pdb.dat", recursive=True)
+    dat_files = (glob.glob("**/*.pdb.dat", recursive=True)
+                 + glob.glob("**/*.cif.dat", recursive=True))
     if ((len(params.pdb_file_names) > 1 or len(dat_files) > 1)
             and params.profile_file_name):
         run_multifoxs(params, multi_foxs_opts)
@@ -369,9 +370,10 @@ def dat_files_for_pdb(pdb):
     else:  # multi model file
         pdb_code = os.path.splitext(pdb)[0]
         for i in range(1, 101):
-            dat_file = "%s_m%d.pdb.dat" % (pdb_code, i)
-            if os.path.exists(dat_file):
-                yield dat_file
+            for ext in ('pdb', 'cif'):
+                dat_file = "%s_m%d.%s.dat" % (pdb_code, i, ext)
+                if os.path.exists(dat_file):
+                    yield dat_file
 
 
 def run_subprocess(cmd, stdout=None):
