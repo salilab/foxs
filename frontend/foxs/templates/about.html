@@ -44,8 +44,8 @@ FoXS can be used as a basic tool for numerous structural modeling applications w
 </ul>
 
 <p>
-The input to the webserver is a PDB format file and experimental SAXS profile
-(if available). FoXS computes the theoretical profile and outputs it
+The input to the webserver is a PDB or mmCIF format file and experimental SAXS
+profile (if available). FoXS computes the theoretical profile and outputs it
 as a text file and as a plot of intensity (log scale) vs. q.  The
 profile is computed using Debye formula for spherical scatterers [5].</p>
 
@@ -64,7 +64,7 @@ The quality of the fit is measured by &chi; function.</p>
 
 <h2>MultiFoXS</h2>
 
-<p>If multiple PDB files were uploaded by the user, in addition to profile calculation for each structure, the server will also run enumeration and fitting of multiple structures to the input profile [1, 4]. See <a href="{{ url_for("help_multi") }}">MultiFoXS example</a> for details. </p>
+<p>If multiple PDB/mmCIF files were uploaded by the user, in addition to profile calculation for each structure, the server will also run enumeration and fitting of multiple structures to the input profile [1, 4]. See <a href="{{ url_for("help_multi") }}">MultiFoXS example</a> for details. </p>
 
 <p>The method is useful in cases of flexible multi-domain proteins or mixtures (for example proteins that exist as a mixture of monomers and dimers in solution).
 If you need to sample the conformational space of your protein, try <a href="https://modbase.compbio.ucsf.edu/multifoxs/">MultiFoXS webserver</a>.</p>

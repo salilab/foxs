@@ -105,11 +105,12 @@ def handle_pdb(pdb_code, pdb_file, job):
     """Handle input PDB code or file. Return a list of file names plus
        a single archive that contains all files."""
     if pdb_file:
-        saved_fname = save_job_nonempty_file(pdb_file, job, "PDB or zip")
+        saved_fname = save_job_nonempty_file(
+            pdb_file, job, "PDB, mmCIF or zip")
         try:
             return handle_zipfile(saved_fname, job), saved_fname
         except zipfile.BadZipfile:
-            saliweb.frontend.check_pdb(
+            saliweb.frontend.check_pdb_or_mmcif(
                 job.get_path(saved_fname),
                 show_filename=os.path.basename(pdb_file.filename))
             return [saved_fname], saved_fname
@@ -118,7 +119,7 @@ def handle_pdb(pdb_code, pdb_file, job):
         return [os.path.basename(fname)], os.path.basename(fname)
     else:
         raise InputValidationError("Error in protein input: please specify "
-                                   "PDB code or upload file")
+                                   "PDB code or upload PDB/mmCIF file")
 
 
 def handle_zipfile(zfname, job):
@@ -143,16 +144,17 @@ def handle_zipfile(zfname, job):
                     os.mkdir(full_subdir)
             with open(job.get_path(full_fname), 'wb') as out_fh:
                 out_fh.write(fh.read(zi))
-            saliweb.frontend.check_pdb(job.get_path(full_fname),
-                                       show_filename=zi.filename)
+            saliweb.frontend.check_pdb_or_mmcif(
+                job.get_path(full_fname), show_filename=zi.filename)
             pdbs.append(full_fname)
             if len(pdbs) > 100 and not local_connection():
                 raise InputValidationError(
-                    "Only 100 PDB files can run on the server. Please use "
-                    "download version for more")
+                    "Only 100 PDB/mmCIF files can run on the server. "
+                    "Please use download version for more")
     fh.close()
     if len(pdbs) == 0:
-        raise InputValidationError("The uploaded zip file contains no PDBs")
+        raise InputValidationError(
+            "The uploaded zip file contains no PDB/mmCIFs")
     return pdbs
 
 

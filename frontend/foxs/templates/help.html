@@ -21,13 +21,13 @@
 Molecule:</a></b></font> A user has to specify PDB id and chain of the
 molecule (pdb:chain, e.g. 1ukr:A) <b> or </b> upload a file containing
 the structure of the molecule in <a
-href="https://www.wwpdb.org/documentation/file-format">PDB
+href="https://www.wwpdb.org/documentation/file-format">PDB or mmCIF
 format</a>.</p>
 
 <p>It is also possible to upload a <b>zip</b> file with
-several PDB structures. In this case each structure will be fitted to
+several PDB or mmCIF structures. In this case each structure will be fitted to
 the profile separately. Only zip compression is currently supported.
-Note that profile calculation is performed for up to <font color="red">100</font> PDB files.
+Note that profile calculation is performed for up to <font color="red">100</font> PDB/mmCIF files.
 If you need more extensive profile evaluations please use download version.</p>
 
 <p> For NMR structures please select suitable MODEL reading option from advanced parameters.</p>
@@ -186,6 +186,6 @@ These values are flagged by FoXS in the results table to alert the users of poss
 
 <p>The unique capability of FoXS webserver is a possibility to account for multiple states contributing to a single observed SAXS profile. Multiple states can correspond to conformational heterogeneity (multiple conformations of the same protein or complex) and/or compositional heterogeneity (varying contents of protein and ligand molecules in the system).</p>
 
-<p>If multiple PDB files were uploaded by the user, in addition to profile calculation for each structure, the server will also run enumeration and fitting of multiple structures to the input profile.
+<p>If multiple PDB or mmCIF files were uploaded by the user, in addition to profile calculation for each structure, the server will also run enumeration and fitting of multiple structures to the input profile.
 <a href="{{ url_for("help_multi") }}" >Here is an example.</a></p>
 {% endblock %}
