@@ -29,7 +29,7 @@ class Tests(saliweb.test.TestCase):
         """Test help_multi page"""
         c = foxs.app.test_client()
         rv = c.get('/help_multi')
-        self.assertIn(b'If multiple PDB files were uploaded', rv.data)
+        self.assertIn(b'If multiple PDB or mmCIF files were uploaded', rv.data)
 
     def test_about(self):
         """Test about page"""

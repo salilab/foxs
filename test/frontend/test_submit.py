@@ -46,7 +46,8 @@ class Tests(saliweb.test.TestCase):
             c = foxs.app.test_client()
             rv = c.post('/job')
             self.assertEqual(rv.status_code, 400)  # no PDB file
-            self.assertIn(b'please specify PDB code or upload file', rv.data)
+            self.assertIn(b'please specify PDB code or upload PDB/mmCIF file',
+                          rv.data)
 
             emptyf = os.path.join(tmpdir, 'empty.pdb')
             with open(emptyf, 'w') as fh:
@@ -76,7 +77,7 @@ class Tests(saliweb.test.TestCase):
             rv = c.post('/job', data=data)
             self.assertEqual(rv.status_code, 400)
             self.assertIn(
-                b'You have uploaded an empty PDB or zip file', rv.data)
+                b'You have uploaded an empty PDB, mmCIF or zip file', rv.data)
 
             # Something not a PDB file
             data = {'pdbfile': open(badf, 'rb')}
@@ -205,8 +206,9 @@ class Tests(saliweb.test.TestCase):
                     c = foxs.app.test_client()
                     rv = c.post('/job', data={'pdbfile': open(zip_name, 'rb')})
                     self.assertEqual(rv.status_code, 400)
-                    self.assertIn(b'Only 100 PDB files can run on the server',
-                                  rv.data)
+                    self.assertIn(
+                        b'Only 100 PDB/mmCIF files can run on the server',
+                        rv.data)
 
                 # All fine if coming from localhost
                 with mock_ip(foxs.app, '127.0.0.1'):
@@ -250,7 +252,7 @@ class Tests(saliweb.test.TestCase):
                 c = foxs.app.test_client()
                 rv = c.post('/job', data={'pdbfile': open(zip_name, 'rb')})
                 self.assertEqual(rv.status_code, 400)
-                self.assertIn(b'The uploaded zip file contains no PDBs',
+                self.assertIn(b'The uploaded zip file contains no PDB/mmCIFs',
                               rv.data)
 
 
