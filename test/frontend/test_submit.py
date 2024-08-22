@@ -34,9 +34,17 @@ def make_test_pdb(tmpdir):
     fh.close()
 
 
-def make_test_mmcif(tmpdir):
-    os.mkdir(os.path.join(tmpdir, 'xy'))
-    with gzip.open(os.path.join(tmpdir, 'xy', '1xyz.cif.gz'), 'wt') as fh:
+def make_test_mmcif(tmpdir, ihm=False):
+    if ihm:
+        os.mkdir(os.path.join(tmpdir, 'zz'))
+        os.mkdir(os.path.join(tmpdir, 'zz', '1zza'))
+        os.mkdir(os.path.join(tmpdir, 'zz', '1zza', 'structures'))
+        fname = os.path.join(tmpdir, 'zz', '1zza', 'structures', '1zza.cif.gz')
+    else:
+        os.mkdir(os.path.join(tmpdir, 'xy'))
+        fname = os.path.join(tmpdir, 'xy', '1xyz.cif.gz')
+
+    with gzip.open(fname, 'wt') as fh:
         fh.write("""
 loop_
 _atom_site.group_PDB
@@ -186,6 +194,7 @@ class Tests(saliweb.test.TestCase):
                 foxs.app.config['DIRECTORIES_INCOMING'] = incoming
                 foxs.app.config['PDB_ROOT'] = pdb_root
                 foxs.app.config['MMCIF_ROOT'] = pdb_root
+                foxs.app.config['IHM_ROOT'] = pdb_root
 
                 make_test_pdb(pdb_root)
 
@@ -203,11 +212,30 @@ class Tests(saliweb.test.TestCase):
                 foxs.app.config['DIRECTORIES_INCOMING'] = incoming
                 foxs.app.config['PDB_ROOT'] = pdb_root
                 foxs.app.config['MMCIF_ROOT'] = pdb_root
+                foxs.app.config['IHM_ROOT'] = pdb_root
 
                 make_test_mmcif(pdb_root)
 
                 c = foxs.app.test_client()
                 rv = c.post('/job', data={'pdb': '1xyz:C',
+                                          'jobname': 'myjob'},
+                            follow_redirects=True)
+                self.assertEqual(rv.status_code, 503)
+                self.assertIn(b'Your job has been submitted', rv.data)
+
+    def test_submit_pdb_code_ihm(self):
+        """Test submit with a PDB code (PDB-IHM format)"""
+        with tempfile.TemporaryDirectory() as incoming:
+            with tempfile.TemporaryDirectory() as pdb_root:
+                foxs.app.config['DIRECTORIES_INCOMING'] = incoming
+                foxs.app.config['PDB_ROOT'] = pdb_root
+                foxs.app.config['MMCIF_ROOT'] = pdb_root
+                foxs.app.config['IHM_ROOT'] = pdb_root
+
+                make_test_mmcif(pdb_root, ihm=True)
+
+                c = foxs.app.test_client()
+                rv = c.post('/job', data={'pdb': '1zza:C',
                                           'jobname': 'myjob'},
                             follow_redirects=True)
                 self.assertEqual(rv.status_code, 503)
