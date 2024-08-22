@@ -115,7 +115,8 @@ def handle_pdb(pdb_code, pdb_file, job):
                 show_filename=os.path.basename(pdb_file.filename))
             return [saved_fname], saved_fname
     elif pdb_code:
-        fname = saliweb.frontend.get_pdb_chains(pdb_code, job.directory)
+        fname = saliweb.frontend.get_pdb_chains(pdb_code, job.directory,
+                                                formats=["PDB", "MMCIF"])
         return [os.path.basename(fname)], os.path.basename(fname)
     else:
         raise InputValidationError("Error in protein input: please specify "

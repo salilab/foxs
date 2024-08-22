@@ -34,6 +34,34 @@ def make_test_pdb(tmpdir):
     fh.close()
 
 
+def make_test_mmcif(tmpdir):
+    os.mkdir(os.path.join(tmpdir, 'xy'))
+    with gzip.open(os.path.join(tmpdir, 'xy', '1xyz.cif.gz'), 'wt') as fh:
+        fh.write("""
+loop_
+_atom_site.group_PDB
+_atom_site.type_symbol
+_atom_site.label_atom_id
+_atom_site.label_alt_id
+_atom_site.label_comp_id
+_atom_site.label_asym_id
+_atom_site.auth_asym_id
+_atom_site.label_seq_id
+_atom_site.auth_seq_id
+_atom_site.pdbx_PDB_ins_code
+_atom_site.Cartn_x
+_atom_site.Cartn_y
+_atom_site.Cartn_z
+_atom_site.occupancy
+_atom_site.B_iso_or_equiv
+_atom_site.label_entity_id
+_atom_site.id
+_atom_site.pdbx_PDB_model_num
+ATOM N N . ALA A C 1 1 ? 27.932 14.488 4.257 1.000 23.91 1 1 1
+ATOM N N . ALA B D 1 1 ? 27.932 14.488 4.257 1.000 23.91 1 2 1
+""")
+
+
 class Tests(saliweb.test.TestCase):
     """Check submit page"""
 
@@ -151,14 +179,32 @@ class Tests(saliweb.test.TestCase):
                            re.MULTILINE | re.DOTALL)
             self.assertRegex(rv.data, r)
 
-    def test_submit_pdb_code(self):
-        """Test submit with a PDB code"""
+    def test_submit_pdb_code_pdb(self):
+        """Test submit with a PDB code (PDB format)"""
         with tempfile.TemporaryDirectory() as incoming:
             with tempfile.TemporaryDirectory() as pdb_root:
                 foxs.app.config['DIRECTORIES_INCOMING'] = incoming
                 foxs.app.config['PDB_ROOT'] = pdb_root
+                foxs.app.config['MMCIF_ROOT'] = pdb_root
 
                 make_test_pdb(pdb_root)
+
+                c = foxs.app.test_client()
+                rv = c.post('/job', data={'pdb': '1xyz:C',
+                                          'jobname': 'myjob'},
+                            follow_redirects=True)
+                self.assertEqual(rv.status_code, 503)
+                self.assertIn(b'Your job has been submitted', rv.data)
+
+    def test_submit_pdb_code_mmcif(self):
+        """Test submit with a PDB code (mmCIF format)"""
+        with tempfile.TemporaryDirectory() as incoming:
+            with tempfile.TemporaryDirectory() as pdb_root:
+                foxs.app.config['DIRECTORIES_INCOMING'] = incoming
+                foxs.app.config['PDB_ROOT'] = pdb_root
+                foxs.app.config['MMCIF_ROOT'] = pdb_root
+
+                make_test_mmcif(pdb_root)
 
                 c = foxs.app.test_client()
                 rv = c.post('/job', data={'pdb': '1xyz:C',
