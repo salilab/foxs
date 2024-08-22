@@ -25,10 +25,13 @@ class JMolTableReader(object):
     def __call__(self):
         with open(self.job.get_path('jmoltable.html')) as fh:
             contents = fh.read()
-        # Fix link to per-job PDB file
+        # Fix link to per-job PDB or mmCIF file
         contents = contents.replace(
             'load jmoltable.pdb',
             'load "' + self.job.get_results_file_url('jmoltable.pdb') + '"')
+        contents = contents.replace(
+            'load jmoltable.cif',
+            'load "' + self.job.get_results_file_url('jmoltable.cif') + '"')
         # Fix URL for our copy of JSmol
         contents = contents.replace('/foxs/jsmol', '/jsmol')
         # Fix bug with show all/hide all checkbox
