@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Schneidman-Duhovny"
+  given-names: "Dina"
+- family-names: "Hammel"
+  given-names: "Michal"
+- family-names: "Tainer"
+  given-names: "John A."
+- family-names: "Sali"
+  given-names: "Andrej"
+title: "FoXS"
+url: "https://github.com/salilab/foxs"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Schneidman-Duhovny"
+    given-names: "Dina"
+  - family-names: "Hammel"
+    given-names: "Michal"
+  - family-names: "Tainer"
+    given-names: "John A."
+  - family-names: "Sali"
+    given-names: "Andrej"
+  doi: "10.1093/nar/gkw389"
+  journal: "Nucleic Acids Res"
+  month: 7
+  start: "W424"
+  end: "W429"
+  title: "FoXS, FoXSDock and MultiFoXS: Single-state and multi-state structural modeling of proteins and their complexes based on SAXS profiles"
+  volume: 44
+  issue: "W1"
+  year: 2016
