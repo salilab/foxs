@@ -54,7 +54,7 @@ def setup_environment():
 
     # Add IMP and gnuplot to the path, using modules
     from python import module
-    module('load', 'imp/last_ok_build', 'gnuplot')
+    module('load', 'imp', 'gnuplot')
 
 
 def get_command_options(p):
