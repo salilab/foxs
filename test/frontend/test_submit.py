@@ -158,6 +158,13 @@ class Tests(saliweb.test.TestCase):
             self.assertEqual(rv.status_code, 400)
             self.assertIn(b'Invalid profile uploaded', rv.data)
 
+            # PDB uploaded instead of profile
+            data = {'pdbfile': open(pdbf, 'rb'),
+                    'profile': open(pdbf, 'rb')}
+            rv = c.post('/job', data=data, follow_redirects=True)
+            self.assertEqual(rv.status_code, 400)
+            self.assertIn(b'PDB or mmCIF file uploaded', rv.data)
+
             # Successful submission with profile (no email)
             data = {'pdbfile': open(pdbf, 'rb'), 'profile': open(proff, 'rb')}
             rv = c.post('/job', data=data, follow_redirects=True)

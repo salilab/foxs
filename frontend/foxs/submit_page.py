@@ -82,6 +82,15 @@ def check_profile(fname):
 
 
 def check_valid_profile(fname):
+    help_text = ("Profiles should be text files with each "
+                 "line containing a q value and measured scattering, "
+                 "which should be non-zero and positive")
+
+    if fname.endswith('.pdb') or fname.endswith('.cif'):
+        raise InputValidationError(
+                "PDB or mmCIF file uploaded where a profile was expected. "
+                + help_text)
+
     with open(fname, encoding='latin1') as fh:
         for line in fh:
             if line.startswith('#'):
@@ -96,9 +105,7 @@ def check_valid_profile(fname):
                 except ValueError:
                     pass
     raise InputValidationError(
-        "Invalid profile uploaded. Profiles should be text files with each "
-        "line containing a q value and measured scattering, "
-        "which should be non-zero and positive")
+        "Invalid profile uploaded. " + help_text)
 
 
 def handle_pdb(pdb_code, pdb_file, job):
