@@ -152,6 +152,10 @@ def handle_zipfile(zfname, job):
                     os.mkdir(full_subdir)
             with open(job.get_path(full_fname), 'wb') as out_fh:
                 out_fh.write(fh.read(zi))
+            if not fname.endswith('.pdb') and not fname.endswith('.cif'):
+                raise InputValidationError(
+                    "zip file should contain ONLY files with the .pdb or "
+                    ".cif extension (first invalid file %r)" % full_fname)
             saliweb.frontend.check_pdb_or_mmcif(
                 job.get_path(full_fname), show_filename=zi.filename)
             pdbs.append(full_fname)

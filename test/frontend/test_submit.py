@@ -336,6 +336,23 @@ class Tests(saliweb.test.TestCase):
                 self.assertIn(b'The uploaded zip file contains no PDB/mmCIFs',
                               rv.data)
 
+    def test_submit_zip_file_bad_file_extension(self):
+        """Test submit with zip file containing file with bad file extension"""
+        with tempfile.TemporaryDirectory() as incoming:
+            with tempfile.TemporaryDirectory() as zip_root:
+                foxs.app.config['DIRECTORIES_INCOMING'] = incoming
+
+                zip_name = os.path.join(zip_root, 'input.zip')
+                z = zipfile.ZipFile(zip_name, 'w')
+                z.writestr("test.notapdb", "ATOM  \n")
+                z.close()
+
+                c = foxs.app.test_client()
+                rv = c.post('/job', data={'pdbfile': open(zip_name, 'rb')})
+                self.assertEqual(rv.status_code, 400)
+                self.assertIn(b'ONLY files with the .pdb or .cif extension',
+                              rv.data)
+
 
 if __name__ == '__main__':
     unittest.main()
