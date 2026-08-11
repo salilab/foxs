@@ -32,18 +32,22 @@ class MockParameters(object):
 
 
 class MockRunSubprocess(object):
-    def __init__(self):
+    def __init__(self, make_files):
         self.cmds = []
+        self.make_files = make_files
 
     def __call__(self, cmd):
         self.cmds.append(cmd)
+        for fname, contents in self.make_files.items():
+            with open(fname, 'w') as fh:
+                fh.write(contents)
 
 
 @contextlib.contextmanager
-def mocked_run_subprocess():
+def mocked_run_subprocess(make_files=None):
     """Temporarily replace run_foxs.run_subprocess with a mock"""
     old_rs = run_foxs.run_subprocess
-    run_foxs.run_subprocess = mock_rs = MockRunSubprocess()
+    run_foxs.run_subprocess = mock_rs = MockRunSubprocess(make_files or {})
     yield mock_rs
     run_foxs.run_subprocess = old_rs
 
@@ -243,9 +247,8 @@ garbage |  0.06 | x1 0.06 (1.03, 1.66)
         p = MockParameters()
         with saliweb.test.temporary_working_directory():
             # Simulate production of plot png
-            with open('pdb6lyt_lyzexp.png', 'w') as fh:
-                fh.write('\n')
-            with mocked_run_subprocess():
+            with mocked_run_subprocess(
+                    make_files={'pdb6lyt_lyzexp.png': '\n'}):
                 run_foxs.run_job(p)
 
     def test_run_job_ok_multimodel_pdb(self):
@@ -270,9 +273,8 @@ garbage |  0.06 | x1 0.06 (1.03, 1.66)
                 fh.write("HEADER\nMODEL  \nATOM line1\nline2\n"
                          "MODEL  \nHETATM line3\nline4\nEND\n")
             # Simulate production of plot png
-            with open('pdb6lyt_lyzexp.png', 'w') as fh:
-                fh.write('\n')
-            with mocked_run_subprocess():
+            with mocked_run_subprocess(
+                    make_files={'pdb6lyt_lyzexp.png': '\n'}):
                 run_foxs.run_job(p)
             # Should have made multimodel list and files
             os.unlink("1_m1.pdb")
@@ -310,9 +312,8 @@ ATOM O OXT . LEU A A 129 129 ? -17.840 19.891 8.551 1.000 4.690 1 1001 1
 ATOM C CA . VAL A A 2 2 ? 2.396 13.826 7.425 1.000 9.160 1 1003 9
 """)
             # Simulate production of plot png
-            with open('pdb6lyt_lyzexp.png', 'w') as fh:
-                fh.write('\n')
-            with mocked_run_subprocess():
+            with mocked_run_subprocess(
+                    make_files={'pdb6lyt_lyzexp.png': '\n'}):
                 run_foxs.run_job(p)
             # Should have made multimodel list and files
             os.unlink("1_m1.cif")

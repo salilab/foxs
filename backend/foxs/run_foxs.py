@@ -215,6 +215,11 @@ def run_job(params):
     print("Start profile computation analysis")
 
     foxs_opts, multi_foxs_opts = get_command_options(params)
+    # Clean up old data from previous runs
+    for old_fname in (glob.glob('**/*.plt', recursive=True)
+                      + glob.glob('**/*.png', recursive=True)
+                      + glob.glob('**/*.dat', recursive=True)):
+        os.unlink(old_fname)
     # Run FoXS
     run_subprocess(['foxs'] + foxs_opts)
     # Make plots
